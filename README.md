@@ -7,4 +7,10 @@ this is the architecture
 lorem ipsut dixit
 
 # how to deploy
-lorem ipsut dixit
+via Azure CLI
+
+az group create --name hub-and-spoke-playground --location westeurope
+
+az deployment group create --resource-group hub-and-spoke-playground --template-uri 
+
+
