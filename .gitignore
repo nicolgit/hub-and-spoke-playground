@@ -5,6 +5,9 @@
 *.tfstate
 *.tfstate.*
 
+# temp visio files
+*.~vsdx 
+
 # Crash log files
 crash.log
 

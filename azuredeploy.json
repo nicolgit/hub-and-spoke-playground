@@ -18,20 +18,8 @@
             "defaultValue": "hub-lab-net",
             "type": "String"
         },
-        "bastionHosts_hub_net_bastion_name": {
-            "defaultValue": "hub-net-bastion",
-            "type": "String"
-        },
-        "publicIPAddresses_hub_net_publicip_name": {
-            "defaultValue": "hub-net-publicip",
-            "type": "String"
-        },
         "publicIPAddresses_hub_net_fw_publicip_name": {
             "defaultValue": "hub-net-fw-publicip",
-            "type": "String"
-        },
-        "routeTables__e41f87a2_AZBST_RT_94bec04d_ef57_4e31_b15f_11cf230c960a_externalid": {
-            "defaultValue": "/subscriptions/fd2e7838-f820-4753-b087-68daf0e54383/resourceGroups/hub-and-spoke-playground/providers/Microsoft.Network/routeTables/_e41f87a2_AZBST_RT_94bec04d-ef57-4e31-b15f-11cf230c960a",
             "type": "String"
         }
     },
@@ -53,23 +41,6 @@
             ],
             "properties": {
                 "ipAddress": "51.105.161.16",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_hub_net_publicip_name')]",
-            "location": "westeurope",
-            "sku": {
-                "name": "Standard",
-                "tier": "Regional"
-            },
-            "properties": {
-                "ipAddress": "20.123.203.141",
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
@@ -110,9 +81,6 @@
                         "name": "AzureBastionSubnet",
                         "properties": {
                             "addressPrefix": "10.12.2.0/24",
-                            "routeTable": {
-                                "id": "[parameters('routeTables__e41f87a2_AZBST_RT_94bec04d_ef57_4e31_b15f_11cf230c960a_externalid')]"
-                            },
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
@@ -184,9 +152,6 @@
             ],
             "properties": {
                 "addressPrefix": "10.12.2.0/24",
-                "routeTable": {
-                    "id": "[parameters('routeTables__e41f87a2_AZBST_RT_94bec04d_ef57_4e31_b15f_11cf230c960a_externalid')]"
-                },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
                 "privateLinkServiceNetworkPolicies": "Enabled"
@@ -280,36 +245,6 @@
                 "networkRuleCollections": [],
                 "applicationRuleCollections": [],
                 "natRuleCollections": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/bastionHosts",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('bastionHosts_hub_net_bastion_name')]",
-            "location": "westeurope",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_net_publicip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'AzureBastionSubnet')]"
-            ],
-            "sku": {
-                "name": "Basic"
-            },
-            "properties": {
-                "dnsName": "bst-94bec04d-ef57-4e31-b15f-11cf230c960a.bastion.azure.com",
-                "ipConfigurations": [
-                    {
-                        "name": "IpConf",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_net_publicip_name'))]"
-                            },
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'AzureBastionSubnet')]"
-                            }
-                        }
-                    }
-                ]
             }
         }
     ]
