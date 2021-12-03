@@ -7,7 +7,8 @@ This repo contains an ARM template to that can be used to deploy a playground co
 ## Deploy to Azure
 You can use the following button to deploy the demo to your Azure subscription:
 
-![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+* [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fcloud-deploy.json) hub and spoke playground part
+* [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy.json) on premises playground part
 
 ## Architecture
 This diagrams shows the overall architecture:
