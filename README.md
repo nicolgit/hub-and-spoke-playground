@@ -7,7 +7,7 @@ This repo contains an ARM template to that can be used to deploy a playground co
 ## Deploy to Azure
 You can use the following button to deploy the demo to your Azure subscription:
 
-| playground parts|  
+| playground parts| &nbsp; |
 |---|---|
 | deploys hub and spoke playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fcloud-deploy.json)
 | deploys on premises playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy.json) |
@@ -50,6 +50,7 @@ All machines have the same account parameters (as following):
 * password: `password.123`
 
 ## Playground's scenarios
+** describe scenarios here **
 * connect on-prem with cloud with S2S VPN
 * connect on-prem machine to cloud with a P2S VPN
 * allows machine in any spoke able to communicate with any machine in any other spoke
