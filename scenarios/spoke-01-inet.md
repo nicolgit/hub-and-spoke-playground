@@ -43,6 +43,6 @@ Create the following Firewall Policy: `internet-policy`
 **Application Rules**:
 
 | priority | collection name | rule name | source | protocol | destination| action |
-|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 |1000|filtered-collection| no-goog-msft| * | HTTP,HTTPS | *.google.com,<br>*.microsoft.com | Deny |
 |2000|allow-inet-coll| allow-inet| * | HTTP,HTTPS | * | Allow | 
