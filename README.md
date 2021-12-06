@@ -53,6 +53,6 @@ All machines have the same account parameters (as following):
 ** describe scenarios here **
 * connect on-prem with cloud with S2S VPN
 * connect on-prem machine to cloud with a P2S VPN
-* allows machines in any spoke able to communicate with any machine in any other spoke [soluzion-any-to-any](scenarios/)
+* allows machines in any spoke to communicate with any machine in any other spoke [solution-on-any-to-any](scenarios/any)
 * limit http/s outboud internet traffic from spoke 01 with a blacklist 
 
