@@ -10,7 +10,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 | playground parts| &nbsp; |
 |---|---|
 | deploys hub and spoke playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fcloud-deploy.json)
-| deploys on premises playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy.json) |
+| TODO deploys on premises playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy.json) |
 
 ## Architecture
 This diagrams shows the overall architecture:
@@ -51,8 +51,9 @@ All machines have the same account parameters (as following):
 
 ## Playground's scenarios
 ** describe scenarios here **
-* connect on-prem with cloud with S2S VPN
-* connect on-prem machine to cloud with a P2S VPN
-* allows machines in any spoke to communicate with any machine in any other spoke [solution-on-any-to-any](scenarios/any)
-* limit http/s outboud internet traffic from spoke 01 with a blacklist 
-
+* allows machines in any spoke to communicate with any machine in any other spoke [solution-on-any-to-any](scenarios/ping-any-to-any.md)
+* allows spoke-01 to: [solution-spoke-01-inet](scenarios/spoke-01-inet.md)
+  * talk with spoke-2 
+  * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com 
+* TODO connect on-prem with cloud with S2S VPN
+* TODO connect on-prem machine to cloud with a P2S VPN
