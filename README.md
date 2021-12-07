@@ -55,5 +55,5 @@ All machines have the same account parameters (as following):
 * allows spoke-01 to: [solution-spoke-01-inet](scenarios/spoke-01-inet.md)
   * talk with spoke-2 
   * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com 
+* DNAT: expose on public IP, via RDP (port 3389) machines spoke-01-vm and spoke-02-vm [solution-dnat-01-02](scenarios/dnat-01-02.md)
 * TODO connect on-prem with cloud with S2S VPN
-* TODO connect on-prem machine to cloud with a P2S VPN

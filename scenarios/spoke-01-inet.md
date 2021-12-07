@@ -43,6 +43,13 @@ Create the following Firewall Policy: `internet-policy`
 **Application Rules**:
 
 | priority | collection name | rule name | source | protocol | destination| action |
-|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 |1000|filtered-collection| no-goog-msft| * | HTTP,HTTPS | *.google.com,<br>*.microsoft.com | Deny |
 |2000|allow-inet-coll| allow-inet| * | HTTP,HTTPS | * | Allow | 
+
+Associate the policy `hub-fw-policy` to `lab-firewall` via Firewall Manager.
+
+## Test
+* Verify mutual reachability via remote desktop client
+
+* Open browser and verify that google.com and microsoft.com are not available.

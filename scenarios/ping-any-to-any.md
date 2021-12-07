@@ -41,3 +41,7 @@ Create the following Firewall Policy: `hub-fw-policy`
 |---|---|---|---|---|---|---|---|
 | 1000 | my-collection | all-to-all | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | * | Any | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | Allow |
 
+Associate the policy `hub-fw-policy` to `lab-firewall` via Firewall Manager.
+
+## Test
+Test connections using remote desktop client and ssh from one machine to another.
