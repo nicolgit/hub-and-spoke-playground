@@ -52,9 +52,10 @@ All machines have the same account parameters (as following):
 ## Playground's scenarios
 ** describe scenarios here **
 * allows machines in any spoke to communicate with any machine in any other spoke [solution-on-any-to-any](scenarios/ping-any-to-any.md)
-* allows spoke-01 to: [solution-spoke-01-inet](scenarios/spoke-01-inet.md)
+* allows spoke-01 to: 
   * talk with spoke-2 
   * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com 
+  * [solution-spoke-01-inet](scenarios/spoke-01-inet.md)
 * DNAT: expose on public IP, via RDP (port 3389) machines spoke-01-vm and spoke-02-vm [solution-dnat-01-02](scenarios/dnat-01-02.md)
 * Connect on-prem with cloud with a VNet-toVNet Connection  [solution-vnet-tovnet](scenarios/vnet-to-vnet.md)
-* Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-vnet-tovnet](scenarios/ipsec.md)
+* Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-vnet-to-vnet](scenarios/ipsec.md)
