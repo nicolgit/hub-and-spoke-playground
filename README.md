@@ -60,3 +60,4 @@ All machines have the same account parameters (as following):
 * Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-ipsec](scenarios/ipsec.md)
 * Implement DNS on premise and on cloud
 * Allow routing from on premise to spoke01 and vice versa
+* troubleshooting connection on firewall using logs(?)
