@@ -41,6 +41,8 @@ The ARM template [on-prem-deploy](on-prem-deploy.json) deploys:
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
     * GatewaySubnet: this subnet is used by Azure Gateway
+* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
+* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `w10-onprem-vm`: A Windows 10 VM with the objective to simulate a desktop client in an on-premise location
 
 The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.
