@@ -62,3 +62,4 @@ All machines have the same account parameters (as following):
 * Allow routing from on premise to spoke01 and vice versa
 * resolve from on-prem names of all cloud machines, and vice-versa
 * troubleshooting connection on firewall using logs (?)
+* public web page filtered with firewall [solution-web-public](web.md) 
