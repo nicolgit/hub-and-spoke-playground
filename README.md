@@ -65,3 +65,4 @@ All machines have the same account parameters (as following):
 * resolve from on-prem names of all cloud machines, and vice-versa
 * troubleshooting connection on firewall using logs (?)
 * public web page filtered with firewall [solution-web-public](web.md) 
+* enable cross-on-premises communication [solution-cross-on-premise-routing](cross-on-premise-routing.md)
