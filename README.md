@@ -47,7 +47,7 @@ The ARM template [on-prem-deploy](on-prem-deploy.json) deploys:
 * `w10-onprem-vm`: A Windows 10 VM with the objective to simulate a desktop client in an on-premise location
 
 The ARM template [on-prem-deploy-2](on-prem-deploy-2.json) deploys:
-* `on-prem-2-net`: an Azure Virtual Network located in France with 3 subnets
+* `on-prem-2-net`: an Azure Virtual Network located in Germany with 3 subnets
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
     * GatewaySubnet: this subnet is used by Azure Gateway

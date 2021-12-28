@@ -139,7 +139,7 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "osType": "Windows",
+                        "osType": "Linux",
                         "name": "[concat(parameters('virtualMachines_onprem_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
