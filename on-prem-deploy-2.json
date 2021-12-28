@@ -24,7 +24,7 @@
             "type": "String"
         },
         "schedules_shutdown_computevm_w10_onprem_name": {
-            "defaultValue": "shutdown-linux-onprem-2",
+            "defaultValue": "shutdown-computevm-lin-onprem",
             "type": "String"
         },
         "publicIPAddresses_bastion_on_prem_publicip_name": {
