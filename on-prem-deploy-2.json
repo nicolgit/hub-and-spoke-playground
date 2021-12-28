@@ -28,7 +28,7 @@
             "type": "String"
         },
         "publicIPAddresses_bastion_on_prem_publicip_name": {
-            "defaultValue": "bastion-2-on-prem-publicip",
+            "defaultValue": "bastion-2-onprem-publicip",
             "type": "String"
         },
         "publicIPAddresses_onprem_gateway_virtualip_name": {
