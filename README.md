@@ -76,5 +76,5 @@ All machines have the same account parameters (as following):
 * Allow routing from on premise to spoke01 and vice versa
 * resolve from on-prem names of all cloud machines, and vice-versa
 * troubleshooting connection on firewall using logs (?)
-* public web page filtered with firewall [solution-web-public](web.md) 
-* enable cross-on-premises communication [solution-cross-on-premise-routing](cross-on-premise-routing.md)
+* public web page filtered with firewall [solution-web-public](scenarios/web.md) 
+* enable cross-on-premises communication [solution-cross-on-premise-routing](scenarios/cross-on-premise-routing.md)
