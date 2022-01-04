@@ -62,7 +62,9 @@ All machines have the same account parameters (as following):
 * password: `password.123`
 
 ## Playground's scenarios
-* allows machines in any spoke to communicate with any machine in any other spoke [solution-on-any-to-any](scenarios/ping-any-to-any.md)
+* allows machines in any spoke to communicate with any machine in any other spoke
+  * solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)
+  * solution using [virtual gateway](scenarios/ping-any-to-any-gateway.md)
 * allows spoke-01 to: 
   * talk with spoke-2 
   * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com 
