@@ -1,5 +1,10 @@
 # SOLUTION: Allows machines in ANY spoke to communicate with ANY machine in ANY other spoke
 
+## Pre-requisites
+
+In order to apply this solution you have to deploy hub playground only.
+
+## Solution
 In order to allow this communication, via **Azure Firewall**:
 
 Create the following route table in `west europe`: `spokes-we-to-hub-routes`
@@ -42,5 +47,5 @@ Create the following Firewall Policy: `hub-fw-policy`
 
 Associate the policy `hub-fw-policy` to `lab-firewall` via Firewall Manager.
 
-## Test
+## Test Solution
 Test connections using remote desktop client and ssh from one machine to another.

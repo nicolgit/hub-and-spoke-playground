@@ -1,12 +1,18 @@
 # SOLUTION: filter internet traffic and spokes connectivity
-This configuration allows spoke-01 to: 
-  * communicate with spoke-02 
-  * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com  
+
+## Pre-requisites
+
+In order to apply this solution you have to deploy hub playground only.
+
+## Solution
+This configuration allows `spoke-01` to: 
+  * communicate with `spoke-02` 
+  * allow HTTP/S internet traffic avoiding access to `*.google.com` and `*.microsoft.com`  
 
 
 Create the following route tables in `west europe`: 
 
-`route-01`
+Route: `route-01`
 
 | Name | Address Prefix | Next hop type | Next hop IP addr |
 |---|---|---|---|
@@ -16,7 +22,7 @@ Create the following route tables in `west europe`:
 |---|---|
 | default | spoke-01 |
 
-`route-02`
+Route: `route-02`
 
 | Name | Address Prefix | Next hop type | Next hop IP addr |
 |---|---|---|---|
@@ -49,7 +55,7 @@ Create the following Firewall Policy: `internet-policy`
 
 Associate the policy `hub-fw-policy` to `lab-firewall` via Firewall Manager.
 
-## Test
+## Test solution
 * Verify mutual reachability via remote desktop client
 
 * Open browser and verify that google.com and microsoft.com are not available.

@@ -1,5 +1,11 @@
 # SOLUTION: Allows machines in ANY spoke to communicate with ANY machine in ANY other spoke
 
+## Pre-requisites
+
+In order to apply this solution you have to deploy hub playground only.
+
+## Solution
+
 In order to allow this communication, via **Azure Virtual Gateway**:
 
 Verify that gateway transit is Enabled, on `hub-lab-net` > peerings
@@ -34,5 +40,5 @@ Create the following route table in `north europe`: `spokes-ne-to-hub-routes`
 |---|---|
 | default | spoke-03 |
 
-## Test
+## Test Solution
 Test connections using remote desktop client and ssh from one machine to another.

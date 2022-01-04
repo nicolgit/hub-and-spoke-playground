@@ -1,6 +1,12 @@
 # SOLUTION: configure a DNS on the cloud, so that all machines are reachable via FQDN
 
-from Azure Portal create a Private DNS zone named `cloudasset.interal`, with the following Network links:
+## Pre-requisites
+
+In order to apply this solution you have to deploy hub playground only.
+
+## Solution
+
+From Azure Portal create a Private DNS zone named `cloudasset.interal`, with the following Network links:
 
 | Name | Network name |
 |---|---|
@@ -24,7 +30,7 @@ Name: vm01.spoke01[.cloudasset.internal]
 Type: A
 IP: `10.13.1.4`
 
-## TEST 
-connect via RDP from hub-vm-01 machine to spoke-01 VM using the following Names:
+## Test solution
+Connect via RDP from hub-vm-01 machine to spoke-01 VM using the following Names:
 * spoke-01-vm.cloudasset.internal
 * vm01.spoke01.cloudasset.intenal
