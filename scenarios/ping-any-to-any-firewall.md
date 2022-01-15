@@ -40,10 +40,16 @@ Create the following `IP Groups` in `west europe`:
 Create the following Firewall Policy: `hub-fw-policy`
 
 **Network Rules**:
+* Rule Collection Name: `my-collection`
+* Rule Collection type: Network
+* Priority: `1000`
+* Rule Colletion action: `Allow`
+* Rule Collection group: `DefaultNetworkRuleCollectionGroup`
 
-| priority | collection name | rule name | source | port | protocol | destination | Action |
-|---|---|---|---|---|---|---|---|
-| 1000 | my-collection | all-to-all | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | * | Any | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | Allow |
+
+| rule name | source | port | protocol | destination | 
+|---|---|---|---|---|
+| all-to-all | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | * | Any | group-spoke-01<br> group-spoke-02<br> group-spoke-03 | 
 
 Associate the policy `hub-fw-policy` to `lab-firewall` via Firewall Manager.
 
