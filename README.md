@@ -1,5 +1,7 @@
 # Create an hub-and-spoke playground to test configurations and customer scenarios
 
+Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project.
+
 This repo contains an ARM template to that can be used to deploy a playground composed by:
   * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
   * a simulated on-premise architecture composed by a network, a client machine and a gateway to be used to test connectivity with the cloud
