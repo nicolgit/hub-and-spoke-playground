@@ -1,4 +1,4 @@
-# Create an hub-and-spoke playground to test configurations and customer scenarios
+# Creat hub-and-spoke playground to test configurations and customer scenarios
 
 This repo contains an ARM template to that can be used to deploy a playground composed by:
   * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
