@@ -1,5 +1,7 @@
 # Creat hub-and-spoke playground to test configurations and customer scenarios
 
+Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project.
+
 This repo contains an ARM template to that can be used to deploy a playground composed by:
   * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
   * a simulated on-premise architecture composed by a network, a client machine and a gateway to be used to test connectivity with the cloud
@@ -73,8 +75,8 @@ All machines have the same account parameters (as following):
 * Connect on-prem with cloud with a VNet-toVNet Connection [solution-vnet-tovnet](scenarios/vnet-to-vnet.md)
 * Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-ipsec](scenarios/ipsec.md)
 * Configure a DNS on the cloud, so that all machines are reachable via FQDN [solution-dns](scenarios/dns.md)
-* Allow routing from on premise to spoke01 and vice versa
-* resolve from on-prem names of all cloud machines, and vice-versa
-* troubleshooting connection on firewall using logs (?)
-* public web page filtered with firewall [solution-web-public](web.md) 
-* enable cross-on-premises communication [solution-cross-on-premise-routing](cross-on-premise-routing.md)
+* Allow routing from on premise to spoke01 and vice-versa
+* Resolve from on-prem, names of all cloud machines, and vice-versa
+* Troubleshooting connection on Azure Firewall using logs [solutions-log-firewall](scenarios/logs.md)
+* public web page filtered with firewall [solution-web-public](scenarios/web.md) 
+* enable cross-on-premises communication [solution-cross-on-premise-routing](scenarios/cross-on-premise-routing.md)
