@@ -75,7 +75,7 @@ Open `lab-gateway`, go to Connections and add the following object
 |onprem-to-cloud | connected |VNet-toVNet| on-prem-gateway |
 |onprem-2-to-cloud | connected |VNet-toVNet| on-prem-2-gateway |
 
-
+![solution diagram](..\images\cross-on-premise-routing.png)
 
 
 ## Test solution
