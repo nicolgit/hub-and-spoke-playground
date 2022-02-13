@@ -1,4 +1,4 @@
-# Create an hub-and-spoke playground to test configurations and customer scenarios
+# Create an AZURE hub-and-spoke playground to test configurations and customer scenarios
 
 Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project.
 
