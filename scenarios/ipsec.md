@@ -11,16 +11,16 @@ in order to make this connection, you have to create 2 connections one from on-p
 # create Local Network Gateways
 create the following gateways
 
-| Name | IP Address | Address Space |
-|---|---|---|
-|cloud-net | (public-ip-gw-cloud) | 10.0.0.0/8|
-|onprem-net| (public-ip-onprem) | 192.168.0.0/16 |
+| Name | IP Address | Address Space | Region |
+|---|---|---|---|
+|cloud-net | (hub-gateway-virtualip) | 10.0.0.0/8| West Europe |
+|onprem-net| (onprem-gateway-virtualip) | 192.168.0.0/16 | France Central |
 
 # connection onprem-to-cloud
 Open `on-prem-gateway`, go to Connections and add the following object
 * Connection Name: onprem-to-cloud
 * Type: Site-to-Site (IPsec)
-* virtual Network Gateway:  `lab-gateway`
+* virtual Network Gateway:  `on-prem-gateway`
 * Local Network Gateway: `cloud-net`
 * Shared Key: `password.123`
 * IKE: IKEv2

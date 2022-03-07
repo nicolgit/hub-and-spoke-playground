@@ -75,8 +75,11 @@ All machines have the same account parameters (as following):
 * Connect on-prem with cloud with a VNet-toVNet Connection [solution-vnet-tovnet](scenarios/vnet-to-vnet.md)
 * Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-ipsec](scenarios/ipsec.md)
 * Configure a DNS on the cloud, so that all machines are reachable via FQDN [solution-dns](scenarios/dns.md)
-* Allow routing from on premise to spoke01 and vice-versa
-* Resolve from on-prem, names of all cloud machines, and vice-versa
 * Troubleshooting connection on Azure Firewall using logs [solutions-log-firewall](scenarios/logs.md)
 * public web page filtered with firewall [solution-web-public](scenarios/web.md) 
 * enable cross-on-premises communication [solution-cross-on-premise-routing](scenarios/cross-on-premise-routing.md)
+* Use Azure Firewall for traffic inspection between on-premise and spoke network in cloud (North/South Traffic Inspection) [solution-north-south-inspection](scenarios/solution-north-south-inspection.md)
+
+future solutions:
+
+* Resolve from on-prem, names of all cloud machines, and vice-versa
