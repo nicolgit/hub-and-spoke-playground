@@ -32,7 +32,7 @@ the ARM template [cloud-deploy](cloud-deploy.json) deploys:
     * `spoke-02` with 1 subnet used to connect spoke-02-vm machine
     * `spoke-03`, located in North Europe, used to connect spoke-03-vm machine
 * An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure Firewall resource that provide a cloud-native, fully stateful, firewall as a service with built-in high availability and unrestricted cloud scalability. It provides both east-west and north-south traffic inspection.
+* An Azure Firewall resource that provide a con-premiseic inspection.
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `hub-vm-01`: a Windows Server virtual machine that simulates a server located in the hub location
 * `spoke-01-vm`: a Windows Server virtual machine that simulates a server located in the spoke-01 landing zone
@@ -57,29 +57,34 @@ The ARM template [on-prem-deploy-2](on-prem-deploy-2.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `lin-onprem-vm`: A linux VM with the objective to simulate a linux client in an on-premise location
 
-The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.
-
+The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.**est solution**
 All machines have the same account parameters (as following):
 * username: `nicola`
 * password: `password.123`
 
 ## Playground's scenarios
-* allows machines in any spoke to communicate with any machine in any other spoke
-  * solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)
-  * solution using [virtual gateway](scenarios/ping-any-to-any-gateway.md)
-* allows spoke-01 to: 
-  * talk with spoke-2 
-  * allow HTTP/S internet traffic avoiding access to *.google.com and *.microsoft.com 
-  * [solution-spoke-01-inet](scenarios/spoke-01-inet.md)
-* DNAT: expose on public IP, via RDP (port 3389) machines spoke-01-vm and spoke-02-vm [solution-dnat-01-02](scenarios/dnat-01-02.md)
-* Connect on-prem with cloud with a VNet-toVNet Connection [solution-vnet-tovnet](scenarios/vnet-to-vnet.md)
-* Connect on-prem with cloud with a Site-toSite (IPSec) Connection  [solution-ipsec](scenarios/ipsec.md)
-* Configure a DNS on the cloud, so that all machines are reachable via FQDN [solution-dns](scenarios/dns.md)
-* Troubleshooting connection on Azure Firewall using logs [solutions-log-firewall](scenarios/logs.md)
-* public web page filtered with firewall [solution-web-public](scenarios/web.md) 
-* enable cross-on-premises communication [solution-cross-on-premise-routing](scenarios/cross-on-premise-routing.md)
-* Use Azure Firewall for traffic inspection between on-premise and spoke network in cloud (North/South Traffic Inspection) [solution-north-south-inspection](scenarios/solution-north-south-inspection.md)
+Here there is a list of tested scenarios usable on this playground.
+
+For each scenario you have:
+
+* **prerequisites**: component to deploy required to implement the solution (only the hub, also one on-prem playground or both)
+* **solution**: a step-by-step sequence to implement the solution
+* **test solution**: a procedure to follow, to verify if the scenario is working as expected
+
+
+| | scenario description | solution |
+|---|---|---|
+| 1 | Configure the environment to allow VM in any spoke to communicate with any VM in any other spoke | solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)<br/> solution using [azure evirtual gateway](scenarios/ping-any-to-any-gateway.md) 
+| 2| Expose on a public IP, through the Firewall, `spoke-01-vm` and `spoke-02-vm `RDP port (3389) | solution using [azure firewall dnat](scenarios/dnat-01-02.md)
+| 3 | Connect `on-prem-net` with `hub-lab-net` using a vNet-to-vNet Azure Gateway's Connection | solution [vnet-to-vnet](scenarios/vnet-to-vnet.md)
+| 4 | Connect `on-prem-net` with `hub-lab-net` using a Site-to-Site (IPSec) Connection | solution with [gateway-ipsec](scenarios/ipsec.md)
+| 5 | Configure a DNS on the cloud, so that all machines are reachable via FQDN |  solution with [azure-dns](scenarios/dns.md)
+| 6 | Configure and use Azure Firewall logs for troubleshooting | configure  [log-analytics-on-firewall](scenarios/logs.md)
+| 7 | Install a test web server on `spoke-03-vm` | install [web-server](scenarios/web.md) |
+| 8 | Connect `on-prem-net` and `on-prem2-net` to `hub-lab-net` via S2S IPSEC and allow cross-on-premises communication | solution [cross-on-premise-routing](scenarios/cross-on-premise-routing.md) |
+| 9 | Use Azure Firewall for traffic inspection between `on-prem-net` and `spoke-01` networks  (North/South Traffic Inspection) | solution [north-south-inspection](scenarios/solution-north-south-inspection.md)
 
 future solutions:
 
 * Resolve from on-prem, names of all cloud machines, and vice-versa
+
