@@ -1,4 +1,4 @@
-# SOLUTION: Use Azure Firewall to perimeter inspection (North/South Traffic)  
+# SOLUTION: Use Azure Firewall for perimeter inspection (North/South Traffic)  
 
 This solution shows how to inspect and eventually filter traffic with Azure Firewall between `spoke-01` and `on-prem-net` networks.
 
