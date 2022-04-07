@@ -11,8 +11,8 @@ From Azure Portal create a Private DNS zone named `cloudasset.interal`, with the
 | Name | Network name |
 |---|---|
 |hub | hub-lab-net |
-|spoke03 | spoke-03 |
-|spoke03 | spoke-03 |
+|spoke01 | spoke-01 |
+|spoke02 | spoke-02 |
 |spoke03 | spoke-03 |
 
 Enable `auto-registration` on all network. The result is:
