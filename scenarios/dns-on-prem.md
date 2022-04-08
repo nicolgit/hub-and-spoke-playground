@@ -11,23 +11,28 @@ In order to apply this solution:
 
 ## Solution
 
+The solution implemented is described in the following schema.
+
+![DNS](/images/dns.png)
+
 ### Configure Azure Firewall for DNS resolution and proxy
-Create the following Firewall Policy: `hub-fw-policy`:
+Create the following Firewall Policy:
+* Name: `hub-fw-policy`
 * DNS: `Enabled`
     * DNS Servers: `Default (Azure Provided)`
     * DNS Proxy: `Enabled`
 
-associate the policy `hub-fw-policy` to `hub-lab-vnet`. 
+Associate the policy `hub-fw-policy` to `hub-lab-vnet`. 
 
-On `spoke-01` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (internal firewall IP).
+On `spoke-01` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (the internal firewall IP).
 
 On `spoke-02` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
 
 On `spoke-03` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
-
+On `hub-lab-net` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
 
 ### Configure a DNS machine on prem
-Open ssh on `lin-onprem` machine and install Bind9:
+Open ssh on `lin-onprem` machine and install [Bind9](https://www.isc.org/bind/):
 
 ```
 sudo apt-get update
@@ -35,35 +40,41 @@ sudo apt-get upgrade
 sudo apt-get install bind9
 ```
 
-edit `/etc/bind/named.conf.options` file and fill it with the following:
+Edit `/etc/bind/named.conf.options` file (i.e. with `sudo nano /etc/bind/named.conf.options`) and fill it with the following:
 
 ```
 options {
     directory "/var/cache/bind";
 
+    allow-query { localhost; 10.20.1.0/24; };
+
+    recursion yes;
     forwarders {
         10.12.3.4;
     };
     forward only;
 
-    dnssec-validation auto;
-    auth-nxdomain no;    # conform to RFC1035
+    dnssec-validation no; # needed for private dns zones
+    auth-nxdomain no;     # conform to RFC1035
     listen-on-v6 { any; };
 };
 ```
 
-this configure the machine ad DNS Server that forward all the requests to the Azure Firewall(`10.12.3.4`)
+> in this configuration, on-prem DNS (`10.20.1.4`) forwards all request to Azure Firewall (`10.12.3.4`) that acts as DNS proxy for the Azure managed DNS accessible from the hub. allow-query parameter allows machines on-prem to use this DNS. dnssec validation off is required to manage the private DNS zone.
 
-restart bind9 service to reload the configuration
+Restart Bind9 service to load the updated configuration.
 
 `sudo service bind9 restart`
 
 ### Configure Client machine on-prem-2
 
-# Test Solution
-Wait some minute before the following tests.
+Open ssh on `lin-onprem-2` and set `Lin-onprem` as DNS server. To do it type `sudo nano /etc/resolv.conf` and replace _nameserver_ row with the following:
 
-From ssh on `Lin-onprem` machine type
+`nameserver 10.20.1.4` 
+> this is `lin-onprem` machine IP
+
+# Test Solution
+From ssh on `Lin-onprem` machine type:
 
 `nslookup spoke-01-vm.cloudasset.internal 10.12.3.4`
 
@@ -78,79 +89,5 @@ Name:spoke-01-vm.cloudasset.interal
 Address: 10.13.1.4
 ```
 
-this means that azure firewall DNS proxy is resolving the cloud internal names properly.
+On premise machine `Lin-onprem-2` is able to resolve FQDN names for cloud machines (*.clouadasset.internal), with on premise DNS server - `Lin-onprem` - that forwards DNS queries to Azure Firewall on the cloud. Azure Firewall forwards the request to the Azure managed DNS. Azure managed DNS is able to resolve `cloudasset.internal` domain because `hub-lab-vnet` has been linked with the corresponding private zone.
 
-From ssh on `Lin-onprem` machine type
-
-`nslookup spoke-01-vm.cloudasset.internal`
-
-
-
-...
-
-
-
-
-
-
-
-
-
-<https://www.thegeekstuff.com/2014/01/install-dns-server/>
-<https://help.ubuntu.com/community/BIND9ServerHowto>
-
-install bind9
-
-
-
-
-
-### Configure a cache server
-The job of a DNS caching server is to query other DNS servers and cache the response. Next time when the same query is given, it will provide the response from the cache. The cache will be updated periodically.
-
-Please note that even though you can configure bind to work as a Primary and as a Caching server, it is not advised to do so for security reasons. Having a separate caching server is advisable.
-
-All we have to do to configure a Cache NameServer is to add your ISP (Internet Service Provider)’s DNS server or any OpenDNS server to the file /etc/bind/named.conf.options. For Example, for Azure infrastructure we can usewe `168.63.129.16`. Google’s public DNS servers are instead `8.8.8.8` and `8.8.4.4`.
-
-Uncomment and edit the following line as shown below in `/etc/bind/named.conf`.options file.
-
-```
-forwarders {
-    168.63.129.16;
-};
-
-```
-restart bind service (do it on each change a config file /etc/bind/* )
-
-`sudo service bind9 restart`
-
-## Test solution
-Connect via RDP from xxx machine onprem to spoke-01 VM using the following Names:
-* spoke-01-vm.cloudasset.internal
-* vm01.spoke01.cloudasset.intenal
-
-
-
-
----
-blog post matrial
-
-Configure DNS in an Azure Hub and Spoke network.
-
-in una architettura hub and spoke, la componente DNS è un elemento di infrastruttura fondamentale. Nella documentazione relativa alla ESLZ esiste una sezione specifica con un elenco di raccomandazioni da tenere a mente in questo contesto.
-In questo post descrivo una possibile implementazione della componente DNS, with a special focus on the following requirements:
-
-•	How to associate an FQDN to all VM on Azure
-•	Come risolvere questi FQDN from on-prem
-
-In this repo on GitHub, I have implemented a script to generate and hub and spoke “playground” where it is possible to test this configuration and much more. In this blog post you can find more information on it.
-Components:
-
-•	Azure Private DNS zone: Azure Private DNS manages and resolves domain names in the virtual network without the need to configure a custom DNS solution.
-•	Azure Firewall & DNS. You can configure a custom DNS server and enable DNS proxy for Azure Firewall. The 
-
-DNS server setting lets you configure your own DNS servers for Azure Firewall name resolution. You can configure a single server or multiple servers. If you configure multiple DNS servers, the server used is chosen randomly. You can configure a maximum of 15 DNS servers in Custom DNS.
-The solution is shown in the following schema
-
-https://azure.microsoft.com/en-us/blog/new-enhanced-dns-features-in-azure-firewall-now-generally-available/ 
-https://docs.microsoft.com/en-us/azure/firewall/dns-settings 

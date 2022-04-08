@@ -312,7 +312,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAddress": "192.168.1.4",
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
                             },
@@ -334,8 +334,7 @@
             "name": "[parameters('networkInterfaces_onprem_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_onprem-2_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -343,7 +342,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAddress": "192.168.1.5",
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
                             },
