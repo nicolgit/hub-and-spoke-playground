@@ -1,5 +1,7 @@
 # SOLUTION: configure a DNS on the cloud, and be sure that all machines are reachable via FQDN also from on-premise
 
+read also [this blog post](https://nicolgit.github.io/dns-forwarding-azure-hub-and-spoke/) for more information on this solution.
+
 ## Pre-requisites
 
 In order to apply this solution:
