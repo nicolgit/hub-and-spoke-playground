@@ -311,7 +311,7 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "privateIPAddress": "192.168.1.4",
+                            "privateIPAddress": "10.20.1.4",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
@@ -341,7 +341,7 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "privateIPAddress": "192.168.1.5",
+                            "privateIPAddress": "10.20.1.5",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
