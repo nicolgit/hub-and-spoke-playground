@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-In order to apply this solution you have to deploy hub and on-premise playgrounds.
+In order to apply this solution you have to deploy `hub` and `on-premises` playgrounds.
 
 ## Solution
 
@@ -48,6 +48,6 @@ and on `lab-gateway` connections:
 |cloud-to-onprem | connected  |Site-to-Site (IPsec)| onprem-net |
 
 ## Test solution
-Via bastion go to W10onprem (192.168.1.4) and from there open RDP to hub-vm-01 (10.12.1.4).
+Via bastion go to W10onprem (`192.168.1.4`) and open a RDP connection to hub-vm-01 (`10.12.1.4`).
 
-Do the same in the opposite direction.
+Do the same test also in the opposite direction.
