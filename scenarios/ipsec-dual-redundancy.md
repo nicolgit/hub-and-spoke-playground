@@ -1,4 +1,4 @@
-# SOLUTION: connect on-prem and hub with a Site-to-Site IPSec with a dual-redundancy, ACTIVE-ACTIVE connection 
+# SOLUTION: connect on-prem and hub with a Site-to-Site VPN with dual-redundancy, ACTIVE-ACTIVE connection 
 
 ## Pre-requisites
 
@@ -21,7 +21,7 @@ Go to Virtual Network Gateway `lab-gateway` in Configuration:
 * Second Public IP Address: `hub-gateway-virtualip-2` 
   * SKU: Basic
 * Configure BGP: enabled
-  * ASN: 65500
+  * ASN: 65513
 * Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
 
 Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
@@ -29,23 +29,25 @@ Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
 * Second Public IP Address: `onprem-gateway-virtualip-2` 
   * SKU: Basic
 * Configure BGP: enabled
-  * ASN: 65501
+  * ASN: 65514
 * Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
 
 # create Local Network Gateways
 create the following gateways
 
-| Name | IP Address | Address Space | Region |
-|---|---|---|---|
-|cloud-net | (hub-gateway-virtualip) | 10.0.0.0/8| West Europe |
-|cloud-net-2 | (hub-gateway-virtualip-2) | 10.0.0.0/8| West Europe |
-|onprem-net| (onprem-gateway-virtualip) | 192.168.0.0/16 | France Central |
-|onprem-net-2| (onprem-gateway-virtualip-2) | 192.168.0.0/16 | France Central |
+| Name | IP Address | Address Space | Region | Configure BGP | ASN | BGP peer IP addr |
+|---|---|---|---|---|---|---|
+|cloud-net | (hub-gateway-virtualip) | 10.0.0.0/8| West Europe | yes | 65513 | 10.12.4.4 |
+|cloud-net-2 | (hub-gateway-virtualip-2) | 10.0.0.0/8| West Europe | yes | 65513 | 10.12.4.5 |
+|onprem-net| (onprem-gateway-virtualip) | 192.168.0.0/16 | France Central | yes | 65514 | 192.168.3.4 |
+|onprem-net-2| (onprem-gateway-virtualip-2) | 192.168.0.0/16 | France Central | yes | 65514 | 192.168.3.5 |
 
+> BGP peer IP addr is th "[default|second] Azure BGP peer IP address" you can see in Azure Virtual Network Gateway > Configuration pane 
 
 
 # connection onprem-to-cloud (1)
-Open `on-prem-gateway`, go to Connections and add the following object
+Open `on-prem-gateway`, go to Connections and add the following object:
+
 * Connection Name: `onprem-to-cloud`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `on-prem-gateway`
@@ -56,7 +58,8 @@ Open `on-prem-gateway`, go to Connections and add the following object
 
 
 # connection cloud-to-onprem (1)
-Open `lab-gateway`, go to Connections and add the following object
+Open `lab-gateway`, go to Connections and add the following object:
+
 * Connection Name: `cloud-to-onprem`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `lab-gateway`
@@ -65,8 +68,9 @@ Open `lab-gateway`, go to Connections and add the following object
 * Enable BGP: true
 * IKE: IKEv2
 
-# connection onprem-to-cloud (2)
-Open `on-prem-gateway`, go to Connections and add the following object
+# connection onprem-to-cloud-2 (2)
+Open `on-prem-gateway`, go to Connections and add the following object:
+
 * Connection Name: `onprem-to-cloud-2`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `on-prem-gateway`
@@ -75,8 +79,9 @@ Open `on-prem-gateway`, go to Connections and add the following object
 * Enable BGP: true
 * IKE: IKEv2
 
-# connection cloud-to-onprem (2)
-Open `lab-gateway`, go to Connections and add the following object
+# connection cloud-to-onprem-2(2)
+Open `lab-gateway`, go to Connections and add the following object:
+
 * Connection Name: `cloud-to-onprem-2`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `lab-gateway`
@@ -99,6 +104,7 @@ and on `lab-gateway` connections:
 | Name | Status | Connection Type | Peer |
 |---|---|---|---|
 |cloud-to-onprem | connected  |Site-to-Site (IPsec)| onprem-net |
+|cloud-to-onprem-2 | connected  |Site-to-Site (IPsec)| onprem-net |
 
 ## Test solution
 Via bastion go to W10onprem (`192.168.1.4`) and open a RDP connection to hub-vm-01 (`10.12.1.4`).
