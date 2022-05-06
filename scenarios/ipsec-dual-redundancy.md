@@ -22,7 +22,7 @@ Go to Virtual Network Gateway `lab-gateway` in Configuration:
   * SKU: Basic
 * Configure BGP: enabled
   * ASN: 65513
-* Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
+* Click *Save* 
 
 Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
 * Active-active mode: Enables
@@ -30,7 +30,7 @@ Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
   * SKU: Basic
 * Configure BGP: enabled
   * ASN: 65514
-* Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
+* Click *Save*
 
 # create Local Network Gateways
 create the following gateways
