@@ -489,7 +489,7 @@
             "properties": {
                 "sku": {
                     "name": "AZFW_VNet",
-                    "tier": "Standard"
+                    "tier": "Premium"
                 },
                 "threatIntelMode": "Alert",
                 "additionalProperties": {},
