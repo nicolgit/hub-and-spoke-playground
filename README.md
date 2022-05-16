@@ -85,6 +85,7 @@ For each scenario you have:
 | 9 | Use Azure Firewall for traffic inspection between `on-prem-net` and `spoke-01` networks  (North/South Traffic Inspection) | solution [north-south-inspection](scenarios/solution-north-south-inspection.md)
 | 10 | Use Network Watcher for logging and network troubleshooting | solution [network watcher](scenarios/network-watcher.md)
 | 11 | Resolve from on-prem, names of all cloud machines | solution with [Azure Firewall](/scenarios/dns-on-prem.md) | 
+| 12 | Secure a WEB workload with both Azure Firewall Premium and Azure Web Application Firewall | Solution with [Azure Firewall and  WAF](scenarios/publish-waf-fw.md)
 
 Scenarios I will implement in the future:
 
