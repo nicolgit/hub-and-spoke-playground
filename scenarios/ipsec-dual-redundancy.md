@@ -22,7 +22,7 @@ Go to Virtual Network Gateway `lab-gateway` in Configuration:
   * SKU: Basic
 * Configure BGP: enabled
   * ASN: 65513
-* Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
+* Click *Save* 
 
 Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
 * Active-active mode: Enables
@@ -30,7 +30,7 @@ Go to Virtual Network Gateway `on-prem-gateway` in Configuration:
   * SKU: Basic
 * Configure BGP: enabled
   * ASN: 65514
-* Save (if the portals shows an ERROR on save, just refresh the page, probably the configuration is ok anyway)
+* Click *Save*
 
 # create Local Network Gateways
 create the following gateways
@@ -45,7 +45,7 @@ create the following gateways
 > BGP peer IP addr is th "[default|second] Azure BGP peer IP address" you can see in Azure Virtual Network Gateway > Configuration pane 
 
 
-# connection onprem-to-cloud (1)
+# connection onprem-to-cloud
 Open `on-prem-gateway`, go to Connections and add the following object:
 
 * Connection Name: `onprem-to-cloud`
@@ -57,7 +57,7 @@ Open `on-prem-gateway`, go to Connections and add the following object:
 * IKE: IKEv2
 
 
-# connection cloud-to-onprem (1)
+# connection cloud-to-onprem
 Open `lab-gateway`, go to Connections and add the following object:
 
 * Connection Name: `cloud-to-onprem`
@@ -68,7 +68,7 @@ Open `lab-gateway`, go to Connections and add the following object:
 * Enable BGP: true
 * IKE: IKEv2
 
-# connection onprem-to-cloud-2 (2)
+# connection onprem-to-cloud-2
 Open `on-prem-gateway`, go to Connections and add the following object:
 
 * Connection Name: `onprem-to-cloud-2`
@@ -79,7 +79,7 @@ Open `on-prem-gateway`, go to Connections and add the following object:
 * Enable BGP: true
 * IKE: IKEv2
 
-# connection cloud-to-onprem-2(2)
+# connection cloud-to-onprem-2
 Open `lab-gateway`, go to Connections and add the following object:
 
 * Connection Name: `cloud-to-onprem-2`
