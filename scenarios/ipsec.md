@@ -6,7 +6,9 @@ In order to apply this solution you have to deploy `hub` and `on-premises` playg
 
 ## Solution
 
-in order to make this connection, you have to create 2 connections one from on-prem to cloud and another from cloud to onprem
+In order to make this connection, you have to create 2 connections one from on-prem to cloud and another from cloud to onprem.
+
+![ipsec schema](/images/ipsec.png)
 
 # create Local Network Gateways
 create the following gateways
