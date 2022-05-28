@@ -2,102 +2,48 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "bastionHosts_hub_bastion_name": {
-            "defaultValue": "hub-bastion",
+        "virtualMachineSKU": {
+            "defaultValue": "Standard_D2s_v3",
             "type": "String"
         },
-        "virtualNetworks_spoke_01_name": {
-            "defaultValue": "spoke-01",
+        "VirtualMachineUsername": {
+            "defaultValue": "Nicola",
             "type": "String"
         },
-        "virtualNetworks_spoke_02_name": {
-            "defaultValue": "spoke-02",
-            "type": "String"
-        },
-        "virtualNetworks_spoke_03_name": {
-            "defaultValue": "spoke-03",
-            "type": "String"
-        },
-        "virtualMachines_hub_vm_01_name": {
-            "defaultValue": "hub-vm-01",
-            "type": "String"
-        },
-        "virtualMachines_spoke_01_vm_name": {
-            "defaultValue": "spoke-01-vm",
-            "type": "String"
-        },
-        "virtualMachines_spoke_02_vm_name": {
-            "defaultValue": "spoke-02-vm",
-            "type": "String"
-        },
-        "networkInterfaces_spoke_02_vm959_name": {
-            "defaultValue": "spoke-02-vm959",
-            "type": "String"
-        },
-        "virtualMachines_spoke_03_vm_name": {
-            "defaultValue": "spoke-03-vm",
-            "type": "String"
-        },
-        "networkInterfaces_spoke_03_vm959_name": {
-            "defaultValue": "spoke-03-vm959",
-            "type": "String"
-        },
-        "azureFirewalls_lab_firewall_name": {
-            "defaultValue": "lab-firewall",
-            "type": "String"
-        },
-        "virtualNetworks_hub_lab_net_name": {
-            "defaultValue": "hub-lab-net",
-            "type": "String"
-        },
-        "networkInterfaces_hub_vm_01943_name": {
-            "defaultValue": "hub-vm-01943",
-            "type": "String"
-        },
-        "networkInterfaces_spoke_01_vm959_name": {
-            "defaultValue": "spoke-01-vm959",
-            "type": "String"
-        },
-        "virtualNetworkGateways_lab_gateway_name": {
-            "defaultValue": "lab-gateway",
-            "type": "String"
-        },
-        "publicIPAddresses_hub_net_fw_publicip_name": {
-            "defaultValue": "hub-net-fw-publicip",
-            "type": "String"
-        },
-        "publicIPAddresses_hub_bastion_publicip_name": {
-            "defaultValue": "hub-bastion-publicip",
-            "type": "String"
-        },
-        "publicIPAddresses_hub_gateway_virtualip_name": {
-            "defaultValue": "hub-gateway-virtualip",
-            "type": "String"
-        },
-        "schedules_shutdown_computevm_hub_vm_01_name": {
-            "defaultValue": "shutdown-computevm-hub-vm-01",
-            "type": "String"
-        },
-        "schedules_shutdown_computevm_spoke_01_vm_name": {
-            "defaultValue": "shutdown-computevm-spoke-01-vm",
-            "type": "String"
-        },
-        "schedules_shutdown_computevm_spoke_02_vm_name": {
-            "defaultValue": "shutdown-computevm-spoke-02-vm",
-            "type": "String"
-        },
-        "schedules_shutdown_computevm_spoke_03_vm_name": {
-            "defaultValue": "shutdown-computevm-spoke-03-vm",
+        "virtualMachinePassword": {
+            "defaultValue": "password.123",
             "type": "String"
         }
-
     },
-    "variables": {},
+    "variables": {
+        "bastionHosts_hub_bastion_name": "hub-bastion",
+        "virtualNetworks_spoke_01_name": "spoke-01",
+        "virtualNetworks_spoke_02_name": "spoke-02",
+        "virtualNetworks_spoke_03_name": "spoke-03",
+        "virtualMachines_hub_vm_01_name": "hub-vm-01",
+        "virtualMachines_spoke_01_vm_name": "spoke-01-vm",
+        "virtualMachines_spoke_02_vm_name": "spoke-02-vm",
+        "networkInterfaces_spoke_02_vm959_name": "spoke-02-vm959",
+        "virtualMachines_spoke_03_vm_name": "spoke-03-vm",
+        "networkInterfaces_spoke_03_vm959_name": "spoke-03-vm959",
+        "azureFirewalls_lab_firewall_name": "lab-firewall",
+        "virtualNetworks_hub_lab_net_name": "hub-lab-net",
+        "networkInterfaces_hub_vm_01943_name": "hub-vm-01943",
+        "networkInterfaces_spoke_01_vm959_name": "spoke-01-vm959",
+        "virtualNetworkGateways_lab_gateway_name": "lab-gateway",
+        "publicIPAddresses_hub_net_fw_publicip_name": "hub-net-fw-publicip",
+        "publicIPAddresses_hub_bastion_publicip_name": "hub-bastion-publicip",
+        "publicIPAddresses_hub_gateway_virtualip_name": "hub-gateway-virtualip",
+        "schedules_shutdown_computevm_hub_vm_01_name": "shutdown-computevm-hub-vm-01",
+        "schedules_shutdown_computevm_spoke_01_vm_name": "shutdown-computevm-spoke-01-vm",
+        "schedules_shutdown_computevm_spoke_02_vm_name": "shutdown-computevm-spoke-02-vm",
+        "schedules_shutdown_computevm_spoke_03_vm_name": "shutdown-computevm-spoke-03-vm"
+    },
     "resources": [
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_hub_bastion_publicip_name')]",
+            "name": "[variables('publicIPAddresses_hub_bastion_publicip_name')]",
             "location": "westeurope",
             "sku": {
                 "name": "Standard",
@@ -114,7 +60,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_hub_gateway_virtualip_name')]",
+            "name": "[variables('publicIPAddresses_hub_gateway_virtualip_name')]",
             "location": "westeurope",
             "sku": {
                 "name": "Basic",
@@ -131,7 +77,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_hub_net_fw_publicip_name')]",
+            "name": "[variables('publicIPAddresses_hub_net_fw_publicip_name')]",
             "location": "westeurope",
             "sku": {
                 "name": "Standard",
@@ -153,14 +99,14 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_hub_vm_01_name')]",
+            "name": "[variables('virtualMachines_hub_vm_01_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_hub_vm_01943_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_hub_vm_01943_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
+                    "vmSize": "[parameters('virtualMachineSKU')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -171,7 +117,7 @@
                     },
                     "osDisk": {
                         "osType": "Windows",
-                        "name": "[concat(parameters('virtualMachines_hub_vm_01_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_hub_vm_01_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -183,9 +129,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_hub_vm_01_name')]",
-                    "adminUsername": "nicola",
-                    "adminPassword": "password.123",
+                    "computerName": "[variables('virtualMachines_hub_vm_01_name')]",
+                    "adminUsername": "[parameters('virtualMachineUsername')]",
+                    "adminPassword": "[parameters('virtualMachinePassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -201,7 +147,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_hub_vm_01943_name'))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_hub_vm_01943_name'))]",
                             "properties": {
                                 "deleteOption": "Detach"
                             }
@@ -224,14 +170,14 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_spoke_01_vm_name')]",
+            "name": "[variables('virtualMachines_spoke_01_vm_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_01_vm959_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_01_vm959_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
+                    "vmSize": "[parameters('virtualMachineSKU')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -242,7 +188,7 @@
                     },
                     "osDisk": {
                         "osType": "Windows",
-                        "name": "[concat(parameters('virtualMachines_spoke_01_vm_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_spoke_01_vm_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -254,9 +200,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_spoke_01_vm_name')]",
-                    "adminUsername": "nicola",
-                    "adminPassword": "password.123",
+                    "computerName": "[variables('virtualMachines_spoke_01_vm_name')]",
+                    "adminUsername": "[parameters('virtualMachineUsername')]",
+                    "adminPassword": "[parameters('virtualMachinePassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -272,7 +218,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_01_vm959_name'))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_01_vm959_name'))]",
                             "properties": {
                                 "deleteOption": "Delete"
                             }
@@ -290,10 +236,10 @@
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_hub_vm_01_name')]",
+            "name": "[variables('schedules_shutdown_computevm_hub_vm_01_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_hub_vm_01_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_hub_vm_01_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -307,16 +253,16 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_hub_vm_01_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_hub_vm_01_name'))]"
             }
         },
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_spoke_01_vm_name')]",
+            "name": "[variables('schedules_shutdown_computevm_spoke_01_vm_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_01_vm_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_01_vm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -330,16 +276,16 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_01_vm_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_01_vm_name'))]"
             }
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_hub_vm_01943_name')]",
+            "name": "[variables('networkInterfaces_hub_vm_01943_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -349,7 +295,7 @@
                             "privateIPAddress": "10.12.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_hub_lab_net_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -366,10 +312,10 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_spoke_01_vm959_name')]",
+            "name": "[variables('networkInterfaces_spoke_01_vm959_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -379,7 +325,7 @@
                             "privateIPAddress": "10.13.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_spoke_01_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_spoke_01_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -396,10 +342,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_01_name')]",
+            "name": "[variables('virtualNetworks_spoke_01_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -424,10 +370,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_02_name')]",
+            "name": "[variables('virtualNetworks_spoke_02_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -452,10 +398,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_03_name')]",
+            "name": "[variables('virtualNetworks_spoke_03_name')]",
             "location": "northeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -480,11 +426,11 @@
         {
             "type": "Microsoft.Network/azureFirewalls",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('azureFirewalls_lab_firewall_name')]",
+            "name": "[variables('azureFirewalls_lab_firewall_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_net_fw_publicip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_net_fw_publicip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "sku": {
@@ -498,10 +444,10 @@
                         "name": "IpConf",
                         "properties": {
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_net_fw_publicip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_net_fw_publicip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'AzureFirewallSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_hub_lab_net_name'), 'AzureFirewallSubnet')]"
                             }
                         }
                     }
@@ -514,11 +460,11 @@
         {
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('bastionHosts_hub_bastion_name')]",
+            "name": "[variables('bastionHosts_hub_bastion_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_bastion_publicip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_bastion_publicip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "sku": {
                 "name": "Basic"
@@ -531,10 +477,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_bastion_publicip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_bastion_publicip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'AzureBastionSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_hub_lab_net_name'), 'AzureBastionSubnet')]"
                             }
                         }
                     }
@@ -544,11 +490,11 @@
         {
             "type": "Microsoft.Network/virtualNetworkGateways",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworkGateways_lab_gateway_name')]",
+            "name": "[variables('virtualNetworkGateways_lab_gateway_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_gateway_virtualip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_gateway_virtualip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "enablePrivateIpAddress": false,
@@ -558,10 +504,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_hub_gateway_virtualip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_gateway_virtualip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_hub_lab_net_name'), 'GatewaySubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_hub_lab_net_name'), 'GatewaySubnet')]"
                             }
                         }
                     }
@@ -580,7 +526,7 @@
                     "peerWeight": 0,
                     "bgpPeeringAddresses": [
                         {
-                            "ipconfigurationId": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('virtualNetworkGateways_lab_gateway_name')), '/ipConfigurations/default')]",
+                            "ipconfigurationId": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', variables('virtualNetworkGateways_lab_gateway_name')), '/ipConfigurations/default')]",
                             "customBgpIpAddresses": []
                         }
                     ]
@@ -591,15 +537,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke01')]",
+            "name": "[concat(variables('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke01')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -615,15 +561,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke02')]",
+            "name": "[concat(variables('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke02')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -639,15 +585,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke03')]",
+            "name": "[concat(variables('virtualNetworks_hub_lab_net_name'), '/hub-to-spoke03')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -663,15 +609,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_spoke_01_name'), '/spoke01-to-hub')]",
+            "name": "[concat(variables('virtualNetworks_spoke_01_name'), '/spoke01-to-hub')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -687,15 +633,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_spoke_02_name'), '/spoke02-to-hub')]",
+            "name": "[concat(variables('virtualNetworks_spoke_02_name'), '/spoke02-to-hub')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -711,15 +657,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_spoke_03_name'), '/spoke03-to-hub')]",
+            "name": "[concat(variables('virtualNetworks_spoke_03_name'), '/spoke03-to-hub')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
             "properties": {
                 "peeringState": "Connected",
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_hub_lab_net_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
                 },
                 "allowVirtualNetworkAccess": true,
                 "allowForwardedTraffic": true,
@@ -735,7 +681,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_hub_lab_net_name')]",
+            "name": "[variables('virtualNetworks_hub_lab_net_name')]",
             "location": "westeurope",
             "properties": {
                 "addressSpace": {
@@ -788,7 +734,7 @@
                         "properties": {
                             "peeringState": "Connected",
                             "remoteVirtualNetwork": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
                             },
                             "allowVirtualNetworkAccess": true,
                             "allowForwardedTraffic": true,
@@ -806,7 +752,7 @@
                         "properties": {
                             "peeringState": "Connected",
                             "remoteVirtualNetwork": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]"
                             },
                             "allowVirtualNetworkAccess": true,
                             "allowForwardedTraffic": true,
@@ -824,7 +770,7 @@
                         "properties": {
                             "peeringState": "Connected",
                             "remoteVirtualNetwork": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]"
                             },
                             "allowVirtualNetworkAccess": true,
                             "allowForwardedTraffic": true,
@@ -844,14 +790,14 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_spoke_02_vm_name')]",
+            "name": "[variables('virtualMachines_spoke_02_vm_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_02_vm959_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_02_vm959_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
+                    "vmSize": "[parameters('virtualMachineSKU')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -862,7 +808,7 @@
                     },
                     "osDisk": {
                         "osType": "Windows",
-                        "name": "[concat(parameters('virtualMachines_spoke_02_vm_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_spoke_02_vm_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -874,9 +820,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_spoke_02_vm_name')]",
-                    "adminUsername": "nicola",
-                    "adminPassword": "password.123",
+                    "computerName": "[variables('virtualMachines_spoke_02_vm_name')]",
+                    "adminUsername": "[parameters('VirtualMachineUsername')]",
+                    "adminPassword": "[parameters('VirtualMachinePassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -892,7 +838,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_02_vm959_name'))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_02_vm959_name'))]",
                             "properties": {
                                 "deleteOption": "Delete"
                             }
@@ -910,10 +856,10 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_spoke_02_vm959_name')]",
+            "name": "[variables('networkInterfaces_spoke_02_vm959_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -923,7 +869,7 @@
                             "privateIPAddress": "10.13.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_spoke_02_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_spoke_02_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -940,14 +886,14 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_spoke_03_vm_name')]",
+            "name": "[variables('virtualMachines_spoke_03_vm_name')]",
             "location": "northeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_03_vm959_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_03_vm959_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
+                    "vmSize": "[parameters('virtualMachineSKU')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -958,7 +904,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_spoke_03_vm_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_spoke_03_vm_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -970,9 +916,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_spoke_03_vm_name')]",
-                    "adminUsername": "nicola",
-                    "adminPassword": "password.123",
+                    "computerName": "[variables('virtualMachines_spoke_03_vm_name')]",
+                    "adminUsername": "[parameters('VirtualMachineUsername')]",
+                    "adminPassword": "[parameters('virtualMachinePassword')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true,
@@ -987,7 +933,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_spoke_03_vm959_name'))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_03_vm959_name'))]",
                             "properties": {
                                 "deleteOption": "Delete"
                             }
@@ -1004,10 +950,10 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_spoke_03_vm959_name')]",
+            "name": "[variables('networkInterfaces_spoke_03_vm959_name')]",
             "location": "northeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -1017,7 +963,7 @@
                             "privateIPAddress": "10.13.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_spoke_03_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_spoke_03_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -1034,10 +980,10 @@
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_spoke_02_vm_name')]",
+            "name": "[variables('schedules_shutdown_computevm_spoke_02_vm_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_02_vm_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_02_vm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -1051,16 +997,16 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_02_vm_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_02_vm_name'))]"
             }
         },
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_spoke_03_vm_name')]",
+            "name": "[variables('schedules_shutdown_computevm_spoke_03_vm_name')]",
             "location": "northeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_03_vm_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_03_vm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -1074,7 +1020,7 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_spoke_03_vm_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_03_vm_name'))]"
             }
         }
     ]
