@@ -2,57 +2,37 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "virtualMachines_onprem_name": {
-            "defaultValue": "lin-onprem",
+         "virtualMachineSKU": {
+            "defaultValue": "Standard_D2s_v3",
             "type": "String"
         },
-        "networkInterfaces_onprem_name": {
-            "defaultValue": "lin-onprem-net-interface",
+        "VirtualMachineUsername": {
+            "defaultValue": "Nicola",
             "type": "String"
         },
-        "schedules_shutdown_computevm_onprem_name": {
-            "defaultValue": "shutdown-computevm-lin-onprem",
-            "type": "String"
-        },
-        "virtualMachines_onprem-2_name": {
-            "defaultValue": "lin-onprem-2",
-            "type": "String"
-        },
-        "networkInterfaces_onprem-2_name": {
-            "defaultValue": "lin-onprem-2-net-interface",
-            "type": "String"
-        },
-        "schedules_shutdown_computevm_onprem-2_name": {
-            "defaultValue": "shutdown-computevm-lin-onprem-2",
-            "type": "String"
-        },
-        "virtualNetworkGateways_on_prem_gateway_name": {
-            "defaultValue": "on-prem-2-gateway",
-            "type": "String"
-        },
-        "virtualNetworks_on_prem_net_name": {
-            "defaultValue": "on-prem-net",
-            "type": "String"
-        },
-        "bastionHosts_bastion_on_prem_name": {
-            "defaultValue": "bastion-2-on-prem",
-            "type": "String"
-        },
-        "publicIPAddresses_bastion_on_prem_publicip_name": {
-            "defaultValue": "bastion-2-onprem-publicip",
-            "type": "String"
-        },
-        "publicIPAddresses_onprem_gateway_virtualip_name": {
-            "defaultValue": "onprem-2-gateway-virtualip",
+        "virtualMachinePassword": {
+            "defaultValue": "password.123",
             "type": "String"
         }
     },
-    "variables": {},
+    "variables": {
+        "virtualMachines_onprem_name": "lin-onprem",
+        "networkInterfaces_onprem_name": "lin-onprem-net-interface",
+        "schedules_shutdown_computevm_onprem_name": "shutdown-computevm-lin-onprem",
+        "virtualMachines_onprem-2_name": "lin-onprem-2",
+        "networkInterfaces_onprem-2_name": "lin-onprem-2-net-interface",
+        "schedules_shutdown_computevm_onprem-2_name": "shutdown-computevm-lin-onprem-2",
+        "virtualNetworkGateways_on_prem_gateway_name": "on-prem-2-gateway",
+        "virtualNetworks_on_prem_net_name": "on-prem-net",
+        "bastionHosts_bastion_on_prem_name": "bastion-2-on-prem",
+        "publicIPAddresses_bastion_on_prem_publicip_name": "bastion-2-onprem-publicip",
+        "publicIPAddresses_onprem_gateway_virtualip_name": "onprem-2-gateway-virtualip"
+    },
     "resources": [
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_bastion_on_prem_publicip_name')]",
+            "name": "[variables('publicIPAddresses_bastion_on_prem_publicip_name')]",
             "location": "germanywestcentral",
             "sku": {
                 "name": "Standard",
@@ -69,7 +49,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_onprem_gateway_virtualip_name')]",
+            "name": "[variables('publicIPAddresses_onprem_gateway_virtualip_name')]",
             "location": "germanywestcentral",
             "sku": {
                 "name": "Basic",
@@ -86,7 +66,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_on_prem_net_name')]",
+            "name": "[variables('virtualNetworks_on_prem_net_name')]",
             "location": "germanywestcentral",
             "properties": {
                 "addressSpace": {
@@ -133,14 +113,14 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_onprem_name')]",
+            "name": "[variables('virtualMachines_onprem_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_onprem_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_onprem_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
+                    "vmSize": "[parameters('virtualMachineSKU')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -151,7 +131,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_onprem_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_onprem_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -163,9 +143,9 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_onprem_name')]",
-                    "adminUsername": "nicola",
-                    "adminPassword": "password.123",
+                    "computerName": "[variables('virtualMachines_onprem_name')]",
+                    "adminUsername": "[parameters('VirtualMachineUsername')]",
+                    "adminPassword": "[parameters('virtualMachinePassword')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": false,
                         "provisionVMAgent": true,
@@ -180,7 +160,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_onprem_name'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_onprem_name'))]"
                         }
                     ]
                 },
@@ -194,10 +174,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
-            "name": "[parameters('virtualMachines_onprem-2_name')]",
+            "name": "[variables('virtualMachines_onprem-2_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_onprem-2_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_onprem-2_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -212,7 +192,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_onprem-2_name'), '_OsDisk')]",
+                        "name": "[concat(variables('virtualMachines_onprem-2_name'), '_OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -224,7 +204,7 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_onprem-2_name')]",
+                    "computerName": "[variables('virtualMachines_onprem-2_name')]",
                     "adminUsername": "nicola",
                     "adminPassword": "password.123",
                     "linuxConfiguration": {
@@ -241,7 +221,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_onprem-2_name'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_onprem-2_name'))]"
                         }
                     ]
                 },
@@ -255,10 +235,10 @@
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_onprem_name')]",
+            "name": "[variables('schedules_shutdown_computevm_onprem_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_onprem_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_onprem_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -272,16 +252,16 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_onprem_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_onprem_name'))]"
             }
         },
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_onprem-2_name')]",
+            "name": "[variables('schedules_shutdown_computevm_onprem-2_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_onprem-2_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_onprem-2_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -295,16 +275,16 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_onprem-2_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_onprem-2_name'))]"
             }
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_onprem-2_name')]",
+            "name": "[variables('networkInterfaces_onprem-2_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -314,7 +294,7 @@
                             "privateIPAddress": "10.20.1.5",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_on_prem_net_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -331,10 +311,10 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('networkInterfaces_onprem_name')]",
+            "name": "[variables('networkInterfaces_onprem_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -344,7 +324,7 @@
                             "privateIPAddress": "10.20.1.4",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'default')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_on_prem_net_name'), 'default')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -361,11 +341,11 @@
         {
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('bastionHosts_bastion_on_prem_name')]",
+            "name": "[variables('bastionHosts_bastion_on_prem_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_bastion_on_prem_publicip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_bastion_on_prem_publicip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
             ],
             "sku": {
                 "name": "Basic"
@@ -378,10 +358,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_bastion_on_prem_publicip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_bastion_on_prem_publicip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'AzureBastionSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_on_prem_net_name'), 'AzureBastionSubnet')]"
                             }
                         }
                     }
@@ -391,11 +371,11 @@
         {
             "type": "Microsoft.Network/virtualNetworkGateways",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworkGateways_on_prem_gateway_name')]",
+            "name": "[variables('virtualNetworkGateways_on_prem_gateway_name')]",
             "location": "germanywestcentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_onprem_gateway_virtualip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_on_prem_net_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_onprem_gateway_virtualip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
             ],
             "properties": {
                 "enablePrivateIpAddress": false,
@@ -405,10 +385,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_onprem_gateway_virtualip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_onprem_gateway_virtualip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_on_prem_net_name'), 'GatewaySubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_on_prem_net_name'), 'GatewaySubnet')]"
                             }
                         }
                     }
