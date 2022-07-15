@@ -90,5 +90,6 @@ For each scenario you have:
 Scenarios I will implement in the future:
 
 * Resolve from on-prem, names of all cloud machines, and vice-versa
+* configure firewall so that (1) traffic outbound from spoke01 goes hrough public IP1 (2) traffic outbound from spoke02 goes through public IP2 
 
 if you are interested in more scenario, please submit an issue on this repo.
