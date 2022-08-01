@@ -13,6 +13,14 @@
         "virtualMachinePassword": {
             "defaultValue": "password.123",
             "type": "String"
+        },
+        "hubSpoke1Spoke2Location": {
+            "type": "string",
+            "defaultValue": "westeurope"
+        },
+        "spoke3Location": {
+            "type": "string",
+            "defaultValue": "northeurope"
         }
     },
     "variables": {
@@ -44,7 +52,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[variables('publicIPAddresses_hub_bastion_publicip_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "sku": {
                 "name": "Standard",
                 "tier": "Regional"
@@ -61,7 +69,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[variables('publicIPAddresses_hub_gateway_virtualip_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "sku": {
                 "name": "Basic",
                 "tier": "Regional"
@@ -78,7 +86,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[variables('publicIPAddresses_hub_net_fw_publicip_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "sku": {
                 "name": "Standard",
                 "tier": "Regional"
@@ -100,7 +108,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_hub_vm_01_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_hub_vm_01943_name'))]"
             ],
@@ -171,7 +179,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_spoke_01_vm_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_01_vm959_name'))]"
             ],
@@ -237,7 +245,7 @@
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
             "name": "[variables('schedules_shutdown_computevm_hub_vm_01_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_hub_vm_01_name'))]"
             ],
@@ -260,7 +268,7 @@
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
             "name": "[variables('schedules_shutdown_computevm_spoke_01_vm_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_01_vm_name'))]"
             ],
@@ -283,7 +291,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('networkInterfaces_hub_vm_01943_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
@@ -313,7 +321,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('networkInterfaces_spoke_01_vm959_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_01_name'))]"
             ],
@@ -343,7 +351,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworks_spoke_01_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
@@ -371,7 +379,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworks_spoke_02_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
@@ -399,7 +407,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworks_spoke_03_name')]",
-            "location": "northeurope",
+            "location": "[parameters('spoke3Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
             ],
@@ -427,7 +435,7 @@
             "type": "Microsoft.Network/azureFirewalls",
             "apiVersion": "2020-11-01",
             "name": "[variables('azureFirewalls_lab_firewall_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_net_fw_publicip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
@@ -461,7 +469,7 @@
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
             "name": "[variables('bastionHosts_hub_bastion_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_bastion_publicip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
@@ -491,7 +499,7 @@
             "type": "Microsoft.Network/virtualNetworkGateways",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworkGateways_lab_gateway_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_hub_gateway_virtualip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_hub_lab_net_name'))]"
@@ -682,7 +690,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworks_hub_lab_net_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -791,7 +799,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_spoke_02_vm_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_02_vm959_name'))]"
             ],
@@ -857,7 +865,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('networkInterfaces_spoke_02_vm959_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
             ],
@@ -887,7 +895,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_spoke_03_vm_name')]",
-            "location": "northeurope",
+            "location": "[parameters('spoke3Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_spoke_03_vm959_name'))]"
             ],
@@ -951,7 +959,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('networkInterfaces_spoke_03_vm959_name')]",
-            "location": "northeurope",
+            "location": "[parameters('spoke3Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_03_name'))]"
             ],
@@ -981,7 +989,7 @@
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
             "name": "[variables('schedules_shutdown_computevm_spoke_02_vm_name')]",
-            "location": "westeurope",
+            "location": "[parameters('hubSpoke1Spoke2Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_02_vm_name'))]"
             ],
@@ -1004,7 +1012,7 @@
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
             "name": "[variables('schedules_shutdown_computevm_spoke_03_vm_name')]",
-            "location": "northeurope",
+            "location": "[parameters('spoke3Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_spoke_03_vm_name'))]"
             ],
