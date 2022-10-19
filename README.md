@@ -86,7 +86,7 @@ For each scenario you have:
 | 10 | Use Network Watcher for logging and network troubleshooting | solution [network watcher](scenarios/network-watcher.md)
 | 11 | Resolve from on-prem, names of all cloud machines | solution with [Azure Firewall](/scenarios/dns-on-prem.md) | 
 | 12 | Secure a WEB workload with both Azure Firewall Premium and Azure Web Application Firewall | Solution with [Azure Firewall and  WAF](scenarios/publish-waf-fw.md)
-| 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md) 
+| 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-aways-on.md)
 
 Scenarios I will implement in the future:
 
