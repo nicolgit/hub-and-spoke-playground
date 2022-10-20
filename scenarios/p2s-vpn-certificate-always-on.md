@@ -78,8 +78,9 @@ Write-Host "$Message"
 
 Copy the following text, and save it as `VPNProfile.xml` in the same folder as `usercert.ps1`. Edit the following text to match your environment:
 
-* <Servers>azuregateway-1234-56-78dc.cloudapp.net</Servers> <= Can be found in the generic\VpnSettings.xml in the downloaded profile zip file
-* <routes>: can e found in generic\VpnSettings.xml
+* *Servers*: azuregateway-1234-56-78dc.cloudapp.net - Can be found in the generic\VpnSettings.xml in the downloaded profile zip file
+
+* *Routes*: can be found in `generic\VpnSettings.xml`
 
 ```
 <VPNProfile>  
