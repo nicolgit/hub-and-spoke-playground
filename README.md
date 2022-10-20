@@ -4,7 +4,7 @@
 
 This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
-The "playground" composed by:
+The "playground" is composed by:
   * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
   * a simulated on-premise architecture composed by network, client machine(s) and a gateway to be used to test connectivity with the cloud
 
