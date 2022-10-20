@@ -1,6 +1,6 @@
 # Create an AZURE hub-and-spoke playground to test configurations and customer scenarios
 
-Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project.
+> _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
 
 This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
