@@ -1,4 +1,4 @@
-# SOLUTION: Configure a P2S VPN with Certificate Authentication with Always-ON
+# SOLUTION: Configure a P2S VPN with Certificate Authentication and user tunnel Always-ON
 
 This solution shows how to configure a P2S VPN to allow individual clients running Windows 10 to an Azure Virtual Network using **Azure certificate authentication** and **always On VPN user tunnel**. 
 
