@@ -365,7 +365,16 @@
                     {
                         "name": "default",
                         "properties": {
-                            "addressPrefix": "10.13.1.0/24",
+                            "addressPrefix": "10.13.1.0/26",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                     {
+                        "name": "services",
+                        "properties": {
+                            "addressPrefix": "10.13.1.64/26",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
@@ -393,7 +402,16 @@
                     {
                         "name": "default",
                         "properties": {
-                            "addressPrefix": "10.13.2.0/24",
+                            "addressPrefix": "10.13.2.0/26",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "services",
+                        "properties": {
+                            "addressPrefix": "10.13.2.64/26",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
@@ -421,7 +439,16 @@
                     {
                         "name": "default",
                         "properties": {
-                            "addressPrefix": "10.13.3.0/24",
+                            "addressPrefix": "10.13.3.0/26",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "services",
+                        "properties": {
+                            "addressPrefix": "10.13.3.64/26",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"

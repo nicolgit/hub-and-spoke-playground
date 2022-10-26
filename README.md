@@ -21,7 +21,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 This diagrams shows the overall architecture:
 
 ![Architecture](images/architecture.png)
-
+_Download a [Visio file](images/hub-and-spoke-arc-drawing(s).vsdx) of this architecture._
 
 the ARM template [cloud-deploy](cloud-deploy.json) deploys:
 * 4 Azure Virtual Networks:
