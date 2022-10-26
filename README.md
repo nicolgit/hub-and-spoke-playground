@@ -1,8 +1,10 @@
 # Create an AZURE hub-and-spoke playground to test configurations and customer scenarios
 
-Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project.
+> _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
 
-This repo contains an ARM template to that can be used to deploy a playground composed by:
+This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
+
+The "playground" is composed by:
   * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
   * two simulated on-premise architectures, deployed in 2 different regions, composed by network, client machine(s) and a gateway
 
@@ -86,7 +88,7 @@ For each scenario you have:
 | 10 | Use Network Watcher for logging and network troubleshooting | solution [network watcher](scenarios/network-watcher.md)
 | 11 | Resolve from on-prem, names of all cloud machines | solution with [Azure Firewall](/scenarios/dns-on-prem.md) | 
 | 12 | Secure a WEB workload with both Azure Firewall Premium and Azure Web Application Firewall | Solution with [Azure Firewall and  WAF](scenarios/publish-waf-fw.md)
-| 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-aways-on.md)
+| 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-always-on.md)
 
 Scenarios I will implement in the future:
 

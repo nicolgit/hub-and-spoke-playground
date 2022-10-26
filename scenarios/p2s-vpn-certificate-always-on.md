@@ -1,4 +1,4 @@
-# SOLUTION: Configure a P2S VPN with Certificate Authentication with Always-ON
+# SOLUTION: Configure a P2S VPN with Certificate Authentication and user tunnel Always-ON
 
 This solution shows how to configure a P2S VPN to allow individual clients running Windows 10 to an Azure Virtual Network using **Azure certificate authentication** and **always On VPN user tunnel**. 
 
@@ -78,8 +78,9 @@ Write-Host "$Message"
 
 Copy the following text, and save it as `VPNProfile.xml` in the same folder as `usercert.ps1`. Edit the following text to match your environment:
 
-* <Servers>azuregateway-1234-56-78dc.cloudapp.net</Servers> <= Can be found in the generic\VpnSettings.xml in the downloaded profile zip file
-* <routes>: can e found in generic\VpnSettings.xml
+* *Servers*: azuregateway-1234-56-78dc.cloudapp.net - Can be found in the generic\VpnSettings.xml in the downloaded profile zip file
+
+* *Routes*: can be found in `generic\VpnSettings.xml`
 
 ```
 <VPNProfile>  
