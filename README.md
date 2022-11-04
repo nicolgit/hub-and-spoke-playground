@@ -96,3 +96,9 @@ Scenarios I will implement in the future:
 * configure firewall so that (1) traffic outbound from spoke01 goes hrough public IP1 (2) traffic outbound from spoke02 goes through public IP2 
 
 if you are interested in more scenario, please submit an issue on this repo.
+
+## Additional ARM templates (Beta)
+This template have as pre-requisite the HUB-Playground fully deployed.
+| description| &nbsp; |
+|---|---|
+| configure any-to-any routing on hub via Azure Firewall, outbount HTTP/S traffic via Azure Firewall and some application rule   | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-samplejson)

@@ -1,0 +1,542 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ipGroups_group_spoke_01_02_03_name": {
+            "defaultValue": "group-spoke-01-02-03",
+            "type": "String"
+        },
+        "firewallPolicies_hub_fw_policy_name": {
+            "defaultValue": "hub-fw-policy",
+            "type": "String"
+        },
+        "vaults_fw_cert_kv_YWC2GhlS17ivD_name": {
+            "defaultValue": "fw-cert-kv-YWC2GhlS17ivD",
+            "type": "String"
+        },
+        "routeTables_spokes_ne_to_hub_routes_name": {
+            "defaultValue": "spokes-ne-to-hub-routes",
+            "type": "String"
+        },
+        "routeTables_spokes_we_to_hub_routes_name": {
+            "defaultValue": "spokes-we-to-hub-routes",
+            "type": "String"
+        },
+        "userAssignedIdentities_fw_cert_id_YWC2GhlS17ivD_name": {
+            "defaultValue": "fw-cert-id-YWC2GhlS17ivD",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2022-07-01",
+            "name": "[parameters('vaults_fw_cert_kv_YWC2GhlS17ivD_name')]",
+            "location": "westeurope",
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "dce7b58c-7dea-47f9-b37f-4320c196a1c1",
+                "accessPolicies": [
+                    {
+                        "tenantId": "dce7b58c-7dea-47f9-b37f-4320c196a1c1",
+                        "objectId": "dafa676a-59d9-4191-aa34-65b0d1bed802",
+                        "permissions": {
+                            "secrets": [
+                                "get",
+                                "list"
+                            ],
+                            "certificates": [
+                                "get",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "tenantId": "dce7b58c-7dea-47f9-b37f-4320c196a1c1",
+                        "objectId": "ac21f188-72e8-47f8-a139-9649098c08cc",
+                        "permissions": {
+                            "secrets": [
+                                "get",
+                                "list"
+                            ],
+                            "certificates": [
+                                "get",
+                                "list",
+                                "create"
+                            ]
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false,
+                "enableSoftDelete": true,
+                "vaultUri": "https://fw-cert-kv-ywc2ghls17ivd.vault.azure.net/",
+                "provisioningState": "Succeeded",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2022-01-31-preview",
+            "name": "[parameters('userAssignedIdentities_fw_cert_id_YWC2GhlS17ivD_name')]",
+            "location": "westeurope"
+        },
+        {
+            "type": "Microsoft.Network/firewallPolicies",
+            "apiVersion": "2022-01-01",
+            "name": "[parameters('firewallPolicies_hub_fw_policy_name')]",
+            "location": "westeurope",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "/subscriptions/0de6abde-b801-4cb3-aabe-4082a63c0a4d/resourceGroups/hub-and-spoke-playground/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fw-cert-id-YWC2GhlS17ivD": {}
+                }
+            },
+            "properties": {
+                "sku": {
+                    "tier": "Premium"
+                },
+                "threatIntelMode": "Alert",
+                "transportSecurity": {
+                    "certificateAuthority": {
+                        "name": "fw-cert-YWC2GhlS17ivD",
+                        "keyVaultSecretId": "https://fw-cert-kv-ywc2ghls17ivd.vault.azure.net/secrets/fw-cert-YWC2GhlS17ivD/39afc1d7fdce4869b18b7a3e311acce5"
+                    }
+                },
+                "intrusionDetection": {
+                    "mode": "Off"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/ipGroups",
+            "apiVersion": "2022-01-01",
+            "name": "[parameters('ipGroups_group_spoke_01_02_03_name')]",
+            "location": "westeurope",
+            "properties": {
+                "ipAddresses": [
+                    "10.13.1.0/24",
+                    "10.13.2.0/24",
+                    "10.13.3.0/24"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/keys",
+            "apiVersion": "2022-07-01",
+            "name": "[concat(parameters('vaults_fw_cert_kv_YWC2GhlS17ivD_name'), '/fw-cert-YWC2GhlS17ivD')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_fw_cert_kv_YWC2GhlS17ivD_name'))]"
+            ],
+            "properties": {
+                "attributes": {
+                    "enabled": true,
+                    "nbf": 1667556770,
+                    "exp": 1699093370
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2022-07-01",
+            "name": "[concat(parameters('vaults_fw_cert_kv_YWC2GhlS17ivD_name'), '/fw-cert-YWC2GhlS17ivD')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_fw_cert_kv_YWC2GhlS17ivD_name'))]"
+            ],
+            "properties": {
+                "contentType": "application/x-pkcs12",
+                "attributes": {
+                    "enabled": true,
+                    "nbf": 1667556770,
+                    "exp": 1699093370
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_we_to_hub_routes_name'), '/to-internet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_we_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_ne_to_hub_routes_name'), '/to-spoke-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_ne_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.13.1.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_we_to_hub_routes_name'), '/to-spoke-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_we_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.13.1.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_ne_to_hub_routes_name'), '/to-spoke-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_ne_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.13.2.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_we_to_hub_routes_name'), '/to-spoke-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_we_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.13.2.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('routeTables_spokes_we_to_hub_routes_name'), '/to-spoke-03')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_spokes_we_to_hub_routes_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.13.3.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "10.12.3.4",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('firewallPolicies_hub_fw_policy_name'), '/DefaultApplicationRuleCollectionGroup')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_hub_fw_policy_name'))]",
+                "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+            ],
+            "properties": {
+                "priority": 300,
+                "ruleCollections": [
+                    {
+                        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+                        "action": {
+                            "type": "Allow"
+                        },
+                        "rules": [
+                            {
+                                "ruleType": "ApplicationRule",
+                                "name": "all-web-ok",
+                                "protocols": [
+                                    {
+                                        "protocolType": "Http",
+                                        "port": 80
+                                    },
+                                    {
+                                        "protocolType": "Https",
+                                        "port": 443
+                                    }
+                                ],
+                                "fqdnTags": [],
+                                "webCategories": [],
+                                "targetFqdns": [
+                                    "*"
+                                ],
+                                "targetUrls": [],
+                                "terminateTLS": false,
+                                "sourceAddresses": [],
+                                "destinationAddresses": [],
+                                "sourceIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ]
+                            }
+                        ],
+                        "name": "allow-all-web",
+                        "priority": 1000
+                    },
+                    {
+                        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+                        "action": {
+                            "type": "Deny"
+                        },
+                        "rules": [
+                            {
+                                "ruleType": "ApplicationRule",
+                                "name": "no-yahoo",
+                                "protocols": [
+                                    {
+                                        "protocolType": "Http",
+                                        "port": 80
+                                    },
+                                    {
+                                        "protocolType": "Https",
+                                        "port": 443
+                                    }
+                                ],
+                                "fqdnTags": [],
+                                "webCategories": [],
+                                "targetFqdns": [
+                                    "*.yahoo.com"
+                                ],
+                                "targetUrls": [],
+                                "terminateTLS": false,
+                                "sourceAddresses": [],
+                                "destinationAddresses": [],
+                                "sourceIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ]
+                            },
+                            {
+                                "ruleType": "ApplicationRule",
+                                "name": "no-unina",
+                                "protocols": [
+                                    {
+                                        "protocolType": "Http",
+                                        "port": 80
+                                    },
+                                    {
+                                        "protocolType": "Https",
+                                        "port": 443
+                                    }
+                                ],
+                                "fqdnTags": [],
+                                "webCategories": [],
+                                "targetFqdns": [
+                                    "*.unina.it"
+                                ],
+                                "targetUrls": [],
+                                "terminateTLS": false,
+                                "sourceAddresses": [],
+                                "destinationAddresses": [],
+                                "sourceIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ]
+                            }
+                        ],
+                        "name": "deny-something",
+                        "priority": 900
+                    },
+                    {
+                        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+                        "action": {
+                            "type": "Deny"
+                        },
+                        "rules": [
+                            {
+                                "ruleType": "ApplicationRule",
+                                "name": "no-xxx",
+                                "protocols": [
+                                    {
+                                        "protocolType": "Http",
+                                        "port": 80
+                                    },
+                                    {
+                                        "protocolType": "Https",
+                                        "port": 443
+                                    }
+                                ],
+                                "fqdnTags": [],
+                                "webCategories": [
+                                    "childabuseimages",
+                                    "datingandpersonals",
+                                    "nudity",
+                                    "pornographyandsexuallyexplicit",
+                                    "sexeducation"
+                                ],
+                                "targetFqdns": [],
+                                "targetUrls": [],
+                                "terminateTLS": false,
+                                "sourceAddresses": [],
+                                "destinationAddresses": [],
+                                "sourceIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ]
+                            }
+                        ],
+                        "name": "deny-xxx",
+                        "priority": 800
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+            "apiVersion": "2022-01-01",
+            "name": "[concat(parameters('firewallPolicies_hub_fw_policy_name'), '/DefaultNetworkRuleCollectionGroup')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_hub_fw_policy_name'))]",
+                "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+            ],
+            "properties": {
+                "priority": 200,
+                "ruleCollections": [
+                    {
+                        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+                        "action": {
+                            "type": "Allow"
+                        },
+                        "rules": [
+                            {
+                                "ruleType": "NetworkRule",
+                                "name": "all-to-all",
+                                "ipProtocols": [
+                                    "Any"
+                                ],
+                                "sourceAddresses": [],
+                                "sourceIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ],
+                                "destinationAddresses": [],
+                                "destinationIpGroups": [
+                                    "[resourceId('Microsoft.Network/ipGroups', parameters('ipGroups_group_spoke_01_02_03_name'))]"
+                                ],
+                                "destinationFqdns": [],
+                                "destinationPorts": [
+                                    "*"
+                                ]
+                            }
+                        ],
+                        "name": "my-collection",
+                        "priority": 1000
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2022-01-01",
+            "name": "[parameters('routeTables_spokes_ne_to_hub_routes_name')]",
+            "location": "northeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_ne_to_hub_routes_name'), 'to-spoke-01')]",
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_ne_to_hub_routes_name'), 'to-spoke-02')]"
+            ],
+            "properties": {
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                    {
+                        "name": "to-spoke-01",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_ne_to_hub_routes_name'), 'to-spoke-01')]",
+                        "properties": {
+                            "addressPrefix": "10.13.1.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    },
+                    {
+                        "name": "to-spoke-02",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_ne_to_hub_routes_name'), 'to-spoke-02')]",
+                        "properties": {
+                            "addressPrefix": "10.13.2.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2022-01-01",
+            "name": "[parameters('routeTables_spokes_we_to_hub_routes_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-01')]",
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-02')]",
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-03')]",
+                "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-internet')]"
+            ],
+            "properties": {
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                    {
+                        "name": "to-spoke-01",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-01')]",
+                        "properties": {
+                            "addressPrefix": "10.13.1.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    },
+                    {
+                        "name": "to-spoke-02",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-02')]",
+                        "properties": {
+                            "addressPrefix": "10.13.2.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    },
+                    {
+                        "name": "to-spoke-03",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-spoke-03')]",
+                        "properties": {
+                            "addressPrefix": "10.13.3.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    },
+                    {
+                        "name": "to-internet",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', parameters('routeTables_spokes_we_to_hub_routes_name'), 'to-internet')]",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "10.12.3.4",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    }
+                ]
+            }
+        }
+    ]
+}
