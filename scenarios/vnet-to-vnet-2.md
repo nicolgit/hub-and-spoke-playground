@@ -4,7 +4,7 @@
 In order to apply this solution you have to deploy `hub` and `on-premise-2` playgrounds.
 
 ## Solution
-in order to make this connection, you have to create 2 connections one from on-prem to cloud and another from cloud to onprem
+In order to make this connection, you have to create 2 connections one from on-prem to cloud and another from cloud to onprem
 
 ### Step 1: connection onprem-to-cloud
 Open `on-prem-2-gateway`, go to Connections and add the following object
@@ -28,8 +28,8 @@ after a couple of minutes you will have the following connections:
 
 | Name | Status | Connection Type | Peer |
 |---|---|---|---|
-|cloud-to-onprem | connected  |VNet-toVNet| lab-gateway |
-|onprem-to-cloud | connected |VNet-toVNet| lab-gateway |
+|cloud-to-onprem2 | connected  |VNet-toVNet| lab-gateway |
+|onprem2-to-cloud | connected |VNet-toVNet| lab-gateway |
 
 ## Test solution
 Via bastion go to W10onprem (192.168.1.4) and from there open RDP to hub-vm-01 (10.12.1.4).
