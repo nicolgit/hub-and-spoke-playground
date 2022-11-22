@@ -8,7 +8,7 @@ In order to apply this solution:
 
 1. deploy HUB playground
 2. deploy ONPREMISE-2 playground
-3. configure the DNS on the cloud as [documented here](dns-on-prem.md)
+3. configure the DNS on the cloud as [documented here](dns.md)
 4. configure a site-to-site VPN as [documented here](vnet-to-vnet.md)
 
 ## Solution
