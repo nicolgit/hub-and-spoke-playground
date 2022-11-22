@@ -13,6 +13,10 @@
         "virtualMachinePassword": {
             "defaultValue": "password.123",
             "type": "String"
+        },
+        "onPremLocation": {
+            "type": "string",
+            "defaultValue": "francecentral"
         }
     },
     "variables": {
@@ -30,7 +34,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[variables('publicIPAddresses_bastion_on_prem_publicip_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "sku": {
                 "name": "Standard",
                 "tier": "Regional"
@@ -47,7 +51,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[variables('publicIPAddresses_onprem_gateway_virtualip_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "sku": {
                 "name": "Basic",
                 "tier": "Regional"
@@ -64,7 +68,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworks_on_prem_net_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -111,7 +115,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_w10_onprem_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_w10_onprem68_name'))]"
             ],
@@ -174,7 +178,7 @@
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
             "name": "[variables('schedules_shutdown_computevm_w10_onprem_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('virtualMachines_w10_onprem_name'))]"
             ],
@@ -197,7 +201,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('networkInterfaces_w10_onprem68_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
             ],
@@ -227,7 +231,7 @@
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
             "name": "[variables('bastionHosts_bastion_on_prem_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_bastion_on_prem_publicip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"
@@ -257,7 +261,7 @@
             "type": "Microsoft.Network/virtualNetworkGateways",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualNetworkGateways_on_prem_gateway_name')]",
-            "location": "francecentral",
+            "location": "[parameters('onPremLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_onprem_gateway_virtualip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_on_prem_net_name'))]"

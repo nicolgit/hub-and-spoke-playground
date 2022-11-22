@@ -27,7 +27,7 @@
         "networkInterfaces_onprem-2_name": "lin-onprem-2-net-interface",
         "schedules_shutdown_computevm_onprem-2_name": "shutdown-computevm-lin-onprem-2",
         "virtualNetworkGateways_on_prem_gateway_name": "on-prem-2-gateway",
-        "virtualNetworks_on_prem_net_name": "on-prem-net",
+        "virtualNetworks_on_prem_net_name": "on-prem-net-2",
         "bastionHosts_bastion_on_prem_name": "bastion-2-on-prem",
         "publicIPAddresses_bastion_on_prem_publicip_name": "bastion-2-onprem-publicip",
         "publicIPAddresses_onprem_gateway_virtualip_name": "onprem-2-gateway-virtualip"
