@@ -28,10 +28,11 @@ Associate the policy `hub-fw-policy` to `hub-lab-vnet`.
 
 On `spoke-01` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (the internal firewall IP).
 
-On `spoke-02` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
+On `spoke-02` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (the internal firewall IP).
 
-On `spoke-03` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
-On `hub-lab-net` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4`.
+On `spoke-03` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (the internal firewall IP).
+
+On `hub-lab-net` virtual network go to DNS Servers and set as DNS Server custom `10.12.3.4` (the internal firewall IP).
 
 ### Configure a DNS machine on prem
 Open ssh on `lin-onprem` machine and install [Bind9](https://www.isc.org/bind/):
@@ -78,7 +79,11 @@ Open ssh on `lin-onprem-2` and set `Lin-onprem` as DNS server. To do it type `su
 # Test Solution
 From ssh on `Lin-onprem` machine type:
 
-`nslookup spoke-01-vm.cloudasset.internal 10.12.3.4`
+`nslookup spoke-01-vm.cloudasset.internal 10.12.3.4` (direct query to Azure Firewall)
+
+or
+
+`nslookup spoke-01-vm.cloudasset.internal` (query to `lin-onprem` that forward the request to Azure Firewall)
 
 if the answer is 
 
