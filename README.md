@@ -16,6 +16,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 | deploys the HUB playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fcloud-deploy.json)
 | deploys the ON PREMISES (France) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy.json) |
 | deploys the ON PREMISES-2 (Germany) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-deploy-2.json) |
+| deploys any-to-any routing via firewall | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any.json) |
 
 ## Architecture
 This diagrams shows the overall architecture:
@@ -64,6 +65,14 @@ All machines have the same account parameters (as following):
 * username: `nicola`
 * password: `password.123`
 
+The ARM template [any-to-any](any-to-any.json) deploys:
+* 2 routing tables that forward all spoke traffic to the firewall
+* 1 IPgroup and one Azure Firewall policy that:
+  * allows spoke-to-spoke communication
+  * block certain sites (Facebook, Twitter and 3 web categories (nudity, dating, pornography)
+  * allows all remaining HTTP(S) outbound traffic
+
+
 ## Playground's scenarios
 Here there is a list of tested scenarios usable on this playground.
 
@@ -97,9 +106,3 @@ Scenarios I will implement in the future:
 * configure firewall so that (1) traffic outbound from spoke01 goes hrough public IP1 (2) traffic outbound from spoke02 goes through public IP2 
 
 if you are interested in more scenario, please submit an issue on this repo.
-
-## Additional ARM templates (Beta)
-This template have as pre-requisite the HUB-Playground fully deployed.
-| description| &nbsp; |
-|---|---|
-| configure any-to-any routing on hub via Azure Firewall, outbount HTTP/S traffic via Azure Firewall and some application rule   | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-samplejson)
