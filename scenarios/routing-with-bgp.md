@@ -66,5 +66,5 @@ Each Virtual Network Gateway in this context is an Autonomous System (AS), in th
 From the table above, you can see that a machine in lab-hub-net to arrive to a machine in spoke-03 net (10.13.3.0/24), have to cross `65511` (`spoke-01-gateway`), `65512` (`spoke-02-gateway`) and `65513` (`spoke-03-gateway`).
 
 ### RDP connection test
-1. connect via bastion `hub-01-vm` in RDP 
-2. once on the vm, open remote desktop connection and connect to `10.13.2.`4 (a Windows VM)
+1. connect to `hub-01-vm` via RDP/bastion 
+2. once on the vm, open remote desktop connection and connect to `10.13.2.4` (a Windows VM)
