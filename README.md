@@ -32,11 +32,11 @@ the ARM template [cloud-deploy](cloud-deploy.json) deploys:
         * AzureFirewallSubet: this subnet is used by Azure Firewall
         * AzureBastionSubnet: this subnet is used bu Azure Bastion
         * GatewaySubnet: this subnet is used by Azure Gateway
-    * `spoke-01` with 1 subnet used to connect spoke-01-vm machine
-    * `spoke-02` with 1 subnet used to connect spoke-02-vm machine
-    * `spoke-03`, located in North Europe, used to connect spoke-03-vm machine
+    * `spoke-01` with 2 subnets used to connect spoke-01-vm machine
+    * `spoke-02` with 2 subnets used to connect spoke-02-vm machine
+    * `spoke-03`, with 2 subnets and located in North Europe, used to connect spoke-03-vm machine
 * An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure Firewall resource that provide a con-premiseic inspection.
+* An Azure Firewall **premium** resource that provide a con-premiseic inspection.
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `hub-vm-01`: a Windows Server virtual machine that simulates a server located in the hub location
 * `spoke-01-vm`: a Windows Server virtual machine that simulates a server located in the spoke-01 landing zone
@@ -61,11 +61,6 @@ The ARM template [on-prem-deploy-2](on-prem-deploy-2.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `lin-onprem-vm`: A linux VM with the objective to simulate a linux client in an on-premise location
 
-The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.**est solution**
-All machines have the same account parameters (as following):
-* username: `nicola`
-* password: `password.123`
-
 The ARM template [any-to-any](any-to-any.json) deploys:
 * 2 routing tables that forward all spoke traffic to the firewall
 * 1 IPgroup and one Azure Firewall policy that:
@@ -73,6 +68,23 @@ The ARM template [any-to-any](any-to-any.json) deploys:
   * block certain sites (Facebook, Twitter and 3 web categories (nudity, dating, pornography)
   * allows all remaining HTTP(S) outbound traffic
 
+the ARM template [hub-02](hub-02-bicep/hub-02.json) deploys:
+* 2 Azure Virtual Networks:
+    * `hub-lab-02-net` with 4 subnets:
+        * default subnet: this subnet is empty
+        * AzureFirewallSubet: this subnet is used by Azure Firewall
+        * AzureBastionSubnet: this subnet is used bu Azure Bastion
+        * GatewaySubnet: this subnet is used by Azure Gateway
+    * `spoke-04` with 2 subnet used to connect spoke-04-vm machine
+* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
+* An Azure Firewall **standard** resource that provide a con-premiseic inspection.
+* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
+* `spoke-04-vm`: a Windows Server virtual machine that simulates a server located in the spoke-01 landing zone
+
+The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.**est solution**
+All machines have the same account parameters (as following):
+* username: `nicola`
+* password: `password.123`
 
 ## Playground's scenarios
 Here there is a list of tested scenarios usable on this playground.
