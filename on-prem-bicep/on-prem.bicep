@@ -8,9 +8,9 @@ var onPremNetworkName = 'on-prem-net'
 var bastionName = 'bastion-on-prem'
 var bastionIPName = 'bastion-on-prem-publicip'
 
-var vmOnPremDiskName = 'vm-w10-onprem-disk'
-var vmOnPremNicName = 'vm-w10-onprem-nic'
-var vmOnPremName = 'W10-onprem'
+var vmOnPremDiskName = 'vm-w11-onprem-disk'
+var vmOnPremNicName = 'vm-w11-onprem-nic'
+var vmOnPremName = 'W11-onprem'
 var autoshutdownName = 'shutdown-computevm-${vmOnPremName}'
 
 var vnetGatewayIPName = 'onprem-gateway-virtualip'
@@ -83,7 +83,7 @@ resource vmonprem 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   properties: { 
     hardwareProfile: { vmSize: virtualMachineSKU }
     storageProfile: { 
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest'}
+      imageReference: { publisher: 'MicrosoftWindowsDesktop', offer: 'windows-11', sku: 'win11-22h2-pro', version: 'latest'}
       dataDisks: [ {
           lun: 0
           name: vmOnPremDiskName

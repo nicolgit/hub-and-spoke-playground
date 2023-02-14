@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.46.61228",
-      "templateHash": "14765446251198364200"
+      "templateHash": "16969911275948917133"
     }
   },
   "parameters": {
@@ -30,9 +30,9 @@
     "onPremNetworkName": "on-prem-net",
     "bastionName": "bastion-on-prem",
     "bastionIPName": "bastion-on-prem-publicip",
-    "vmOnPremDiskName": "vm-w10-onprem-disk",
-    "vmOnPremNicName": "vm-w10-onprem-nic",
-    "vmOnPremName": "W10-onprem",
+    "vmOnPremDiskName": "vm-w11-onprem-disk",
+    "vmOnPremNicName": "vm-w11-onprem-nic",
+    "vmOnPremName": "W11-onprem",
     "autoshutdownName": "[format('shutdown-computevm-{0}', variables('vmOnPremName'))]",
     "vnetGatewayIPName": "onprem-gateway-virtualip",
     "vnetGatewayName": "on-prem-gateway"
@@ -153,9 +153,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2019-Datacenter",
+            "publisher": "MicrosoftWindowsDesktop",
+            "offer": "windows-11",
+            "sku": "win11-22h2-pro",
             "version": "latest"
           },
           "dataDisks": [
