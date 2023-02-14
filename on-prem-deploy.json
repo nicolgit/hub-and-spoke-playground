@@ -113,7 +113,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2019-07-01",
+            "apiVersion": "2021-07-01",
             "name": "[variables('virtualMachines_w10_onprem_name')]",
             "location": "[parameters('onPremLocation')]",
             "dependsOn": [
