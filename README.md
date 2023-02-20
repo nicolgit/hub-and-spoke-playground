@@ -23,11 +23,13 @@ You can use the following button to deploy the demo to your Azure subscription:
 This diagrams shows the high level overall architecture with networks, peerings and Azure Regions:
 
 ![High level Architecture](images/hl-architecture.png)
-_Download a [drawiofile](images/architecture.drawio) of this architecture._
+
+_Download a [draw.io file](images/architecture.drawio) of this architecture._
 
 This diagram shows a detailed version with also all subnets, virtual machines, NVAs, IPs and Firewalls.
 
 ![Architecture](images/architecture.png)
+
 _Download a [Visio file](images/hub-and-spoke-arc-drawing(s).vsdx) of this architecture._
 
 the ARM template [cloud-deploy](cloud-deploy.json) deploys:
