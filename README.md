@@ -20,7 +20,12 @@ You can use the following button to deploy the demo to your Azure subscription:
 | deploys the HUB 02 playground (`hub-lab-02-net` and spoke `04`) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
 
 ## Architecture
-This diagrams shows the overall architecture:
+This diagrams shows the high level overall architecture with networks, peerings and Azure Regions:
+
+![High level Architecture](images/hl-architecture.png)
+_Download a [drawiofile](images/architecture.drawio) of this architecture._
+
+This diagram shows a detailed version with also all subnets, virtual machines, NVAs, IPs and Firewalls.
 
 ![Architecture](images/architecture.png)
 _Download a [Visio file](images/hub-and-spoke-arc-drawing(s).vsdx) of this architecture._
