@@ -1,11 +1,33 @@
-# Create an AZURE hub-and-spoke playground to test configurations and customer scenarios
+<h1 align="center">The Azure🌍 hub-and-spoke-playground </h1>
 
-> _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
+<div align="center">
+  A well-documented, easy-to-deploy environment for testing, studying, inventing network configurations
+</div>
+
+<br/>
+
+<div align="center">
+  <sub>Built with ❤︎ by
+  <a href="https://github.com/nicolgit">nicolgit</a> and
+  <a href="https://github.com/nicolgit/hub-and-spoke-playground/contributors">
+    contributors
+  </a>
+</div>
+
+<br/>
+
+<p align="center">
+  <img src="images/hl-architecture.png" width="60%" />
+</p>
+
+_Download a [draw.io file](images/architecture.drawio) of this schema._
 
 This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
+> _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
+
 The "playground" is composed by:
-  * an hub and spoke network topology aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
+  * two hub and spoke network topologies aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
   * two simulated on-premise architectures, deployed in 2 different regions, composed by network, client machine(s) and a gateway
 
 ## Deploy to Azure
@@ -21,9 +43,6 @@ You can use the following button to deploy the demo to your Azure subscription:
 
 ## Architecture
 This diagrams shows the high level overall architecture with networks, peerings and Azure Regions:
-
-![High level Architecture](images/hl-architecture.png)
-<br/>_Download a [draw.io file](images/architecture.drawio) of this architecture._
 
 This diagram shows a detailed version with also all subnets, virtual machines, NVAs, IPs and Firewalls.
 <br/>![Architecture](images/architecture.png)
