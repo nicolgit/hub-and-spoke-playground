@@ -1,0 +1,825 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.14.46.61228",
+      "templateHash": "1083309271729699939"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "westeurope"
+    },
+    "locationSpoke03": {
+      "type": "string",
+      "defaultValue": "northeurope"
+    },
+    "username": {
+      "type": "string",
+      "defaultValue": "nicola"
+    },
+    "password": {
+      "type": "string",
+      "defaultValue": "password.123"
+    },
+    "virtualMachineSKU": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3"
+    }
+  },
+  "variables": {
+    "hublabName": "hub-lab-net",
+    "spoke01Name": "spoke-01",
+    "spoke02Name": "spoke-02",
+    "spoke03Name": "spoke-03",
+    "firewallName": "lab-firewall",
+    "firewallIPName": "lab-firewall-ip",
+    "bastionName": "lab-bastion",
+    "bastionIPName": "lab-bastion-ip",
+    "vnetGatewayIPName": "lab-gateway-ip",
+    "vnetGatewayName": "lab-gateway",
+    "vmHubName": "hub-vm",
+    "vmHubDiskName": "[format('{0}-disk', variables('vmHubName'))]",
+    "vmHubNICName": "[format('{0}-nic', variables('vmHubName'))]",
+    "vmHubAutoshutdownName": "[format('shutdown-computevm-{0}', variables('vmHubName'))]",
+    "vm01Name": "[format('{0}-vm', variables('spoke01Name'))]",
+    "vm01DiskName": "[format('{0}-disk', variables('vm01Name'))]",
+    "vm01NICName": "[format('{0}-nic', variables('vm01Name'))]",
+    "vm01AutoshutdownName": "[format('shutdown-computevm-{0}', variables('vm01Name'))]",
+    "vm02Name": "[format('{0}-vm', variables('spoke02Name'))]",
+    "vm02DiskName": "[format('{0}-disk', variables('vm02Name'))]",
+    "vm02NICName": "[format('{0}-nic', variables('vm02Name'))]",
+    "vm02AutoshutdownName": "[format('shutdown-computevm-{0}', variables('vm02Name'))]",
+    "vm03Name": "[format('{0}-vm', variables('spoke03Name'))]",
+    "vm03DiskName": "[format('{0}-disk', variables('vm03Name'))]",
+    "vm03NICName": "[format('{0}-nic', variables('vm03Name'))]",
+    "vm03AutoshutdownName": "[format('shutdown-computevm-{0}', variables('vm03Name'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('hublabName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.12.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.12.4.0/24"
+            }
+          },
+          {
+            "name": "AzureFirewallSubnet",
+            "properties": {
+              "addressPrefix": "10.12.3.0/24"
+            }
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "properties": {
+              "addressPrefix": "10.12.2.0/24"
+            }
+          },
+          {
+            "name": "DefaultSubnet",
+            "properties": {
+              "addressPrefix": "10.12.1.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('spoke01Name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.13.1.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.13.1.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.13.1.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('spoke02Name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.13.2.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.13.2.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.13.2.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('spoke03Name')]",
+      "location": "[parameters('locationSpoke03')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.13.3.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.13.3.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.13.3.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), format('{0}-to-{1}', variables('hublabName'), variables('spoke01Name')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke01Name'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke01Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('spoke01Name'), format('{0}-to-{1}', variables('spoke01Name'), variables('hublabName')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke01Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), format('{0}-to-{1}', variables('hublabName'), variables('spoke02Name')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke02Name'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke02Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('spoke02Name'), format('{0}-to-{1}', variables('spoke02Name'), variables('hublabName')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke02Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), format('{0}-to-{1}', variables('hublabName'), variables('spoke03Name')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('spoke03Name'), format('{0}-to-{1}', variables('spoke03Name'), variables('hublabName')))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('bastionIPName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/bastionHosts",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('bastionName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'AzureBastionSubnet')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIPName'))]"
+              }
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIPName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('firewallIPName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/azureFirewalls",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('firewallName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'AzureFirewallSubnet')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallIPName'))]"
+              }
+            }
+          }
+        ],
+        "sku": {
+          "name": "AZFW_VNet",
+          "tier": "Premium"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallIPName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vnetGatewayIPName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Basic"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vnetGatewayName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'GatewaySubnet')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('vnetGatewayIPName'))]"
+              }
+            }
+          }
+        ],
+        "gatewayType": "Vpn",
+        "vpnType": "RouteBased",
+        "enableBgp": false,
+        "sku": {
+          "name": "VpnGw1",
+          "tier": "VpnGw1"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('vnetGatewayIPName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vmHubDiskName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": 128
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vmHubNICName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'DefaultSubnet')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vmHubName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('virtualMachineSKU')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
+            "version": "latest"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[variables('vmHubDiskName')]",
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks', variables('vmHubDiskName'))]"
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[variables('vmHubName')]",
+          "adminUsername": "[parameters('username')]",
+          "adminPassword": "[parameters('password')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vmHubNICName'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/disks', variables('vmHubDiskName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('vmHubNICName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[variables('vmHubAutoshutdownName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "timeZoneId": "UTC",
+        "dailyRecurrence": {
+          "time": "20:00"
+        },
+        "notificationSettings": {
+          "status": "Disabled"
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmHubName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vmHubName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm01DiskName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": 128
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vm01NICName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('spoke01Name'), 'default')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke01Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm01Name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('virtualMachineSKU')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
+            "version": "latest"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[variables('vm01DiskName')]",
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks', variables('vm01DiskName'))]"
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[variables('vm01Name')]",
+          "adminUsername": "[parameters('username')]",
+          "adminPassword": "[parameters('password')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm01NICName'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/disks', variables('vm01DiskName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('vm01NICName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[variables('vm01AutoshutdownName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "timeZoneId": "UTC",
+        "dailyRecurrence": {
+          "time": "20:00"
+        },
+        "notificationSettings": {
+          "status": "Disabled"
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vm01Name'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vm01Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm02DiskName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": 128
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vm02NICName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('spoke02Name'), 'default')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke02Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm02Name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('virtualMachineSKU')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
+            "version": "latest"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[variables('vm02DiskName')]",
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks', variables('vm02DiskName'))]"
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[variables('vm02Name')]",
+          "adminUsername": "[parameters('username')]",
+          "adminPassword": "[parameters('password')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm02NICName'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/disks', variables('vm02DiskName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('vm02NICName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[variables('vm02AutoshutdownName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "timeZoneId": "UTC",
+        "dailyRecurrence": {
+          "time": "20:00"
+        },
+        "notificationSettings": {
+          "status": "Disabled"
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vm02Name'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vm02Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm03DiskName')]",
+      "location": "[parameters('locationSpoke03')]",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": 128
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('vm03NICName')]",
+      "location": "[parameters('locationSpoke03')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('spoke03Name'), 'default')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vm03Name')]",
+      "location": "[parameters('locationSpoke03')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('virtualMachineSKU')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
+            "version": "latest"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[variables('vm03DiskName')]",
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks', variables('vm03DiskName'))]"
+              }
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[variables('vm03Name')]",
+          "adminUsername": "[parameters('username')]",
+          "adminPassword": "[parameters('password')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm03NICName'))]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/disks', variables('vm03DiskName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('vm03NICName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[variables('vm03AutoshutdownName')]",
+      "location": "[parameters('locationSpoke03')]",
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "timeZoneId": "UTC",
+        "dailyRecurrence": {
+          "time": "20:00"
+        },
+        "notificationSettings": {
+          "status": "Disabled"
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vm03Name'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vm03Name'))]"
+      ]
+    }
+  ]
+}
