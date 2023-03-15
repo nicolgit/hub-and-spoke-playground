@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.46.61228",
-      "templateHash": "16969911275948917133"
+      "version": "0.15.31.15270",
+      "templateHash": "16649466657219497723"
     }
   },
   "parameters": {
@@ -18,7 +18,7 @@
       "defaultValue": "nicola"
     },
     "password": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "password.123"
     },
     "virtualMachineSKU": {
