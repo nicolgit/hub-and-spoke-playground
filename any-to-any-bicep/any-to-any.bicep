@@ -136,32 +136,7 @@ resource myFirewallPolicy 'Microsoft.Network/firewallPolicies@2020-05-01' = {
       }
 }
 
-resource blockSitesCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
-    parent: myFirewallPolicy
-    name: 'blockSitesCollectionGroup'
-    dependsOn: [
-    ]
-    properties: {
-        priority: 199
-        ruleCollections: [
-            {
-                ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-                name: 'block-some-stuff'
-                priority: 900
-                action: { type: 'Deny' }
-                rules: [
-                  {
-                    ruleType: 'ApplicationRule'
-                    name: 'block-facebook'
-                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
-                    targetFqdns: [ '*.facebook.com,facebook.com' ]
-                    sourceIpGroups: [ ipGroup.id ]
-                  }
-                ]
-            }
-        ]
-    }
-}
+
 
 resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
     parent: myFirewallPolicy
@@ -186,7 +161,35 @@ resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
                   }
                 ]
             }
-
+            {
+                ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+                action: { type: 'Deny' }
+                rules: [
+                  {
+                    ruleType: 'ApplicationRule'
+                    name: 'block-xxx'
+                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
+                    webCategories: [ 'Nudity', 'PornographyAndSexuallyExplicit' ]
+                    sourceIpGroups: [ ipGroup.id ]
+                  }
+                  {
+                    ruleType: 'ApplicationRule'
+                    name: 'block-facebook'
+                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
+                    targetFqdns: [ '*.facebook.com', 'facebook.com' ]
+                    sourceIpGroups: [ ipGroup.id  ]
+                  }
+                  {
+                    ruleType: 'ApplicationRule'
+                    name: 'block-twitter'
+                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
+                    targetFqdns: [ '*.twitter.com', 'twitter.com' ]
+                    sourceIpGroups: [ ipGroup.id ]
+                  }
+                ]
+                name: 'block-some-stuff'
+                priority: 900
+              }
         ]
     }
 }
@@ -224,3 +227,21 @@ resource anyToAnyCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
         ]
     }
 }
+
+resource azureFirewalls_lab_firewall_name_resource 'Microsoft.Network/azureFirewalls@2022-07-01' = {
+    name: firewallName
+    location: locationWE
+    properties: {
+      sku: {
+        name: 'AZFW_VNet'
+        tier: 'Premium'
+      }
+      
+      networkRuleCollections: []
+      applicationRuleCollections: []
+      natRuleCollections: []
+      firewallPolicy: {
+        id: myFirewallPolicy.id
+      }
+    }
+  }

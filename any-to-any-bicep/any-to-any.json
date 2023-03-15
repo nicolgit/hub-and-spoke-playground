@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "3144291058484187620"
+      "version": "0.14.46.61228",
+      "templateHash": "7236811940537935142"
     }
   },
   "variables": {
@@ -172,6 +172,50 @@
     {
       "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
       "apiVersion": "2020-05-01",
+      "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'blockSitesCollectionGroup')]",
+      "properties": {
+        "priority": 199,
+        "ruleCollections": [
+          {
+            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+            "name": "block-some-stuff",
+            "priority": 900,
+            "action": {
+              "type": "Deny"
+            },
+            "rules": [
+              {
+                "ruleType": "ApplicationRule",
+                "name": "block-facebook",
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
+                ],
+                "targetFqdns": [
+                  "*.facebook.com,facebook.com"
+                ],
+                "sourceIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]",
+        "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+      "apiVersion": "2020-05-01",
       "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'DefaultApplicationRuleCollectionGroup')]",
       "properties": {
         "priority": 200,
@@ -208,12 +252,31 @@
           },
           {
             "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
-            "name": "block-some-stuff",
-            "priority": 900,
             "action": {
               "type": "Deny"
             },
             "rules": [
+              {
+                "ruleType": "ApplicationRule",
+                "name": "block-xxx",
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
+                ],
+                "webCategories": [
+                  "Nudity",
+                  "PornographyAndSexuallyExplicit"
+                ],
+                "sourceIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
+              },
               {
                 "ruleType": "ApplicationRule",
                 "name": "block-facebook",
@@ -228,19 +291,37 @@
                   }
                 ],
                 "targetFqdns": [
-                  "*.facebook.com,facebook.com"
+                  "*.facebook.com",
+                  "facebook.com"
                 ],
                 "sourceIpGroups": [
                   "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
+              },
+              {
+                "ruleType": "ApplicationRule",
+                "name": "block-twitter",
+                "protocols": [
+                  {
+                    "protocolType": "Http",
+                    "port": 80
+                  },
+                  {
+                    "protocolType": "Https",
+                    "port": 443
+                  }
                 ],
-                "terminateTLS": false,
-                "targetUrls": [],
-                "destinationAddresses": [],
-                "sourceAddresses": [],
-                "fqdnTags": [],
-                "webCategories": []
+                "targetFqdns": [
+                  "*.twitter.com",
+                  "twitter.com"
+                ],
+                "sourceIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
               }
-            ]
+            ],
+            "name": "block-some-stuff-2",
+            "priority": 900
           }
         ]
       },
