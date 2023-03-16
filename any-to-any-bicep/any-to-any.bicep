@@ -12,6 +12,7 @@ var spoke03Name = 'spoke-03'
 
 var firewallPolicyName = 'my-firewall-policy'
 var firewallName = 'lab-firewall'
+var firewallIPName = 'lab-firewall-ip'
 
 var locationWE = 'westeurope'
 var locationNE = 'northeurope'
@@ -137,7 +138,87 @@ resource myFirewallPolicy 'Microsoft.Network/firewallPolicies@2020-05-01' = {
 }
 
 
+resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2022-07-01' = {
+    parent: myFirewallPolicy
+    name: 'DefaultApplicationRuleCollectionGroup'
+    properties: {
+      priority: 300
+      ruleCollections: [
+        {
+          ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+          action: {
+            type: 'Allow'
+          }
+          rules: [
+            {
+                ruleType: 'ApplicationRule'
+                name: 'allow-internet-traffic-out'
+                protocols: [
+                    {
+                    protocolType: 'Http'
+                    port: 80
+                    }
+                    {
+                    protocolType: 'Https'
+                    port: 443
+                    }
+                ]
+                fqdnTags: []
+                webCategories: []
+                targetFqdns: [
+                    '*'
+                ]
+                targetUrls: []
+                terminateTLS: false
+                sourceAddresses: []
+                destinationAddresses: []
+                sourceIpGroups: [ ipGroup.id ]
+            }
+          ]
+          name: 'internet-out-collection'
+          priority: 200
+        }
+        {
+            ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+            action: {
+              type: 'Deny'
+            }
+            rules: [
+              {
+                ruleType: 'ApplicationRule'
+                name: 'block-porn-sites'
+                protocols: [
+                  {
+                    protocolType: 'Http'
+                    port: 80
+                  }
+                  {
+                    protocolType: 'Https'
+                    port: 443
+                  }
+                ]
+                fqdnTags: []
+                webCategories: [
+                  'Nudity'
+                  'PornographyAndSexuallyExplicit'
+                  'ChildInappropriate'
+                ]
+                targetFqdns: []
+                targetUrls: []
+                terminateTLS: false
+                sourceAddresses: []
+                destinationAddresses: []
+                sourceIpGroups: [ ipGroup.id ]
+              }
+            ]
+            name: 'block-some-stuff'
+            priority: 150
+          }
+      ]
+    }
+  }
 
+/*
 resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
     parent: myFirewallPolicy
     name: 'DefaultApplicationRuleCollectionGroup'
@@ -193,6 +274,7 @@ resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
         ]
     }
 }
+*/
 
 resource anyToAnyCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
     parent: myFirewallPolicy
@@ -228,20 +310,28 @@ resource anyToAnyCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
     }
 }
 
+resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+    name: firewallIPName
+    location: locationWE
+    sku: { name: 'Standard' }
+    properties: { publicIPAllocationMethod: 'Static' }
+  }
+
 resource azureFirewalls_lab_firewall_name_resource 'Microsoft.Network/azureFirewalls@2022-07-01' = {
     name: firewallName
     location: locationWE
     properties: {
-      sku: {
-        name: 'AZFW_VNet'
-        tier: 'Premium'
-      }
-      
-      networkRuleCollections: []
-      applicationRuleCollections: []
-      natRuleCollections: []
-      firewallPolicy: {
-        id: myFirewallPolicy.id
+        sku: { name: 'AZFW_VNet', tier: 'Premium' }
+        ipConfigurations: [ {
+            name: 'ipconfig1'
+            properties: { 
+              subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'AzureFirewallSubnet') }
+              publicIPAddress: { id: firewallIP.id } 
+            }
+          }
+        ]
+        firewallPolicy: {
+            id: myFirewallPolicy.id
       }
     }
   }
