@@ -49,7 +49,7 @@ This diagram shows a detailed version with also all subnets, virtual machines, N
 
 _Download a [Visio file](images/hub-and-spoke-arc-drawing(s).vsdx) of this architecture._
 
-the ARM template [cloud-deploy](cloud-deploy.json) deploys:
+the ARM template [hub-01-bicep](hub-01-bicep/hub-01.json) deploys:
 * 4 Azure Virtual Networks:
     * `hub-lab-net` with 4 subnets:
         * default subnet: this subnet is used to connect the hub-vm-01 machine
@@ -67,7 +67,7 @@ the ARM template [cloud-deploy](cloud-deploy.json) deploys:
 * `spoke-02-vm`: a Windows Server virtual machine that simulates a server located in the spoke-02 landing zone
 * `spoke-03-vm`: a Linux virtual machine that simulates a server located in the spoke-01 landing zone
 
-The ARM template [on-prem-deploy](on-prem-deploy.json) deploys:
+The ARM template [on-prem](on-prem-bicep/on-prem.json) deploys:
 * `on-prem-net`: an Azure Virtual Network located in France with 3 subnets
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
@@ -76,7 +76,7 @@ The ARM template [on-prem-deploy](on-prem-deploy.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `w10-onprem-vm`: A Windows 10 VM with the objective to simulate a desktop client in an on-premise location
 
-The ARM template [on-prem-deploy-2](on-prem-deploy-2.json) deploys:
+The ARM template [on-prem-2](on-prem-2-bicep/on-prem-2.json) deploys:
 * `on-prem-2-net`: an Azure Virtual Network located in Germany with 3 subnets
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
@@ -85,11 +85,11 @@ The ARM template [on-prem-deploy-2](on-prem-deploy-2.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `lin-onprem-vm`: A linux VM with the objective to simulate a linux client in an on-premise location
 
-The ARM template [any-to-any](any-to-any.json) deploys:
-* 2 routing tables that forward all spoke traffic to the firewall
-* 1 IPgroup and one Azure Firewall policy that:
+The ARM template [any-to-any](any-to-any-bicep/any-to-any.json) deploys:
+* 2 routing tables that forward all spokes traffic to the firewall
+* 1 IP Group and one Azure Firewall policy that:
   * allows spoke-to-spoke communication
-  * block certain sites (Facebook, Twitter and 3 web categories (nudity, dating, pornography)
+  * block certain sites (2 web categories (nudity, Child Inappropriate, pornography)
   * allows all remaining HTTP(S) outbound traffic
 
 the ARM template [hub-02](hub-02-bicep/hub-02.json) deploys:
