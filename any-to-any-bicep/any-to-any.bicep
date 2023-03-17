@@ -137,7 +137,6 @@ resource myFirewallPolicy 'Microsoft.Network/firewallPolicies@2020-05-01' = {
       }
 }
 
-
 resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2022-07-01' = {
     parent: myFirewallPolicy
     name: 'DefaultApplicationRuleCollectionGroup'
@@ -218,67 +217,10 @@ resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
     }
   }
 
-/*
-resource toInternetCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
-    parent: myFirewallPolicy
-    name: 'DefaultApplicationRuleCollectionGroup'
-    dependsOn: [
-    ]
-    properties: {
-        priority: 200
-        ruleCollections: [
-            {
-                ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-                name: 'internet-out-collection'
-                priority: 1000
-                action: { type: 'Allow' }
-                rules: [
-                  {
-                    ruleType: 'ApplicationRule'
-                    name: 'allow-internet-traffic-out'
-                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
-                    targetFqdns: [  '*' ]
-                    sourceIpGroups: [ ipGroup.id ]
-                  }
-                ]
-            }
-            {
-                ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-                action: { type: 'Deny' }
-                rules: [
-                  {
-                    ruleType: 'ApplicationRule'
-                    name: 'block-xxx'
-                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
-                    webCategories: [ 'Nudity', 'PornographyAndSexuallyExplicit' ]
-                    sourceIpGroups: [ ipGroup.id ]
-                  }
-                  {
-                    ruleType: 'ApplicationRule'
-                    name: 'block-facebook'
-                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
-                    targetFqdns: [ '*.facebook.com', 'facebook.com' ]
-                    sourceIpGroups: [ ipGroup.id  ]
-                  }
-                  {
-                    ruleType: 'ApplicationRule'
-                    name: 'block-twitter'
-                    protocols: [ { protocolType: 'Http', port: 80 }, { protocolType: 'Https', port: 443 } ]
-                    targetFqdns: [ '*.twitter.com', 'twitter.com' ]
-                    sourceIpGroups: [ ipGroup.id ]
-                  }
-                ]
-                name: 'block-some-stuff'
-                priority: 900
-              }
-        ]
-    }
-}
-*/
-
 resource anyToAnyCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-05-01' = {
     parent: myFirewallPolicy
     name: 'DefaultNetworkRuleCollectionGroup'
+    dependsOn: [toInternetCollectionGroup] // RM deploys all the ruleCollectionGroups in parallel or at least not sequentially - https://learn.microsoft.com/en-us/answers/questions/673917/update-of-azure-firewall-policies-failes-faulted-r
     properties: {
         priority: 300
         ruleCollections: [
