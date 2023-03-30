@@ -5,6 +5,9 @@ param username string = 'nicola'
 @secure()
 param password string = 'password.123'
 param virtualMachineSKU string = 'Standard_D2s_v3'
+@description('Basic, Standard or Premium tier')
+@allowed([ 'Basic', 'Standard', 'Premium' ])
+param firewallTier string = 'Premium'
 
 var hublabName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
@@ -13,6 +16,7 @@ var spoke03Name = 'spoke-03'
 
 var firewallName = 'lab-firewall'
 var firewallIPName = 'lab-firewall-ip'
+var firewallManagementIPName = 'lab-firewall-mgt-ip'
 
 var bastionName = 'lab-bastion'
 var bastionIPName = 'lab-bastion-ip'
@@ -40,156 +44,193 @@ var vm03DiskName = '${vm03Name}-disk'
 var vm03NICName = '${vm03Name}-nic'
 var vm03AutoshutdownName = 'shutdown-computevm-${vm03Name}'
 
-
-resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {  
+resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: hublabName
   location: location
   properties: { addressSpace: { addressPrefixes: [ '10.12.0.0/16' ] }
     subnets: [
-      { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } } 
-      { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.3.0/24' } }
-      { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }      
+      { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } }
+      { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.0.0/24' } }
+      { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }
       { name: 'DefaultSubnet', properties: { addressPrefix: '10.12.1.0/24' } }
     ]
   }
 }
 
-resource spoke01vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {  
+// Firewall management subnet
+resource subnetMgmt 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' = if (firewallTier == 'Basic') {
+  parent: hubLabVnet
+  name: 'AzureFirewallManagementSubnet'
+  properties: {
+    addressPrefix: '10.12.3.0/24'
+    privateEndpointNetworkPolicies: 'Enabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+}
+
+resource spoke01vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: spoke01Name
   location: location
   properties: { addressSpace: { addressPrefixes: [ '10.13.1.0/24' ] }
     subnets: [
-      { name: 'default', properties: { addressPrefix: '10.13.1.0/26' } } 
+      { name: 'default', properties: { addressPrefix: '10.13.1.0/26' } }
       { name: 'services', properties: { addressPrefix: '10.13.1.64/26' } }
     ]
   }
 }
 
-resource spoke02vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {  
+resource spoke02vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: spoke02Name
   location: location
   properties: { addressSpace: { addressPrefixes: [ '10.13.2.0/24' ] }
     subnets: [
-      { name: 'default', properties: { addressPrefix: '10.13.2.0/26' } } 
+      { name: 'default', properties: { addressPrefix: '10.13.2.0/26' } }
       { name: 'services', properties: { addressPrefix: '10.13.2.64/26' } }
     ]
   }
 }
 
-resource spoke03vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {  
+resource spoke03vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: spoke03Name
   location: locationSpoke03
   properties: { addressSpace: { addressPrefixes: [ '10.13.3.0/24' ] }
     subnets: [
-      { name: 'default', properties: { addressPrefix: '10.13.3.0/26' } } 
+      { name: 'default', properties: { addressPrefix: '10.13.3.0/26' } }
       { name: 'services', properties: { addressPrefix: '10.13.3.64/26' } }
     ]
   }
 }
 
-resource peeringHubSpoke01 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
-  parent: hubLabVnet 
+resource peeringHubSpoke01 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
+  parent: hubLabVnet
   name: '${hublabName}-to-${spoke01Name}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke01vnet.id } }
 }
 
-resource peeringSpoke01Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
+resource peeringSpoke01Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: spoke01vnet
   name: '${spoke01Name}-to-${hublabName}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource peeringHubSpoke02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
-  parent: hubLabVnet 
+resource peeringHubSpoke02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
+  parent: hubLabVnet
   name: '${hublabName}-to-${spoke02Name}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke02vnet.id } }
 }
 
-resource peeringSpoke02Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
+resource peeringSpoke02Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: spoke02vnet
   name: '${spoke02Name}-to-${hublabName}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource peeringHubSpoke03 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
-  parent: hubLabVnet 
+resource peeringHubSpoke03 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
+  parent: hubLabVnet
   name: '${hublabName}-to-${spoke03Name}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke03vnet.id } }
 }
 
-resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = { 
+resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: spoke03vnet
   name: '${spoke03Name}-to-${hublabName}'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {  
+resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {
   name: bastionName
   location: location
   dependsOn: [ hubLabVnet ]
   properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'AzureBastionSubnet') }
-          publicIPAddress: { id: bastionHubIP.id } 
+          publicIPAddress: { id: bastionHubIP.id }
         }
       }
-     ]
+    ]
   }
 }
 
-resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: firewallIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource firewall 'Microsoft.Network/azureFirewalls@2019-09-01' = {  
+resource firewallManagementIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (firewallTier == 'Basic') {
+  name: firewallManagementIPName
+  location: location
+  sku: { name: 'Standard' }
+  properties: { publicIPAllocationMethod: 'Static' }
+}
+
+// basic firewall cannot be deployed without a policy and fails with InternalServerError?
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-07-01' = {
+  name: '${firewallName}-${toLower(firewallTier)}-policy'
+  location: location
+  properties: {
+    sku: {
+      tier: firewallTier
+    }
+  }
+}
+
+resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
   name: firewallName
+  location: location
+  dependsOn: [ hubLabVnet ]
+  properties: {
+    firewallPolicy: {
+      id: firewallPolicy.id
+    }
+    managementIpConfiguration: firewallTier == 'Basic' ? {
+      name: 'ipconfig-mgt'
+      properties: {
+        subnet: { id: subnetMgmt.id }
+        publicIPAddress: { id: firewallManagementIP.id }
+      }
+    } : null
+    ipConfigurations: [ {
+        name: 'ipconfig1'
+        properties: {
+          subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'AzureFirewallSubnet') }
+          publicIPAddress: { id: firewallIP.id }
+        }
+      } ]
+    sku: { name: 'AZFW_VNet', tier: firewallTier }
+  }
+}
+
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+  name: vnetGatewayIPName
+  location: location
+  sku: { name: 'Basic' }
+  properties: { publicIPAllocationMethod: 'Dynamic' }
+}
+
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (0 == 1) {
+  name: vnetGatewayName
   location: location
   dependsOn: [ hubLabVnet ]
   properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
-          subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'AzureFirewallSubnet') }
-          publicIPAddress: { id: firewallIP.id } 
-        }
-      }
-     ]
-    sku: { name: 'AZFW_VNet', tier: 'Premium' }
-  }
-}
-
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
-  name: vnetGatewayIPName
-  location: location
-  sku: { name: 'Basic'}
-  properties: { publicIPAllocationMethod: 'Dynamic' }
-}
-
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {  
-  name: vnetGatewayName
-  location: location
-  dependsOn: [ hubLabVnet ]
-  properties: { 
-    ipConfigurations: [ {
-        name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'GatewaySubnet') }
-          publicIPAddress: { id: vnetGatewayIP.id } 
+          publicIPAddress: { id: vnetGatewayIP.id }
         }
       }
-     ]
+    ]
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
     enableBgp: false
@@ -197,66 +238,66 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
   }
 }
 
-resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {  
+resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {
   name: vmHubDiskName
   location: location
-  properties: { 
+  properties: {
     creationData: { createOption: 'Empty' }
     diskSizeGB: 128
   }
 }
 
-resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {  
+resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   name: vmHubNICName
   location: location
   dependsOn: [ hubLabVnet ]
-  properties: { 
+  properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'DefaultSubnet') }
           privateIPAllocationMethod: 'Dynamic'
         }
       }
-     ]
+    ]
   }
 }
 
-resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {  
+resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   name: vmHubName
   location: location
-  dependsOn: [  ]
-  properties: { 
+  dependsOn: []
+  properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
-    storageProfile: { 
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest'}
+    storageProfile: {
+      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vmHubDiskName
           createOption: 'Attach'
           managedDisk: { id: vmHubDisk.id }
         }
-       ]
+      ]
     }
-    osProfile: { 
+    osProfile: {
       computerName: vmHubName
       adminUsername: username
       adminPassword: password
       windowsConfiguration: { enableAutomaticUpdates: true }
     }
-    networkProfile: { 
+    networkProfile: {
       networkInterfaces: [ {
           id: vmHubNIC.id
         }
-       ]
+      ]
     }
   }
 }
 
-resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {  
+resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: vmHubAutoshutdownName
   location: location
-  properties: { 
+  properties: {
     status: 'Enabled'
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: 'UTC'
@@ -266,66 +307,66 @@ resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {  
+resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {
   name: vm01DiskName
   location: location
-  properties: { 
+  properties: {
     creationData: { createOption: 'Empty' }
     diskSizeGB: 128
   }
 }
 
-resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {  
+resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   name: vm01NICName
   location: location
   dependsOn: [ spoke01vnet ]
-  properties: { 
+  properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', spoke01Name, 'default') }
           privateIPAllocationMethod: 'Dynamic'
         }
       }
-     ]
+    ]
   }
 }
 
-resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {  
+resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   name: vm01Name
   location: location
-  dependsOn: [  ]
-  properties: { 
+  dependsOn: []
+  properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
-    storageProfile: { 
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest'}
+    storageProfile: {
+      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vm01DiskName
           createOption: 'Attach'
           managedDisk: { id: vm01Disk.id }
         }
-       ]
+      ]
     }
-    osProfile: { 
+    osProfile: {
       computerName: vm01Name
       adminUsername: username
       adminPassword: password
       windowsConfiguration: { enableAutomaticUpdates: true }
     }
-    networkProfile: { 
+    networkProfile: {
       networkInterfaces: [ {
           id: vm01NIC.id
         }
-       ]
+      ]
     }
   }
 }
 
-resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {  
+resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: vm01AutoshutdownName
   location: location
-  properties: { 
+  properties: {
     status: 'Enabled'
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: 'UTC'
@@ -335,67 +376,66 @@ resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-
-resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {  
+resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {
   name: vm02DiskName
   location: location
-  properties: { 
+  properties: {
     creationData: { createOption: 'Empty' }
     diskSizeGB: 128
   }
 }
 
-resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {  
+resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   name: vm02NICName
   location: location
   dependsOn: [ spoke02vnet ]
-  properties: { 
+  properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', spoke02Name, 'default') }
           privateIPAllocationMethod: 'Dynamic'
         }
       }
-     ]
+    ]
   }
 }
 
-resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {  
+resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   name: vm02Name
   location: location
-  dependsOn: [  ]
-  properties: { 
+  dependsOn: []
+  properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
-    storageProfile: { 
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest'}
+    storageProfile: {
+      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vm02DiskName
           createOption: 'Attach'
           managedDisk: { id: vm02Disk.id }
         }
-       ]
+      ]
     }
-    osProfile: { 
+    osProfile: {
       computerName: vm02Name
       adminUsername: username
       adminPassword: password
       windowsConfiguration: { enableAutomaticUpdates: true }
     }
-    networkProfile: { 
+    networkProfile: {
       networkInterfaces: [ {
           id: vm02NIC.id
         }
-       ]
+      ]
     }
   }
 }
 
-resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {  
+resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: vm02AutoshutdownName
   location: location
-  properties: { 
+  properties: {
     status: 'Enabled'
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: 'UTC'
@@ -405,66 +445,66 @@ resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {  
+resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {
   name: vm03DiskName
   location: locationSpoke03
-  properties: { 
+  properties: {
     creationData: { createOption: 'Empty' }
     diskSizeGB: 128
   }
 }
 
-resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {  
+resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   name: vm03NICName
   location: locationSpoke03
   dependsOn: [ spoke03vnet ]
-  properties: { 
+  properties: {
     ipConfigurations: [ {
         name: 'ipconfig1'
-        properties: { 
+        properties: {
           subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', spoke03Name, 'default') }
           privateIPAllocationMethod: 'Dynamic'
         }
       }
-     ]
+    ]
   }
 }
 
-resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {  
+resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   name: vm03Name
   location: locationSpoke03
-  dependsOn: [  ]
-  properties: { 
+  dependsOn: []
+  properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
-    storageProfile: { 
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest'}
+    storageProfile: {
+      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vm03DiskName
           createOption: 'Attach'
           managedDisk: { id: vm03Disk.id }
         }
-       ]
+      ]
     }
-    osProfile: { 
+    osProfile: {
       computerName: vm03Name
       adminUsername: username
       adminPassword: password
       windowsConfiguration: { enableAutomaticUpdates: true }
     }
-    networkProfile: { 
+    networkProfile: {
       networkInterfaces: [ {
           id: vm03NIC.id
         }
-       ]
+      ]
     }
   }
 }
 
-resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {  
+resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
   name: vm03AutoshutdownName
   location: locationSpoke03
-  properties: { 
+  properties: {
     status: 'Enabled'
     taskType: 'ComputeVmShutdownTask'
     timeZoneId: 'UTC'
@@ -473,4 +513,3 @@ resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm03.id
   }
 }
-
