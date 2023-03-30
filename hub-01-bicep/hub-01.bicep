@@ -218,7 +218,7 @@ resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (0 == 1) {
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
   name: vnetGatewayName
   location: location
   dependsOn: [ hubLabVnet ]
