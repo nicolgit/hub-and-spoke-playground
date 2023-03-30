@@ -44,29 +44,43 @@ var vm03DiskName = '${vm03Name}-disk'
 var vm03NICName = '${vm03Name}-nic'
 var vm03AutoshutdownName = 'shutdown-computevm-${vm03Name}'
 
+var subnets = concat(
+  [
+    { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } }
+    { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.0.0/24' } }
+    { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }
+    { name: 'DefaultSubnet', properties: { addressPrefix: '10.12.1.0/24' } }
+  ],
+  firewallTier == 'Basic' ? [
+    {
+      name: 'AzureFirewallManagementSubnet'
+      properties: {
+        addressPrefix: '10.12.3.0/24'
+        privateEndpointNetworkPolicies: 'Enabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+    }
+  ] : []
+)
+
 resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: hublabName
   location: location
   properties: { addressSpace: { addressPrefixes: [ '10.12.0.0/16' ] }
-    subnets: [
-      { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } }
-      { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.0.0/24' } }
-      { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }
-      { name: 'DefaultSubnet', properties: { addressPrefix: '10.12.1.0/24' } }
-    ]
+    subnets: subnets
   }
 }
 
 // Firewall management subnet
-resource subnetMgmt 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' = if (firewallTier == 'Basic') {
-  parent: hubLabVnet
-  name: 'AzureFirewallManagementSubnet'
-  properties: {
-    addressPrefix: '10.12.3.0/24'
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
+// resource subnetMgmt 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' = if (firewallTier == 'Basic') {
+//   parent: hubLabVnet
+//   name: 'AzureFirewallManagementSubnet'
+//   properties: {
+//     addressPrefix: '10.12.3.0/24'
+//     privateEndpointNetworkPolicies: 'Enabled'
+//     privateLinkServiceNetworkPolicies: 'Enabled'
+//   }
+// }
 
 resource spoke01vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: spoke01Name
@@ -196,7 +210,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
     managementIpConfiguration: firewallTier == 'Basic' ? {
       name: 'ipconfig-mgt'
       properties: {
-        subnet: { id: subnetMgmt.id }
+        subnet: { id: resourceId('Microsoft.Network/virtualNetworks/subnets', hublabName, 'AzureFirewallManagementSubnet') }
         publicIPAddress: { id: firewallManagementIP.id }
       }
     } : null
