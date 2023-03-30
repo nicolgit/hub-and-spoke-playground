@@ -24,6 +24,8 @@ _Download a [draw.io file](images/architecture.drawio) of this schema._
 
 This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
+As bonus many scenarios with step-by-step solutions for studying and learning are also available.
+
 > _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
 
 The "playground" is composed by:
@@ -33,13 +35,13 @@ The "playground" is composed by:
 ## Deploy to Azure
 You can use the following button to deploy the demo to your Azure subscription:
 
-| playground parts| &nbsp; |
-|---|---|
-| deploys the HUB playground (`hub-lab-net` and spokes `01`-`02`-`03`) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-01-bicep%2Fhub-01.json)
-| deploys the ON PREMISES (France) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-bicep%2Fon-prem.json) |
-| deploys the ON PREMISES-2 (Germany) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-2-bicep%2Fon-prem-2.json) |
-| deploys any-to-any routing via firewall on HUB playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-bicep%2Fany-to-any.json) |
-| deploys the HUB 02 playground (`hub-lab-02-net` and spoke `04`) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
+| | Available playgrounds| &nbsp; |
+|---|---|---|
+|1| the **HUB** playground<br/><sub>deploys `hub-lab-net` and spokes `01`-`02`-`03` | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-01-bicep%2Fhub-01.json)
+|2| deploys the **ON PREMISES** (France) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-bicep%2Fon-prem.json) |
+|3| deploys the **ON PREMISES-2** (Germany) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-2-bicep%2Fon-prem-2.json) |
+|4| deploys any-to-any routing and firewall rules<br/><sub>requires the HUB playground deployed</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-bicep%2Fany-to-any.json) |
+|5| the HUB 02 playground<br/><sub>deploys `hub-lab-02-net` and spoke `04`</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
 
 ## Architecture
 This diagram shows a detailed version with also all subnets, virtual machines, NVAs, IPs and Firewalls.
