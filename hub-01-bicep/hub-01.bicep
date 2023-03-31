@@ -9,6 +9,8 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
 
+param enableBgp bool = false
+
 var hublabName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
 var spoke02Name = 'spoke-02'
@@ -70,17 +72,6 @@ resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
     subnets: subnets
   }
 }
-
-// Firewall management subnet
-// resource subnetMgmt 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' = if (firewallTier == 'Basic') {
-//   parent: hubLabVnet
-//   name: 'AzureFirewallManagementSubnet'
-//   properties: {
-//     addressPrefix: '10.12.3.0/24'
-//     privateEndpointNetworkPolicies: 'Enabled'
-//     privateLinkServiceNetworkPolicies: 'Enabled'
-//   }
-// }
 
 resource spoke01vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: spoke01Name
@@ -174,6 +165,16 @@ resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {
   }
 }
 
+resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: 'hub-playground-ws'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+  }
+}
+
 resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: firewallIPName
   location: location
@@ -188,8 +189,11 @@ resource firewallManagementIP 'Microsoft.Network/publicIPAddresses@2019-09-01' =
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-// basic firewall cannot be deployed without a policy and fails with InternalServerError?
-resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-07-01' = {
+@description('Need to do things a bit different if the policy already exists')
+param firewallPolicyExists bool = false
+
+// if we do this when the firewall policy has rule collection groups then we get a weird error
+resource newFirewallPolicy 'Microsoft.Network/firewallPolicies@2022-07-01' = if (!firewallPolicyExists) {
   name: '${firewallName}-${toLower(firewallTier)}-policy'
   location: location
   properties: {
@@ -199,13 +203,17 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-07-01' = {
   }
 }
 
+resource existingFirewallPolicy 'Microsoft.Network/firewallPolicies@2020-05-01' existing = if (firewallPolicyExists) {
+  name: '${firewallName}-${toLower(firewallTier)}-policy'
+}
+
 resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
   name: firewallName
   location: location
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [ hubLabVnet, vnetGateway ] // can run into some weird conflict error with the gateway
   properties: {
     firewallPolicy: {
-      id: firewallPolicy.id
+      id: firewallPolicyExists ? existingFirewallPolicy.id : newFirewallPolicy.id
     }
     managementIpConfiguration: firewallTier == 'Basic' ? {
       name: 'ipconfig-mgt'
@@ -222,6 +230,35 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
         }
       } ]
     sku: { name: 'AZFW_VNet', tier: firewallTier }
+  }
+}
+
+resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: workspace.name
+  scope: firewall
+  properties: {
+    workspaceId: workspace.id
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: {
+          days: 0
+          enabled: true
+        }
+      }
+    ]
+    logAnalyticsDestinationType: 'Dedicated'
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+        retentionPolicy: {
+          days: 0
+          enabled: true
+        }
+      }
+    ]
   }
 }
 
@@ -247,7 +284,9 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     ]
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
-    enableBgp: false
+    bgpSettings: enableBgp ? {
+      asn: 65515
+    } : null
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
