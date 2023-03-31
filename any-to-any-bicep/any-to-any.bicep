@@ -62,6 +62,9 @@ resource subnetS01default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
 
 resource subnetS01services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   name: '${spoke01Name}/services'
+  dependsOn: [ // possible race condition where the route table is being associated with two different subnets at the same time
+    subnetS01default
+  ]
   properties: {
     addressPrefix: '10.13.1.64/26'
     routeTable: {
@@ -82,6 +85,9 @@ resource subnetS02default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
 
 resource subnetS02services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   name: '${spoke02Name}/services'
+  dependsOn: [ // possible race condition where the route table is being associated with two different subnets at the same time
+    subnetS02default
+  ]
   properties: {
     addressPrefix: '10.13.2.64/26'
     routeTable: {
@@ -102,6 +108,9 @@ resource subnetS03default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
 
 resource subnetS03services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
   name: '${spoke03Name}/services'
+  dependsOn: [ // possible race condition where the route table is being associated with two different subnets at the same time
+    subnetS03default
+  ]
   properties: {
     addressPrefix: '10.13.3.64/26'
     routeTable: {
