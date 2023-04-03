@@ -284,6 +284,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     ]
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
+    enableBgp: enableBgp
     bgpSettings: enableBgp ? {
       asn: 65515
     } : null
