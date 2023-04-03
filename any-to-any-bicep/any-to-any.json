@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "3512071075423136331"
+      "templateHash": "406543052844770873"
     }
   },
   "variables": {
@@ -86,7 +86,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
+        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/default', variables('spoke01Name')), '/')[0], split(format('{0}/default', variables('spoke01Name')), '/')[1])]"
       ]
     },
     {
@@ -114,7 +115,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
+        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/default', variables('spoke02Name')), '/')[0], split(format('{0}/default', variables('spoke02Name')), '/')[1])]"
       ]
     },
     {
@@ -173,10 +175,36 @@
     {
       "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
       "apiVersion": "2022-07-01",
-      "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'DefaultApplicationRuleCollectionGroup')]",
+      "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'MySuperRuleCollectionGroup')]",
       "properties": {
         "priority": 300,
         "ruleCollections": [
+          {
+            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+            "name": "any-to-any-collection",
+            "priority": 1000,
+            "action": {
+              "type": "Allow"
+            },
+            "rules": [
+              {
+                "ruleType": "NetworkRule",
+                "name": "allow-spoke-to-spoke-traffic",
+                "ipProtocols": [
+                  "Any"
+                ],
+                "sourceIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ],
+                "destinationPorts": [
+                  "*"
+                ],
+                "destinationIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
+              }
+            ]
+          },
           {
             "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
             "action": {
@@ -256,47 +284,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]",
         "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
-      "apiVersion": "2020-05-01",
-      "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'DefaultNetworkRuleCollectionGroup')]",
-      "properties": {
-        "priority": 300,
-        "ruleCollections": [
-          {
-            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
-            "name": "any-to-any-collection",
-            "priority": 1000,
-            "action": {
-              "type": "Allow"
-            },
-            "rules": [
-              {
-                "ruleType": "NetworkRule",
-                "name": "allow-spoke-to-spoke-traffic",
-                "ipProtocols": [
-                  "Any"
-                ],
-                "sourceIpGroups": [
-                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
-                ],
-                "destinationPorts": [
-                  "*"
-                ],
-                "destinationIpGroups": [
-                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]",
-        "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]",
-        "[resourceId('Microsoft.Network/firewallPolicies/ruleCollectionGroups', variables('firewallPolicyName'), 'DefaultApplicationRuleCollectionGroup')]"
       ]
     },
     {
