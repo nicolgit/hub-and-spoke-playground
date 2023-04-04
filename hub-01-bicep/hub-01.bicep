@@ -10,6 +10,8 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 param firewallTier string = 'Premium'
 
 param enableBgp bool = false
+param localGatewayFqdn string = ''
+param vnetGatewayDnsLabel string = ''
 
 var hublabName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
@@ -25,6 +27,8 @@ var bastionIPName = 'lab-bastion-ip'
 
 var vnetGatewayIPName = 'lab-gateway-ip'
 var vnetGatewayName = 'lab-gateway'
+
+var localGatewayName = 'lab-local-gateway'
 
 var vmHubName = 'hub-vm'
 var vmHubDiskName = '${vmHubName}-disk'
@@ -109,7 +113,7 @@ resource spoke03vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
 resource peeringHubSpoke01 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: hubLabVnet
   name: '${hublabName}-to-${spoke01Name}'
-  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke01vnet.id } }
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: true, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke01vnet.id } }
 }
 
 resource peeringSpoke01Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
@@ -121,7 +125,7 @@ resource peeringSpoke01Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
 resource peeringHubSpoke02 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: hubLabVnet
   name: '${hublabName}-to-${spoke02Name}'
-  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke02vnet.id } }
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: true, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke02vnet.id } }
 }
 
 resource peeringSpoke02Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
@@ -133,7 +137,7 @@ resource peeringSpoke02Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
 resource peeringHubSpoke03 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
   parent: hubLabVnet
   name: '${hublabName}-to-${spoke03Name}'
-  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke03vnet.id } }
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: true, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke03vnet.id } }
 }
 
 resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {
@@ -248,7 +252,7 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
         }
       }
     ]
-    logAnalyticsDestinationType: 'Dedicated'
+    logAnalyticsDestinationType: null
     logs: [
       {
         categoryGroup: 'allLogs'
@@ -266,7 +270,12 @@ resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
-  properties: { publicIPAllocationMethod: 'Dynamic' }
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+    dnsSettings: {
+      domainNameLabel: vnetGatewayDnsLabel == '' ? null : vnetGatewayDnsLabel
+    }
+  }
 }
 
 resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
@@ -286,9 +295,27 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     vpnType: 'RouteBased'
     enableBgp: enableBgp
     bgpSettings: enableBgp ? {
-      asn: 65515
+      asn: 65511
     } : null
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
+  }
+}
+
+// if we enable bgp we also need a local gateway for the connection
+resource localGateway 'Microsoft.Network/localNetworkGateways@2022-09-01' = if (enableBgp) {
+  name: localGatewayName
+  location: location
+  properties: {
+    bgpSettings: {
+      asn: 65510
+      bgpPeeringAddress: '192.168.3.254'
+    }
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '192.168.0.0/16'
+      ]
+    }
+    fqdn: localGatewayFqdn
   }
 }
 
