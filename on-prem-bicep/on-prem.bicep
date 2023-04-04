@@ -4,8 +4,9 @@ param username string = 'nicola'
 param password string = 'password.123'
 param virtualMachineSKU string = 'Standard_D2s_v3'
 param deployBastion bool = true
-
+param vnetGatewayDnsLabel string = ''
 param enableBgp bool = false
+param localGatewayFqdn string = ''
 
 var onPremNetworkName = 'on-prem-net'
 
@@ -19,6 +20,8 @@ var autoshutdownName = 'shutdown-computevm-${vmOnPremName}'
 
 var vnetGatewayIPName = 'onprem-gateway-virtualip'
 var vnetGatewayName = 'on-prem-gateway'
+
+var localGatewayName = 'lab-local-gateway'
 
 var subnets = concat(
   [
@@ -138,7 +141,12 @@ resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2022-09-01' = {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
-  properties: { publicIPAllocationMethod: 'Dynamic' }
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+    dnsSettings: {
+      domainNameLabel: vnetGatewayDnsLabel == '' ? null : vnetGatewayDnsLabel
+    }
+  }
 }
 
 resource vnetGateway1 'Microsoft.Network/virtualNetworkGateways@2022-09-01' = {
@@ -161,5 +169,26 @@ resource vnetGateway1 'Microsoft.Network/virtualNetworkGateways@2022-09-01' = {
       asn: 65510
     } : null
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
+  }
+}
+
+// if we enable bgp we also need a local gateway for the connection
+resource localGateway 'Microsoft.Network/localNetworkGateways@2022-09-01' = if (enableBgp) {
+  name: localGatewayName
+  location: location
+  properties: {
+    bgpSettings: {
+      asn: 65511
+      bgpPeeringAddress: '192.168.3.254'
+    }
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '10.12.0.0/16'
+        '10.13.1.0/24'
+        '10.13.2.0/24'
+        '10.13.3.0/24'
+      ]
+    }
+    fqdn: localGatewayFqdn
   }
 }
