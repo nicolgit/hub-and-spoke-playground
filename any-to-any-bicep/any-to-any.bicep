@@ -1,12 +1,15 @@
 param firewallPolicyName string
 param firewallTier string
-
+param disableBgpRoutePropagation bool = false
 param firewallIpAddress string = '10.12.0.4'
+@description('Alllow these additional IP addresses in the firewall rules')
+param allowIpAddresses array = []
 
 var routeTables_all_to_firewall_we_name = 'all-to-firewall-we'
 var routeTables_all_to_firewall_ne_name = 'all-to-firewall-ne'
 var ipGroups_all_spokes_subnets_name = 'all-spokes-subnets'
 
+var hubName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
 var spoke02Name = 'spoke-02'
 var spoke03Name = 'spoke-03'
@@ -18,7 +21,7 @@ resource routeTableWE 'Microsoft.Network/routeTables@2020-05-01' = {
   name: routeTables_all_to_firewall_we_name
   location: locationWE
   properties: {
-    disableBgpRoutePropagation: false
+    disableBgpRoutePropagation: disableBgpRoutePropagation
     routes: [
       {
         name: 'all-to-firewall-we'
@@ -32,11 +35,45 @@ resource routeTableWE 'Microsoft.Network/routeTables@2020-05-01' = {
   }
 }
 
+resource routeTableGateway 'Microsoft.Network/routeTables@2020-05-01' = {
+  name: 'gateway-route'
+  location: locationWE
+  properties: {
+    disableBgpRoutePropagation: disableBgpRoutePropagation
+    routes: [
+      {
+        name: 'spoke-01'
+        properties: {
+          addressPrefix: '10.13.1.0/24'
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+        }
+      }
+      {
+        name: 'spoke-02'
+        properties: {
+          addressPrefix: '10.13.2.0/24'
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+        }
+      }
+      {
+        name: 'spoke-03'
+        properties: {
+          addressPrefix: '10.13.3.0/24'
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+        }
+      }
+    ]
+  }
+}
+
 resource routeTableNE 'Microsoft.Network/routeTables@2020-05-01' = {
   name: routeTables_all_to_firewall_ne_name
   location: locationNE
   properties: {
-    disableBgpRoutePropagation: false
+    disableBgpRoutePropagation: disableBgpRoutePropagation
     routes: [
       {
         name: 'all-to-firewall-ne'
@@ -119,15 +156,27 @@ resource subnetS03services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01
   }
 }
 
+resource subnetGateway 'Microsoft.Network/virtualNetworks/subnets@2020-05-01' = {
+  name: '${hubName}/GatewaySubnet'
+  properties: {
+    addressPrefix: '10.12.4.0/24'
+    routeTable: {
+      id: routeTableGateway.id
+    }
+  }
+}
+
+var ipGroupAddresses = concat([
+    '10.13.1.0/24'
+    '10.13.2.0/24'
+    '10.13.3.0/24'
+  ], allowIpAddresses)
+
 resource ipGroup 'Microsoft.Network/ipGroups@2020-05-01' = {
   name: ipGroups_all_spokes_subnets_name
   location: locationWE
   properties: {
-    ipAddresses: [
-      '10.13.1.0/24'
-      '10.13.2.0/24'
-      '10.13.3.0/24'
-    ]
+    ipAddresses: ipGroupAddresses
   }
 }
 
