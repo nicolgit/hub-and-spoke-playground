@@ -9,10 +9,6 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
 
-param enableBgp bool = false
-param localGatewayFqdn string = ''
-param vnetGatewayDnsLabel string = ''
-
 var hublabName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
 var spoke02Name = 'spoke-02'
@@ -27,8 +23,6 @@ var bastionIPName = 'lab-bastion-ip'
 
 var vnetGatewayIPName = 'lab-gateway-ip'
 var vnetGatewayName = 'lab-gateway'
-
-var localGatewayName = 'lab-local-gateway'
 
 var vmHubName = 'hub-vm'
 var vmHubDiskName = '${vmHubName}-disk'
@@ -193,32 +187,11 @@ resource firewallManagementIP 'Microsoft.Network/publicIPAddresses@2019-09-01' =
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-@description('Need to do things a bit different if the policy already exists')
-param firewallPolicyExists bool = false
-
-// if we do this when the firewall policy has rule collection groups then we get a weird error
-resource newFirewallPolicy 'Microsoft.Network/firewallPolicies@2022-07-01' = if (!firewallPolicyExists) {
-  name: '${firewallName}-${toLower(firewallTier)}-policy'
-  location: location
-  properties: {
-    sku: {
-      tier: firewallTier
-    }
-  }
-}
-
-resource existingFirewallPolicy 'Microsoft.Network/firewallPolicies@2020-05-01' existing = if (firewallPolicyExists) {
-  name: '${firewallName}-${toLower(firewallTier)}-policy'
-}
-
 resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
   name: firewallName
   location: location
   dependsOn: [ hubLabVnet, vnetGateway ] // can run into some weird conflict error with the gateway
   properties: {
-    firewallPolicy: {
-      id: firewallPolicyExists ? existingFirewallPolicy.id : newFirewallPolicy.id
-    }
     managementIpConfiguration: firewallTier == 'Basic' ? {
       name: 'ipconfig-mgt'
       properties: {
@@ -270,12 +243,7 @@ resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    dnsSettings: {
-      domainNameLabel: vnetGatewayDnsLabel == '' ? null : vnetGatewayDnsLabel
-    }
-  }
+  properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
 resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
@@ -293,29 +261,9 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     ]
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
-    enableBgp: enableBgp
-    bgpSettings: enableBgp ? {
-      asn: 65511
-    } : null
+    enableBgp: false
+    bgpSettings: null
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
-  }
-}
-
-// if we enable bgp we also need a local gateway for the connection
-resource localGateway 'Microsoft.Network/localNetworkGateways@2022-09-01' = if (enableBgp) {
-  name: localGatewayName
-  location: location
-  properties: {
-    bgpSettings: {
-      asn: 65510
-      bgpPeeringAddress: '192.168.3.254'
-    }
-    localNetworkAddressSpace: {
-      addressPrefixes: [
-        '192.168.0.0/16'
-      ]
-    }
-    fqdn: localGatewayFqdn
   }
 }
 

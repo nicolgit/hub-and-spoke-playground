@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "258081804866127594"
+      "version": "0.14.85.62628",
+      "templateHash": "18408091172843741959"
     }
   },
   "parameters": {
@@ -28,6 +28,18 @@
     "virtualMachineSKU": {
       "type": "string",
       "defaultValue": "Standard_D2s_v3"
+    },
+    "firewallTier": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Basic, Standard or Premium tier"
+      }
     }
   },
   "variables": {
@@ -37,6 +49,7 @@
     "spoke03Name": "spoke-03",
     "firewallName": "lab-firewall",
     "firewallIPName": "lab-firewall-ip",
+    "firewallManagementIPName": "lab-firewall-mgt-ip",
     "bastionName": "lab-bastion",
     "bastionIPName": "lab-bastion-ip",
     "vnetGatewayIPName": "lab-gateway-ip",
@@ -56,7 +69,8 @@
     "vm03Name": "[format('{0}-vm', variables('spoke03Name'))]",
     "vm03DiskName": "[format('{0}-disk', variables('vm03Name'))]",
     "vm03NICName": "[format('{0}-nic', variables('vm03Name'))]",
-    "vm03AutoshutdownName": "[format('shutdown-computevm-{0}', variables('vm03Name'))]"
+    "vm03AutoshutdownName": "[format('shutdown-computevm-{0}', variables('vm03Name'))]",
+    "subnets": "[concat(createArray(createObject('name', 'GatewaySubnet', 'properties', createObject('addressPrefix', '10.12.4.0/24')), createObject('name', 'AzureFirewallSubnet', 'properties', createObject('addressPrefix', '10.12.0.0/24')), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '10.12.2.0/24')), createObject('name', 'DefaultSubnet', 'properties', createObject('addressPrefix', '10.12.1.0/24'))), if(equals(parameters('firewallTier'), 'Basic'), createArray(createObject('name', 'AzureFirewallManagementSubnet', 'properties', createObject('addressPrefix', '10.12.3.0/24', 'privateEndpointNetworkPolicies', 'Enabled', 'privateLinkServiceNetworkPolicies', 'Enabled'))), createArray()))]"
   },
   "resources": [
     {
@@ -70,32 +84,7 @@
             "10.12.0.0/16"
           ]
         },
-        "subnets": [
-          {
-            "name": "GatewaySubnet",
-            "properties": {
-              "addressPrefix": "10.12.4.0/24"
-            }
-          },
-          {
-            "name": "AzureFirewallSubnet",
-            "properties": {
-              "addressPrefix": "10.12.3.0/24"
-            }
-          },
-          {
-            "name": "AzureBastionSubnet",
-            "properties": {
-              "addressPrefix": "10.12.2.0/24"
-            }
-          },
-          {
-            "name": "DefaultSubnet",
-            "properties": {
-              "addressPrefix": "10.12.1.0/24"
-            }
-          }
-        ]
+        "subnets": "[variables('subnets')]"
       }
     },
     {
@@ -186,7 +175,7 @@
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
-        "allowGatewayTransit": false,
+        "allowGatewayTransit": true,
         "useRemoteGateways": false,
         "remoteVirtualNetwork": {
           "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke01Name'))]"
@@ -222,7 +211,7 @@
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
-        "allowGatewayTransit": false,
+        "allowGatewayTransit": true,
         "useRemoteGateways": false,
         "remoteVirtualNetwork": {
           "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke02Name'))]"
@@ -258,7 +247,7 @@
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
-        "allowGatewayTransit": false,
+        "allowGatewayTransit": true,
         "useRemoteGateways": false,
         "remoteVirtualNetwork": {
           "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name'))]"
@@ -325,6 +314,17 @@
       ]
     },
     {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "hub-playground-ws",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        }
+      }
+    },
+    {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('firewallIPName')]",
@@ -337,11 +337,25 @@
       }
     },
     {
-      "type": "Microsoft.Network/azureFirewalls",
+      "condition": "[equals(parameters('firewallTier'), 'Basic')]",
+      "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
+      "name": "[variables('firewallManagementIPName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/azureFirewalls",
+      "apiVersion": "2022-09-01",
       "name": "[variables('firewallName')]",
       "location": "[parameters('location')]",
       "properties": {
+        "managementIpConfiguration": "[if(equals(parameters('firewallTier'), 'Basic'), createObject('name', 'ipconfig-mgt', 'properties', createObject('subnet', createObject('id', resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'AzureFirewallManagementSubnet')), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', variables('firewallManagementIPName'))))), null())]",
         "ipConfigurations": [
           {
             "name": "ipconfig1",
@@ -357,12 +371,48 @@
         ],
         "sku": {
           "name": "AZFW_VNet",
-          "tier": "Premium"
+          "tier": "[parameters('firewallTier')]"
         }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallIPName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallManagementIPName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworkGateways', variables('vnetGatewayName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Network/azureFirewalls/{0}', variables('firewallName'))]",
+      "name": "hub-playground-ws",
+      "properties": {
+        "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', 'hub-playground-ws')]",
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": true
+            }
+          }
+        ],
+        "logAnalyticsDestinationType": null,
+        "logs": [
+          {
+            "categoryGroup": "allLogs",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": true
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/azureFirewalls', variables('firewallName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', 'hub-playground-ws')]"
       ]
     },
     {
@@ -399,6 +449,7 @@
         "gatewayType": "Vpn",
         "vpnType": "RouteBased",
         "enableBgp": false,
+        "bgpSettings": null,
         "sku": {
           "name": "VpnGw1",
           "tier": "VpnGw1"
