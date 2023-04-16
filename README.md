@@ -1,7 +1,7 @@
 <h1 align="center">The Azure🌍 hub-and-spoke-playground </h1>
 
 <div align="center">
-  A well-documented, easy-to-deploy network environment for testing, studying, inventing network configurations
+  A well-documented, easy-to-deploy network topology for testing, studying, inventing network configurations
 </div>
 
 <br/>
@@ -22,7 +22,7 @@
 
 _Download a [draw.io file](images/architecture.drawio) of this schema._
 
-This repo contains a preconfigured Azure hub-and-spoke network environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
+This repo contains a preconfigured Azure hub-and-spoke network topology, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
 As bonus many scenarios with step-by-step solutions for studying and learning are also available.
 
