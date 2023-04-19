@@ -22,7 +22,7 @@
 
 _Download a [draw.io file](images/architecture.drawio) of this schema._
 
-This repo contains a preconfigured Azure hub-and-spoke environment, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
+This repo contains a preconfigured Azure hub-and-spoke network topology, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
 
 As bonus many scenarios with step-by-step solutions for studying and learning are also available.
 
