@@ -1,7 +1,7 @@
 <h1 align="center">The Azure🌍 hub-and-spoke-playground </h1>
 
 <div align="center">
-  A well-documented, easy-to-deploy environment for testing, studying, inventing network configurations
+  A well-documented, easy-to-deploy network topology for testing, studying, inventing network configurations
 </div>
 
 <br/>
@@ -41,6 +41,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 |2| deploys the **ON PREMISES** (France) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-bicep%2Fon-prem.json) |
 |3| deploys the **ON PREMISES-2** (Germany) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-2-bicep%2Fon-prem-2.json) |
 |4| deploys any-to-any routing and firewall rules<br/><sub>requires the HUB playground deployed</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-bicep%2Fany-to-any.json) |
+|5| deploys a S2S VPN between on-prem and HUB<br/><sub>requires the HUB and one of the ON-PREMISES playgrounds deployed</sub>| [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fs2s-vpn-bicep%2Fconnect-on-prem.json)  |
 |5| the HUB 02 playground<br/><sub>deploys `hub-lab-02-net` and spoke `04`</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
 
 ## Architecture
