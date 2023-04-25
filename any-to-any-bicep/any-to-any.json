@@ -4,23 +4,53 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "406543052844770873"
+      "version": "0.16.2.56959",
+      "templateHash": "16487542208816229816"
+    }
+  },
+  "parameters": {
+    "firewallPolicyName": {
+      "type": "string",
+      "defaultValue": "my-firewall-policy"
+    },
+    "firewallTier": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Basic, Standard or Premium tier"
+      }
+    },
+    "disableBgpRoutePropagation": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "allowIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Additional IP addresses or subnets to add in the firewall rules"
+      }
     }
   },
   "variables": {
     "routeTables_all_to_firewall_we_name": "all-to-firewall-we",
     "routeTables_all_to_firewall_ne_name": "all-to-firewall-ne",
     "ipGroups_all_spokes_subnets_name": "all-spokes-subnets",
-    "hublabName": "hub-lab-net",
+    "hubName": "hub-lab-net",
     "spoke01Name": "spoke-01",
     "spoke02Name": "spoke-02",
     "spoke03Name": "spoke-03",
-    "firewallPolicyName": "my-firewall-policy",
+    "locationWE": "westeurope",
+    "locationNE": "northeurope",
     "firewallName": "lab-firewall",
     "firewallIPName": "lab-firewall-ip",
-    "locationWE": "westeurope",
-    "locationNE": "northeurope"
+    "firewallIpAddress": "10.12.0.4",
+    "ipGroupAddresses": "[concat(createArray('10.13.1.0/24', '10.13.2.0/24', '10.13.3.0/24'), parameters('allowIpAddresses'))]"
   },
   "resources": [
     {
@@ -29,14 +59,49 @@
       "name": "[variables('routeTables_all_to_firewall_we_name')]",
       "location": "[variables('locationWE')]",
       "properties": {
-        "disableBgpRoutePropagation": false,
+        "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
         "routes": [
           {
             "name": "all-to-firewall-we",
             "properties": {
               "addressPrefix": "0.0.0.0/0",
               "nextHopType": "VirtualAppliance",
-              "nextHopIpAddress": "10.12.3.4"
+              "nextHopIpAddress": "[variables('firewallIpAddress')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "2020-05-01",
+      "name": "gateway-route",
+      "location": "[variables('locationWE')]",
+      "properties": {
+        "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
+        "routes": [
+          {
+            "name": "spoke-01",
+            "properties": {
+              "addressPrefix": "10.13.1.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[variables('firewallIpAddress')]"
+            }
+          },
+          {
+            "name": "spoke-02",
+            "properties": {
+              "addressPrefix": "10.13.2.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[variables('firewallIpAddress')]"
+            }
+          },
+          {
+            "name": "spoke-03",
+            "properties": {
+              "addressPrefix": "10.13.3.0/24",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[variables('firewallIpAddress')]"
             }
           }
         ]
@@ -48,14 +113,14 @@
       "name": "[variables('routeTables_all_to_firewall_ne_name')]",
       "location": "[variables('locationNE')]",
       "properties": {
-        "disableBgpRoutePropagation": false,
+        "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
         "routes": [
           {
             "name": "all-to-firewall-ne",
             "properties": {
               "addressPrefix": "0.0.0.0/0",
               "nextHopType": "VirtualAppliance",
-              "nextHopIpAddress": "10.12.3.4"
+              "nextHopIpAddress": "[variables('firewallIpAddress')]"
             }
           }
         ]
@@ -144,7 +209,22 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]"
+        "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/default', variables('spoke03Name')), '/')[0], split(format('{0}/default', variables('spoke03Name')), '/')[1])]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-05-01",
+      "name": "[format('{0}/GatewaySubnet', variables('hubName'))]",
+      "properties": {
+        "addressPrefix": "10.12.4.0/24",
+        "routeTable": {
+          "id": "[resourceId('Microsoft.Network/routeTables', 'gateway-route')]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/routeTables', 'gateway-route')]"
       ]
     },
     {
@@ -153,58 +233,28 @@
       "name": "[variables('ipGroups_all_spokes_subnets_name')]",
       "location": "[variables('locationWE')]",
       "properties": {
-        "ipAddresses": [
-          "10.13.1.0/24",
-          "10.13.2.0/24",
-          "10.13.3.0/24"
-        ]
+        "ipAddresses": "[variables('ipGroupAddresses')]"
       }
     },
     {
       "type": "Microsoft.Network/firewallPolicies",
       "apiVersion": "2020-05-01",
-      "name": "[variables('firewallPolicyName')]",
+      "name": "[parameters('firewallPolicyName')]",
       "location": "[variables('locationWE')]",
       "properties": {
         "threatIntelMode": "Alert",
         "sku": {
-          "tier": "Premium"
+          "tier": "[parameters('firewallTier')]"
         }
       }
     },
     {
       "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
       "apiVersion": "2022-07-01",
-      "name": "[format('{0}/{1}', variables('firewallPolicyName'), 'MySuperRuleCollectionGroup')]",
+      "name": "[format('{0}/{1}', parameters('firewallPolicyName'), 'DefaultApplicationRuleCollectionGroup')]",
       "properties": {
         "priority": 300,
         "ruleCollections": [
-          {
-            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
-            "name": "any-to-any-collection",
-            "priority": 1000,
-            "action": {
-              "type": "Allow"
-            },
-            "rules": [
-              {
-                "ruleType": "NetworkRule",
-                "name": "allow-spoke-to-spoke-traffic",
-                "ipProtocols": [
-                  "Any"
-                ],
-                "sourceIpGroups": [
-                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
-                ],
-                "destinationPorts": [
-                  "*"
-                ],
-                "destinationIpGroups": [
-                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
-                ]
-              }
-            ]
-          },
           {
             "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
             "action": {
@@ -246,36 +296,7 @@
             "action": {
               "type": "Deny"
             },
-            "rules": [
-              {
-                "ruleType": "ApplicationRule",
-                "name": "block-porn-sites",
-                "protocols": [
-                  {
-                    "protocolType": "Http",
-                    "port": 80
-                  },
-                  {
-                    "protocolType": "Https",
-                    "port": 443
-                  }
-                ],
-                "fqdnTags": [],
-                "webCategories": [
-                  "Nudity",
-                  "PornographyAndSexuallyExplicit",
-                  "ChildInappropriate"
-                ],
-                "targetFqdns": [],
-                "targetUrls": [],
-                "terminateTLS": false,
-                "sourceAddresses": [],
-                "destinationAddresses": [],
-                "sourceIpGroups": [
-                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
-                ]
-              }
-            ],
+            "rules": "[if(equals(parameters('firewallTier'), 'Basic'), null(), createArray(createObject('ruleType', 'ApplicationRule', 'name', 'block-porn-sites', 'protocols', createArray(createObject('protocolType', 'Http', 'port', 80), createObject('protocolType', 'Https', 'port', 443)), 'fqdnTags', createArray(), 'webCategories', createArray('Nudity', 'PornographyAndSexuallyExplicit', 'ChildInappropriate'), 'targetFqdns', createArray(), 'targetUrls', createArray(), 'terminateTLS', false(), 'sourceAddresses', createArray(), 'destinationAddresses', createArray(), 'sourceIpGroups', createArray(resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))))))]",
             "name": "block-some-stuff",
             "priority": 150
           }
@@ -283,7 +304,48 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]",
-        "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
+        "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicyName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+      "apiVersion": "2020-05-01",
+      "name": "[format('{0}/{1}', parameters('firewallPolicyName'), 'DefaultNetworkRuleCollectionGroup')]",
+      "properties": {
+        "priority": 300,
+        "ruleCollections": [
+          {
+            "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+            "name": "any-to-any-collection",
+            "priority": 1000,
+            "action": {
+              "type": "Allow"
+            },
+            "rules": [
+              {
+                "ruleType": "NetworkRule",
+                "name": "allow-spoke-to-spoke-traffic",
+                "ipProtocols": [
+                  "Any"
+                ],
+                "sourceIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ],
+                "destinationPorts": [
+                  "*"
+                ],
+                "destinationIpGroups": [
+                  "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/ipGroups', variables('ipGroups_all_spokes_subnets_name'))]",
+        "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicyName'))]",
+        "[resourceId('Microsoft.Network/firewallPolicies/ruleCollectionGroups', parameters('firewallPolicyName'), 'DefaultApplicationRuleCollectionGroup')]"
       ]
     },
     {
@@ -313,7 +375,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hublabName'), 'AzureFirewallSubnet')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), 'AzureFirewallSubnet')]"
               },
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallIPName'))]"
@@ -322,12 +384,12 @@
           }
         ],
         "firewallPolicy": {
-          "id": "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
+          "id": "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicyName'))]"
         }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/publicIPAddresses', variables('firewallIPName'))]",
-        "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
+        "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicyName'))]"
       ]
     }
   ]
