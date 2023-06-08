@@ -9,7 +9,11 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
 param firewallName string = 'lab-firewall'
+
+param deployBastion bool = true
 param bastionName string = 'lab-bastion'
+
+param deployGateway bool = true
 param vnetGatewayName string = 'lab-gateway'
 
 param hublabName string = 'hub-lab-net'
@@ -17,9 +21,13 @@ param spoke01Name string = 'spoke-01'
 param spoke02Name string = 'spoke-02'
 param spoke03Name string = 'spoke-03'
 
+param deployVmHub bool = true
 param vmHubName string = 'hub-vm'
+param deployVm01 bool = true
 param vm01Name string = '${spoke01Name}-vm'
+param deployVm02 bool = true
 param vm02Name string = '${spoke02Name}-vm'
+param deployVm03 bool = true
 param vm03Name string = '${spoke03Name}-vm'
 
 var firewallIPName = '${firewallName}-ip'
@@ -141,14 +149,14 @@ resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (!empty(bastionName)) {
+resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployBastion) {
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (!empty(bastionName)) {
+resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (deployBastion) {
   name: bastionName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -240,14 +248,14 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
   }
 }
 //VPN GATEWAY
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (!empty(vnetGatewayName)) {
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (!empty(vnetGatewayName)) {
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (deployGateway) {
   name: vnetGatewayName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -269,7 +277,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
 }
 //END VPN GATEWAY
 //VM HUB
-resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vmHubName)) {
+resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (deployVmHub) {
   name: vmHubDiskName
   location: location
   properties: {
@@ -278,7 +286,7 @@ resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vmHubName))
   }
 }
 
-resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vmHubName)) {
+resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVmHub) {
   name: vmHubNICName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -294,7 +302,7 @@ resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(
   }
 }
 
-resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vmHubName)) {
+resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVmHub) {
   name: vmHubName
   location: location
   dependsOn: []
@@ -325,7 +333,7 @@ resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vmHub
   }
 }
 
-resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vmHubName)) {
+resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVmHub) {
   name: vmHubAutoshutdownName
   location: location
   properties: {
@@ -339,7 +347,7 @@ resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!em
 }
 //END VM HUB
 //VM 01
-resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm01Name)) {
+resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm01) {
   name: vm01DiskName
   location: location
   properties: {
@@ -348,7 +356,7 @@ resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm01Name)) {
   }
 }
 
-resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm01Name)) {
+resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm01) {
   name: vm01NICName
   location: location
   dependsOn: [ spoke01vnet ]
@@ -364,7 +372,7 @@ resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(v
   }
 }
 
-resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm01Name)) {
+resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm01) {
   name: vm01Name
   location: location
   dependsOn: []
@@ -395,7 +403,7 @@ resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm01Na
   }
 }
 
-resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm01Name)) {
+resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm01) {
   name: vm01AutoshutdownName
   location: location
   properties: {
@@ -409,7 +417,7 @@ resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!emp
 }
 //END VM 01
 //VM 02
-resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm02Name)) {
+resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm02) {
   name: vm02DiskName
   location: location
   properties: {
@@ -418,7 +426,7 @@ resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm02Name)) {
   }
 }
 
-resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm02Name)) {
+resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm02) {
   name: vm02NICName
   location: location
   dependsOn: [ spoke02vnet ]
@@ -434,7 +442,7 @@ resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(v
   }
 }
 
-resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm02Name)) {
+resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm02) {
   name: vm02Name
   location: location
   dependsOn: []
@@ -465,7 +473,7 @@ resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm02Na
   }
 }
 
-resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm02Name)) {
+resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm02) {
   name: vm02AutoshutdownName
   location: location
   properties: {
@@ -479,7 +487,7 @@ resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!emp
 }
 //END VM 02
 //VM 03
-resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm03Name)) {
+resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm03) {
   name: vm03DiskName
   location: locationSpoke03
   properties: {
@@ -488,7 +496,7 @@ resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm03Name)) {
   }
 }
 
-resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm03Name)) {
+resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm03) {
   name: vm03NICName
   location: locationSpoke03
   dependsOn: [ spoke03vnet ]
@@ -504,7 +512,7 @@ resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(v
   }
 }
 
-resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm03Name)) {
+resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm03) {
   name: vm03Name
   location: locationSpoke03
   dependsOn: []
@@ -535,7 +543,7 @@ resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm03Na
   }
 }
 
-resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm03Name)) {
+resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm03) {
   name: vm03AutoshutdownName
   location: locationSpoke03
   properties: {
