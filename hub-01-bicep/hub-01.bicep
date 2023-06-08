@@ -8,38 +8,39 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 @description('Basic, Standard or Premium tier')
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
+param firewallName string = 'lab-firewall'
+param bastionName string = 'lab-bastion'
+param vnetGatewayName string = 'lab-gateway'
 
-var hublabName = 'hub-lab-net'
-var spoke01Name = 'spoke-01'
-var spoke02Name = 'spoke-02'
-var spoke03Name = 'spoke-03'
+param hublabName string = 'hub-lab-net'
+param spoke01Name string = 'spoke-01'
+param spoke02Name string = 'spoke-02'
+param spoke03Name string = 'spoke-03'
 
-var firewallName = 'lab-firewall'
-var firewallIPName = 'lab-firewall-ip'
+param vmHubName string = 'hub-vm'
+param vm01Name string = '${spoke01Name}-vm'
+param vm02Name string = '${spoke02Name}-vm'
+param vm03Name string = '${spoke03Name}-vm'
+
+var firewallIPName = '${firewallName}-ip'
 var firewallManagementIPName = 'lab-firewall-mgt-ip'
 
-var bastionName = 'lab-bastion'
-var bastionIPName = 'lab-bastion-ip'
+var bastionIPName = '${bastionName}-ip'
 
 var vnetGatewayIPName = 'lab-gateway-ip'
-var vnetGatewayName = 'lab-gateway'
 
-var vmHubName = 'hub-vm'
 var vmHubDiskName = '${vmHubName}-disk'
 var vmHubNICName = '${vmHubName}-nic'
 var vmHubAutoshutdownName = 'shutdown-computevm-${vmHubName}'
 
-var vm01Name = '${spoke01Name}-vm'
 var vm01DiskName = '${vm01Name}-disk'
 var vm01NICName = '${vm01Name}-nic'
 var vm01AutoshutdownName = 'shutdown-computevm-${vm01Name}'
 
-var vm02Name = '${spoke02Name}-vm'
 var vm02DiskName = '${vm02Name}-disk'
 var vm02NICName = '${vm02Name}-nic'
 var vm02AutoshutdownName = 'shutdown-computevm-${vm02Name}'
 
-var vm03Name = '${spoke03Name}-vm'
 var vm03DiskName = '${vm03Name}-disk'
 var vm03NICName = '${vm03Name}-nic'
 var vm03AutoshutdownName = 'shutdown-computevm-${vm03Name}'
@@ -238,15 +239,15 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
     ]
   }
 }
-
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+//VPN GATEWAY
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (!empty(vnetGatewayName)) {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (!empty(vnetGatewayName)) {
   name: vnetGatewayName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -266,6 +267,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
+//END VPN GATEWAY
 //VM HUB
 resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vmHubName)) {
   name: vmHubDiskName
@@ -546,3 +548,9 @@ resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!emp
   }
 }
 //END VM 03
+//OUTPUTS
+output hubVnet object = hubLabVnet
+output spoke01Vnet object = spoke01vnet
+output spoke02Vnet object = spoke02vnet
+output spoke03Vnet object = spoke03vnet
+//END OUTPUTS
