@@ -140,14 +140,14 @@ resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (!empty(bastionName)) {
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (!empty(bastionName)) {
   name: bastionName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -266,8 +266,8 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
-
-resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {
+//VM HUB
+resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vmHubName)) {
   name: vmHubDiskName
   location: location
   properties: {
@@ -276,7 +276,7 @@ resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vmHubName)) {
   name: vmHubNICName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -292,7 +292,7 @@ resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vmHubName)) {
   name: vmHubName
   location: location
   dependsOn: []
@@ -323,7 +323,7 @@ resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vmHubName)) {
   name: vmHubAutoshutdownName
   location: location
   properties: {
@@ -335,8 +335,9 @@ resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vmHub.id
   }
 }
-
-resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM HUB
+//VM 01
+resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm01Name)) {
   name: vm01DiskName
   location: location
   properties: {
@@ -345,7 +346,7 @@ resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm01Name)) {
   name: vm01NICName
   location: location
   dependsOn: [ spoke01vnet ]
@@ -361,7 +362,7 @@ resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm01Name)) {
   name: vm01Name
   location: location
   dependsOn: []
@@ -392,7 +393,7 @@ resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm01Name)) {
   name: vm01AutoshutdownName
   location: location
   properties: {
@@ -404,8 +405,9 @@ resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm01.id
   }
 }
-
-resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM 01
+//VM 02
+resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm02Name)) {
   name: vm02DiskName
   location: location
   properties: {
@@ -414,7 +416,7 @@ resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm02Name)) {
   name: vm02NICName
   location: location
   dependsOn: [ spoke02vnet ]
@@ -430,7 +432,7 @@ resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm02Name)) {
   name: vm02Name
   location: location
   dependsOn: []
@@ -461,7 +463,7 @@ resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm02Name)) {
   name: vm02AutoshutdownName
   location: location
   properties: {
@@ -473,8 +475,9 @@ resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm02.id
   }
 }
-
-resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM 02
+//VM 03
+resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = if (!empty(vm03Name)) {
   name: vm03DiskName
   location: locationSpoke03
   properties: {
@@ -483,7 +486,7 @@ resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (!empty(vm03Name)) {
   name: vm03NICName
   location: locationSpoke03
   dependsOn: [ spoke03vnet ]
@@ -499,7 +502,7 @@ resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (!empty(vm03Name)) {
   name: vm03Name
   location: locationSpoke03
   dependsOn: []
@@ -530,7 +533,7 @@ resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (!empty(vm03Name)) {
   name: vm03AutoshutdownName
   location: locationSpoke03
   properties: {
@@ -542,3 +545,4 @@ resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm03.id
   }
 }
+//END VM 03
