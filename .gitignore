@@ -34,3 +34,5 @@ override.tf.json
 *.bkp
 *.dtmp
 *.vscode
+
+/.vs

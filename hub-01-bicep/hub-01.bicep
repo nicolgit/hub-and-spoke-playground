@@ -8,38 +8,47 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 @description('Basic, Standard or Premium tier')
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
+param firewallName string = 'lab-firewall'
 
-var hublabName = 'hub-lab-net'
-var spoke01Name = 'spoke-01'
-var spoke02Name = 'spoke-02'
-var spoke03Name = 'spoke-03'
+param deployBastion bool = true
+param bastionName string = 'lab-bastion'
 
-var firewallName = 'lab-firewall'
-var firewallIPName = 'lab-firewall-ip'
+param deployGateway bool = true
+param vnetGatewayName string = 'lab-gateway'
+
+param hublabName string = 'hub-lab-net'
+param spoke01Name string = 'spoke-01'
+param spoke02Name string = 'spoke-02'
+param spoke03Name string = 'spoke-03'
+
+param deployVmHub bool = true
+param vmHubName string = 'hub-vm'
+param deployVm01 bool = true
+param vm01Name string = '${spoke01Name}-vm'
+param deployVm02 bool = true
+param vm02Name string = '${spoke02Name}-vm'
+param deployVm03 bool = true
+param vm03Name string = '${spoke03Name}-vm'
+
+var firewallIPName = '${firewallName}-ip'
 var firewallManagementIPName = 'lab-firewall-mgt-ip'
 
-var bastionName = 'lab-bastion'
-var bastionIPName = 'lab-bastion-ip'
+var bastionIPName = '${bastionName}-ip'
 
 var vnetGatewayIPName = 'lab-gateway-ip'
-var vnetGatewayName = 'lab-gateway'
 
-var vmHubName = 'hub-vm'
 var vmHubDiskName = '${vmHubName}-disk'
 var vmHubNICName = '${vmHubName}-nic'
 var vmHubAutoshutdownName = 'shutdown-computevm-${vmHubName}'
 
-var vm01Name = '${spoke01Name}-vm'
 var vm01DiskName = '${vm01Name}-disk'
 var vm01NICName = '${vm01Name}-nic'
 var vm01AutoshutdownName = 'shutdown-computevm-${vm01Name}'
 
-var vm02Name = '${spoke02Name}-vm'
 var vm02DiskName = '${vm02Name}-disk'
 var vm02NICName = '${vm02Name}-nic'
 var vm02AutoshutdownName = 'shutdown-computevm-${vm02Name}'
 
-var vm03Name = '${spoke03Name}-vm'
 var vm03DiskName = '${vm03Name}-disk'
 var vm03NICName = '${vm03Name}-nic'
 var vm03AutoshutdownName = 'shutdown-computevm-${vm03Name}'
@@ -140,14 +149,14 @@ resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployBastion) {
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (deployBastion) {
   name: bastionName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -238,15 +247,15 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
     ]
   }
 }
-
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+//VPN GATEWAY
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic' }
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (deployGateway) {
   name: vnetGatewayName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -266,8 +275,9 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
-
-resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VPN GATEWAY
+//VM HUB
+resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = if (deployVmHub) {
   name: vmHubDiskName
   location: location
   properties: {
@@ -276,7 +286,7 @@ resource vmHubDisk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVmHub) {
   name: vmHubNICName
   location: location
   dependsOn: [ hubLabVnet ]
@@ -292,7 +302,7 @@ resource vmHubNIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVmHub) {
   name: vmHubName
   location: location
   dependsOn: []
@@ -323,7 +333,7 @@ resource vmHub 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVmHub) {
   name: vmHubAutoshutdownName
   location: location
   properties: {
@@ -335,8 +345,9 @@ resource vmHubAutoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vmHub.id
   }
 }
-
-resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM HUB
+//VM 01
+resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm01) {
   name: vm01DiskName
   location: location
   properties: {
@@ -345,7 +356,7 @@ resource vm01Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm01) {
   name: vm01NICName
   location: location
   dependsOn: [ spoke01vnet ]
@@ -361,7 +372,7 @@ resource vm01NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm01) {
   name: vm01Name
   location: location
   dependsOn: []
@@ -392,7 +403,7 @@ resource vm01 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm01) {
   name: vm01AutoshutdownName
   location: location
   properties: {
@@ -404,8 +415,9 @@ resource vm01Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm01.id
   }
 }
-
-resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM 01
+//VM 02
+resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm02) {
   name: vm02DiskName
   location: location
   properties: {
@@ -414,7 +426,7 @@ resource vm02Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm02) {
   name: vm02NICName
   location: location
   dependsOn: [ spoke02vnet ]
@@ -430,7 +442,7 @@ resource vm02NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm02) {
   name: vm02Name
   location: location
   dependsOn: []
@@ -461,7 +473,7 @@ resource vm02 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm02) {
   name: vm02AutoshutdownName
   location: location
   properties: {
@@ -473,8 +485,9 @@ resource vm02Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm02.id
   }
 }
-
-resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {
+//END VM 02
+//VM 03
+resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = if (deployVm03) {
   name: vm03DiskName
   location: locationSpoke03
   properties: {
@@ -483,7 +496,7 @@ resource vm03Disk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVm03) {
   name: vm03NICName
   location: locationSpoke03
   dependsOn: [ spoke03vnet ]
@@ -499,7 +512,7 @@ resource vm03NIC 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm03) {
   name: vm03Name
   location: locationSpoke03
   dependsOn: []
@@ -530,7 +543,7 @@ resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVm03) {
   name: vm03AutoshutdownName
   location: locationSpoke03
   properties: {
@@ -542,3 +555,10 @@ resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = {
     targetResourceId: vm03.id
   }
 }
+//END VM 03
+//OUTPUTS
+output hubVnet object = hubLabVnet
+output spoke01Vnet object = spoke01vnet
+output spoke02Vnet object = spoke02vnet
+output spoke03Vnet object = spoke03vnet
+//END OUTPUTS
