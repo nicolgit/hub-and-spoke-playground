@@ -1,34 +1,30 @@
 param location string = 'westeurope'
 param locationSpoke03 string = 'northeurope'
 
-param username string = 'nicola'
-@secure()
-param password string = 'password.123'
-param virtualMachineSKU string = 'Standard_D2s_v3'
 @description('Basic, Standard or Premium tier')
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
-param firewallName string = 'lab-firewall'
+var firewallName = 'lab-firewall'
 
 param deployBastion bool = true
-param bastionName string = 'lab-bastion'
+var bastionName = 'lab-bastion'
 
 param deployGateway bool = true
-param vnetGatewayName string = 'lab-gateway'
+var vnetGatewayName = 'lab-gateway'
 
-param hublabName string = 'hub-lab-net'
-param spoke01Name string = 'spoke-01'
-param spoke02Name string = 'spoke-02'
-param spoke03Name string = 'spoke-03'
+var hublabName = 'hub-lab-net'
+var spoke01Name = 'spoke-01'
+var spoke02Name = 'spoke-02'
+var spoke03Name = 'spoke-03'
 
 param deployVmHub bool = true
-param vmHubName string = 'hub-vm'
+var vmHubName = 'hub-vm'
 param deployVm01 bool = true
-param vm01Name string = '${spoke01Name}-vm'
+var vm01Name = '${spoke01Name}-vm'
 param deployVm02 bool = true
-param vm02Name string = '${spoke02Name}-vm'
+var vm02Name = '${spoke02Name}-vm'
 param deployVm03 bool = true
-param vm03Name string = '${spoke03Name}-vm'
+var vm03Name = '${spoke03Name}-vm'
 
 var firewallIPName = '${firewallName}-ip'
 var firewallManagementIPName = 'lab-firewall-mgt-ip'
@@ -52,6 +48,16 @@ var vm02AutoshutdownName = 'shutdown-computevm-${vm02Name}'
 var vm03DiskName = '${vm03Name}-disk'
 var vm03NICName = '${vm03Name}-nic'
 var vm03AutoshutdownName = 'shutdown-computevm-${vm03Name}'
+
+@description('username administrator for all VMs')
+param username string = 'nicola'
+
+@description('username administrator password for all VMs')
+@secure()
+param password string = 'password.123'
+
+param virtualMachineSKU string = 'Standard_D2s_v3'
+
 
 var subnets = concat(
   [
