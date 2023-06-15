@@ -562,10 +562,11 @@ resource vm03Autoshutdown 'microsoft.devtestlab/schedules@2018-09-15' = if (depl
   }
 }
 //END VM 03
+
 //OUTPUTS
 output hubVnet object = hubLabVnet
 output spoke01Vnet object = spoke01vnet
 output spoke02Vnet object = spoke02vnet
 output spoke03Vnet object = spoke03vnet
-output firewallTier string = firewallTier
+output firewallTier 'Basic'|'Standard'|'Premium' = firewallTier
 //END OUTPUTS
