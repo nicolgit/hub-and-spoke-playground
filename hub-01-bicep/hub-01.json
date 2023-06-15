@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "4020133717036886099"
+      "templateHash": "3900837579553360627"
     }
   },
   "parameters": {
@@ -939,6 +939,10 @@
     "spoke03Vnet": {
       "type": "object",
       "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', variables('spoke03Name')), '2019-09-01', 'full')]"
+    },
+    "firewallTier": {
+      "type": "string",
+      "value": "[parameters('firewallTier')]"
     }
   }
 }
