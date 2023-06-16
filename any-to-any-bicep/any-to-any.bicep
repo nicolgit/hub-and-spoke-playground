@@ -201,7 +201,7 @@ resource azureFirewalls_lab_firewall_name_resource 'Microsoft.Network/azureFirew
         }
       ]
       firewallPolicy: {
-          id: fwPolicy.outputs.policy.id
+          id: fwPolicy.outputs.policy.resourceId
     }
   }
 }
