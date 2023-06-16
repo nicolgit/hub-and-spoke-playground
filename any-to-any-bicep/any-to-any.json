@@ -5,14 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "13831144035166515862"
+      "templateHash": "7146182700079239319"
     }
   },
   "parameters": {
-    "firewallPolicyName": {
-      "type": "string",
-      "defaultValue": "my-firewall-policy"
-    },
     "firewallTier": {
       "type": "string",
       "defaultValue": "Premium",
@@ -40,7 +36,6 @@
   "variables": {
     "routeTables_all_to_firewall_we_name": "all-to-firewall-we",
     "routeTables_all_to_firewall_ne_name": "all-to-firewall-ne",
-    "ipGroups_all_spokes_subnets_name": "all-spokes-subnets",
     "hubName": "hub-lab-net",
     "spoke01Name": "spoke-01",
     "spoke02Name": "spoke-02",
@@ -246,7 +241,7 @@
       "properties": {
         "sku": {
           "name": "AZFW_VNet",
-          "tier": "Premium"
+          "tier": "[parameters('firewallTier')]"
         },
         "ipConfigurations": [
           {
@@ -262,7 +257,7 @@
           }
         ],
         "firewallPolicy": {
-          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'fwPolicyDeploy'), '2022-09-01').outputs.myFirewallPolicy.value.id]"
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'fwPolicyDeploy'), '2022-09-01').outputs.policy.value.resourceId]"
         }
       },
       "dependsOn": [
@@ -297,7 +292,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "702428917396822923"
+              "templateHash": "2464411592827935120"
             }
           },
           "parameters": {
@@ -451,7 +446,7 @@
             }
           ],
           "outputs": {
-            "myFirewallPolicy": {
+            "policy": {
               "type": "object",
               "value": "[reference(resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName')), '2020-05-01', 'full')]"
             }
