@@ -15,8 +15,8 @@ var spoke01Name = 'spoke-01'
 var spoke02Name = 'spoke-02'
 var spoke03Name = 'spoke-03'
 
-var locationWE = 'westeurope'
-var locationNE = 'northeurope'
+param locationWE string = 'westeurope'
+param locationNE string = 'northeurope'
 
 var firewallName = 'lab-firewall'
 var firewallIPName = 'lab-firewall-ip'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "9463601351287531263"
+      "templateHash": "262553335280360647"
     }
   },
   "parameters": {
@@ -31,6 +31,14 @@
       "metadata": {
         "description": "Additional IP addresses or subnets to add in the firewall rules"
       }
+    },
+    "locationWE": {
+      "type": "string",
+      "defaultValue": "westeurope"
+    },
+    "locationNE": {
+      "type": "string",
+      "defaultValue": "northeurope"
     }
   },
   "variables": {
@@ -40,8 +48,6 @@
     "spoke01Name": "spoke-01",
     "spoke02Name": "spoke-02",
     "spoke03Name": "spoke-03",
-    "locationWE": "westeurope",
-    "locationNE": "northeurope",
     "firewallName": "lab-firewall",
     "firewallIPName": "lab-firewall-ip",
     "firewallIpAddress": "10.12.0.4"
@@ -51,7 +57,7 @@
       "type": "Microsoft.Network/routeTables",
       "apiVersion": "2020-05-01",
       "name": "[variables('routeTables_all_to_firewall_we_name')]",
-      "location": "[variables('locationWE')]",
+      "location": "[parameters('locationWE')]",
       "properties": {
         "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
         "routes": [
@@ -70,7 +76,7 @@
       "type": "Microsoft.Network/routeTables",
       "apiVersion": "2020-05-01",
       "name": "gateway-route",
-      "location": "[variables('locationWE')]",
+      "location": "[parameters('locationWE')]",
       "properties": {
         "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
         "routes": [
@@ -105,7 +111,7 @@
       "type": "Microsoft.Network/routeTables",
       "apiVersion": "2020-05-01",
       "name": "[variables('routeTables_all_to_firewall_ne_name')]",
-      "location": "[variables('locationNE')]",
+      "location": "[parameters('locationNE')]",
       "properties": {
         "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]",
         "routes": [
@@ -225,7 +231,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('firewallIPName')]",
-      "location": "[variables('locationWE')]",
+      "location": "[parameters('locationWE')]",
       "sku": {
         "name": "Standard"
       },
@@ -237,7 +243,7 @@
       "type": "Microsoft.Network/azureFirewalls",
       "apiVersion": "2022-07-01",
       "name": "[variables('firewallName')]",
-      "location": "[variables('locationWE')]",
+      "location": "[parameters('locationWE')]",
       "properties": {
         "sku": {
           "name": "AZFW_VNet",
@@ -279,7 +285,7 @@
             "value": "[parameters('firewallTier')]"
           },
           "locationWE": {
-            "value": "[variables('locationWE')]"
+            "value": "[parameters('locationWE')]"
           },
           "allowIpAddresses": {
             "value": "[parameters('allowIpAddresses')]"
