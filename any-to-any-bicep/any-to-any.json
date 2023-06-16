@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "7146182700079239319"
+      "templateHash": "9463601351287531263"
     }
   },
   "parameters": {
@@ -257,7 +257,7 @@
           }
         ],
         "firewallPolicy": {
-          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'fwPolicyDeploy'), '2022-09-01').outputs.policy.value.resourceId]"
+          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'fwPolicyDeploy'), '2022-09-01').outputs.policyid.value]"
         }
       },
       "dependsOn": [
@@ -292,7 +292,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "2464411592827935120"
+              "templateHash": "5397074882225188186"
             }
           },
           "parameters": {
@@ -446,9 +446,9 @@
             }
           ],
           "outputs": {
-            "policy": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName')), '2020-05-01', 'full')]"
+            "policyid": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/firewallPolicies', variables('firewallPolicyName'))]"
             }
           }
         }
