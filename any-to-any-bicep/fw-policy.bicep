@@ -149,4 +149,4 @@ resource anyToAnyCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
   }
 }
 
-output myFirewallPolicy object = myFirewallPolicy
+output policy object = myFirewallPolicy

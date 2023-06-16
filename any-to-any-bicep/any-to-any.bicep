@@ -1,5 +1,3 @@
-param firewallPolicyName string = 'my-firewall-policy'
-
 @description('Basic, Standard or Premium tier')
 @allowed([ 'Basic', 'Standard', 'Premium' ])
 param firewallTier string = 'Premium'
@@ -11,7 +9,6 @@ param allowIpAddresses array = []
 
 var routeTables_all_to_firewall_we_name = 'all-to-firewall-we'
 var routeTables_all_to_firewall_ne_name = 'all-to-firewall-ne'
-var ipGroups_all_spokes_subnets_name = 'all-spokes-subnets'
 
 var hubName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
@@ -33,7 +30,6 @@ module fwPolicy './fw-policy.bicep' = {
     allowIpAddresses: allowIpAddresses
   }
 }
-
 
 resource routeTableWE 'Microsoft.Network/routeTables@2020-05-01' = {
   name: routeTables_all_to_firewall_we_name
@@ -195,7 +191,7 @@ resource azureFirewalls_lab_firewall_name_resource 'Microsoft.Network/azureFirew
   name: firewallName
   location: locationWE
   properties: {
-      sku: { name: 'AZFW_VNet', tier: 'Premium' }
+      sku: { name: 'AZFW_VNet', tier: firewallTier }
       ipConfigurations: [ {
           name: 'ipconfig1'
           properties: { 
@@ -205,7 +201,7 @@ resource azureFirewalls_lab_firewall_name_resource 'Microsoft.Network/azureFirew
         }
       ]
       firewallPolicy: {
-          id: fwPolicy.outputs.myFirewallPolicy.id
+          id: fwPolicy.outputs.policy.id
     }
   }
 }
