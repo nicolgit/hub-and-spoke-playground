@@ -138,10 +138,6 @@ For each scenario you have:
 | 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-always-on.md)
 | 14 | Routing cross hubs with BGP | Solution using [Azure Virtual Network Gateway](scenarios/routing-with-bgp.md)
 | 15 | Routing cross hubs without BGP | Solution with [Azure Firewall](scenarios/routing-without-bgp-fw.md) | 
+| 16 | Publish internal web app via Azure Application Gateway on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md) |
 
-Scenarios I will implement in the future:
-
-* Resolve from on-prem, names of all cloud machines, and vice-versa
-* configure firewall so that (1) traffic outbound from spoke01 goes hrough public IP1 (traffic outbound from spoke02 goes through public IP2 
-
-Whould you like to see more scenarios? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues])!
+Whould you like to see more scenarios? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues]) on this repo.
