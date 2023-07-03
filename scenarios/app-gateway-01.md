@@ -1,6 +1,6 @@
 # SOLUTION - publish internal web app via Azure Application Gateway on private and public IPs
 
-In this solutione I show how to expose through Azure Application Gateway both externally (internet) in HTTP and internally (intranet) in HTTPS an HTTPS web service delivered by a windows VM, with a certificates emitted by a privare certification authority.
+In this solution I show how to expose through Azure Application Gateway both externally (internet) in HTTP and internally (intranet) in HTTPS an HTTPS web service delivered by a windows VM, with a certificates emitted by a privare certification authority.
 
 The service is exposed by the Azure Application Gateway, via HTTP and HTTPS, (both externally and internally).  
 
