@@ -20,7 +20,7 @@ param locationNE string = 'northeurope'
 
 var firewallName = 'lab-firewall'
 var firewallIPName = 'lab-firewall-ip'
-var firewallIpAddress = '10.12.0.4'
+var firewallIpAddress = '10.12.3.4'
 
 module fwPolicy './fw-policy.bicep' = {
   name: 'fwPolicyDeploy'

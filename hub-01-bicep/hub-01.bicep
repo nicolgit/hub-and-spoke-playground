@@ -62,7 +62,7 @@ param virtualMachineSKU string = 'Standard_D2s_v3'
 var subnets = concat(
   [
     { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } }
-    { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.0.0/24' } }
+    { name: 'AzureFirewallSubnet', properties: { addressPrefix: '10.12.3.0/24' } }
     { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }
     { name: 'DefaultSubnet', properties: { addressPrefix: '10.12.1.0/24' } }
   ],
@@ -70,7 +70,7 @@ var subnets = concat(
     {
       name: 'AzureFirewallManagementSubnet'
       properties: {
-        addressPrefix: '10.12.3.0/24'
+        addressPrefix: '10.12.5.0/24'
         privateEndpointNetworkPolicies: 'Enabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "262553335280360647"
+      "templateHash": "10101459254122748217"
     }
   },
   "parameters": {
@@ -50,7 +50,7 @@
     "spoke03Name": "spoke-03",
     "firewallName": "lab-firewall",
     "firewallIPName": "lab-firewall-ip",
-    "firewallIpAddress": "10.12.0.4"
+    "firewallIpAddress": "10.12.3.4"
   },
   "resources": [
     {
