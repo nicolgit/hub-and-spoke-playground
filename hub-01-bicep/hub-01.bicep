@@ -568,5 +568,5 @@ output hubVnet object = hubLabVnet
 output spoke01Vnet object = spoke01vnet
 output spoke02Vnet object = spoke02vnet
 output spoke03Vnet object = spoke03vnet
-output firewallTier 'Basic'|'Standard'|'Premium' = firewallTier
+output firewallTier string = string(firewallTier)
 //END OUTPUTS
