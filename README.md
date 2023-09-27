@@ -121,7 +121,7 @@ For each scenario you have:
 * **test solution**: a procedure to follow, to verify if the scenario is working as expected
 
 
-| | scenario description | solution |
+| | scenario description | step-by-step solution |
 |---|---|---|
 | 1 | Configure the environment to allow VM in any spoke to communicate with any VM in any other spoke | solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)<br/> solution using [azure virtual gateway](scenarios/ping-any-to-any-gateway.md) 
 | 2| Expose on a public IP, through the Firewall, `spoke-01-vm` and `spoke-02-vm `RDP port (3389) | solution using [azure firewall dnat](scenarios/dnat-01-02.md)
@@ -133,7 +133,7 @@ For each scenario you have:
 | 8 | Connect `on-prem-net` and `on-prem2-net` to `hub-lab-net` via S2S IPSEC and allow cross-on-premises communication | solution [cross-on-premise-routing](scenarios/cross-on-premise-routing.md) |
 | 9 | Use Azure Firewall for traffic inspection between `on-prem-net` and `spoke-01` networks  (North/South Traffic Inspection) | solution [north-south-inspection](scenarios/solution-north-south-inspection.md)
 | 10 | Use Network Watcher for logging and network troubleshooting | solution [network watcher](scenarios/network-watcher.md)
-| 11 | Resolve from on-prem, names of all cloud machines | solution with [Azure Firewall](/scenarios/dns-on-prem.md) | 
+| 11 | **DNS resolution** <br/>Configure a DNS on the cloud, and be sure that all machines are reachable via FQDN also from on-premise  | solution with&nbsp;[Azure&nbsp;Firewall](/scenarios/name-resolution-with-azure-firewall.md) <br/>solution&nbsp;with&nbsp;[Private&nbsp;DNS&nbsp;resolver](/scenarios/name-resolution-with-dns-private-resolver.md) |
 | 12 | Secure a WEB workload with both Azure Firewall Premium and Azure Web Application Firewall | Solution with [Azure Firewall and  WAF](scenarios/publish-waf-fw.md)
 | 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-always-on.md)
 | 14 | Routing cross hubs with BGP | Solution using [Azure Virtual Network Gateway](scenarios/routing-with-bgp.md)
