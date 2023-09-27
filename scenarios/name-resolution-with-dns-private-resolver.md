@@ -38,7 +38,7 @@ The DNS query process when using an Azure DNS Private Resolver is summarized bel
 1. deploy HUB playground
 2. deploy ONPREMISE-2 playground
 3. configure a site-to-site VPN as [documented here](vnet-to-vnet-2.md)
-4. configure a DNS in the cloud [as documented here](dns.md)
+4. configure a DNS in the cloud as [documented here](dns.md)
 
 ## Solution
 
