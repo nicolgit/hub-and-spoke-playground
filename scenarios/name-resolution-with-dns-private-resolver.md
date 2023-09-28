@@ -13,7 +13,7 @@ While using the hub and spoke network, it is essential to enable communication b
 
 **Azure Private DNS zone** provides a reliable, secure DNS service to manage and resolve domain names in a virtual network without the need to add a custom DNS solution. By using private DNS zones, you can use your own custom domain names rather than the Azure-provided names available today. You can link a private DNS zone to one or more virtual networks by creating virtual network links. You can also enable the autoregistration feature to automatically manage the life cycle of the DNS records for the virtual machines that get deployed in a virtual network.
 
-This "solutution" implements the following:
+This "solution" implements the following:
 
 ![architecture TO UPDATE!!!](../images/name-resolution-with-dns-resolver.png)
 
