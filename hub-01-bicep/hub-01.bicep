@@ -525,7 +525,7 @@ resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm03) {
   properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
     storageProfile: {
-      imageReference: { publisher: 'MicrosoftWindowsServer', offer: 'WindowsServer', sku: '2019-Datacenter', version: 'latest' }
+      imageReference: { publisher: 'Canonical', offer: 'UbuntuServer', sku: '18.04-LTS', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vm03DiskName
@@ -538,7 +538,11 @@ resource vm03 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVm03) {
       computerName: vm03Name
       adminUsername: username
       adminPassword: password
-      windowsConfiguration: { enableAutomaticUpdates: true }
+      linuxConfiguration: {
+        disablePasswordAuthentication: false
+        provisionVMAgent: true
+      }
+      allowExtensionOperations: true
     }
     networkProfile: {
       networkInterfaces: [ {

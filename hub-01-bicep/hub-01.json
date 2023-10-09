@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "11105476988704294215"
+      "version": "0.22.6.54827",
+      "templateHash": "6458223786527796863"
     }
   },
   "parameters": {
@@ -863,9 +863,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2019-Datacenter",
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "18.04-LTS",
             "version": "latest"
           },
           "dataDisks": [
@@ -883,9 +883,11 @@
           "computerName": "[variables('vm03Name')]",
           "adminUsername": "[parameters('username')]",
           "adminPassword": "[parameters('password')]",
-          "windowsConfiguration": {
-            "enableAutomaticUpdates": true
-          }
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": false,
+            "provisionVMAgent": true
+          },
+          "allowExtensionOperations": true
         },
         "networkProfile": {
           "networkInterfaces": [
