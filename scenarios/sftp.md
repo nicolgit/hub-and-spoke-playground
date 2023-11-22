@@ -11,6 +11,7 @@ In this configuration, inbound SFTP traffic goes through both Azure Firewall, th
 The resulting overall architecture is shown in the following schema.
 
 ![sftp architecture](../images/sftp.png)
+
 _Download a [draw.io file](../images/sftp.drawio) of this architecture._
 
 ## Pre-requisites
