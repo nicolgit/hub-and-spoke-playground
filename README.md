@@ -139,5 +139,6 @@ For each scenario you have:
 | 14 | Routing cross hubs with BGP | Solution using [Azure Virtual Network Gateway](scenarios/routing-with-bgp.md)
 | 15 | Routing cross hubs without BGP | Solution with [Azure Firewall](scenarios/routing-without-bgp-fw.md) | 
 | 16 | Publish internal web app via Azure Application Gateway on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md) |
+| 17 | Publish internal SFTP endpoint via Azure Firewall | Solution with [Azure Firewall](scenarios/sftp.md) |
 
-Whould you like to see more scenarios? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues]) on this repo.
+Whould you like to see a scenario not listed? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues])!
