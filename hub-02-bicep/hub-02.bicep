@@ -1,11 +1,19 @@
 param location string = 'northeurope'
 param username string = 'nicola'
+
+param deployBastion bool = true
+param deployGateway bool = true
+param deployFirewall bool = true
+param deployAdditionalSpokes bool = false
+
 @secure()
 param password string = 'password.123'
 param virtualMachineSKU string = 'Standard_D2s_v3'
 
 var hublabName = 'hub-lab-02-net'
-var spoke04Name = 'spoke-04'
+var spoke__Name = 'spoke-'
+var spoke04Name = '${spoke__Name}04'
+
 
 var firewallName = 'lab-firewall-02'
 var firewallIPName = 'lab-firewall-02-ip'
@@ -45,26 +53,164 @@ resource spoke04vnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   }
 }
 
+resource spoke05vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}05'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.5.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.5.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.5.64/26' } }
+    ]
+  }
+}
+
+resource spoke06vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}06'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.6.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.6.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.6.64/26' } }
+    ]
+  }
+}
+
+resource spoke07vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}07'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.7.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.7.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.7.64/26' } }
+    ]
+  }
+}
+
+resource spoke08vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}08'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.8.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.8.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.8.64/26' } }
+    ]
+  }
+}
+
+resource spoke09vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}09'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.9.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.9.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.9.64/26' } }
+    ]
+  }
+}
+
+resource spoke10vnet 'Microsoft.Network/virtualNetworks@2019-09-01' =  if(deployAdditionalSpokes) {  
+  name: '${spoke__Name}10'
+  location: location
+  properties: { addressSpace: { addressPrefixes: [ '10.15.10.0/24' ] }
+    subnets: [
+      { name: 'default', properties: { addressPrefix: '10.15.10.0/26' } } 
+      { name: 'services', properties: { addressPrefix: '10.15.10.64/26' } }
+    ]
+  }
+}
+
 resource peeringHubSpoke 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {  
-  name: '${hublabName}/hub-to-spoke-04'
-  dependsOn: [ hubvnet ]
+  parent: hubvnet
+  name: 'hub-to-spoke-04'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke04vnet.id } }
 }
 
 resource peeringSpokeHub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = {  
-  name: '${spoke04Name}/spoke-04-to-hub'
-  dependsOn: [ spoke04vnet ]
+  parent: spoke04vnet
+  name: 'spoke-04-to-hub'
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
 }
 
-resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource peeringHubSpoke05 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-05'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke05vnet.id } }
+}
+
+resource peeringSpokeHub05 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke05vnet
+  name: 'spoke-05-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource peeringHubSpoke06 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-06'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke06vnet.id } }
+}
+
+resource peeringSpokeHub06 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke06vnet
+  name: 'spoke-06-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource peeringHubSpoke07 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-07'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke07vnet.id } }
+}
+
+resource peeringSpokeHub07 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke07vnet
+  name: 'spoke-07-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource peeringHubSpoke08 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-08'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke08vnet.id } }
+}
+
+resource peeringSpokeHub08 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke08vnet
+  name: 'spoke-08-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource peeringHubSpoke09 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-09'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke09vnet.id } }
+}
+
+resource peeringSpokeHub09 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke09vnet
+  name: 'spoke-09-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource peeringHubSpoke10 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: hubvnet
+  name: 'hub-to-spoke-10'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: spoke10vnet.id } }
+}
+
+resource peeringSpokeHub10 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2019-09-01' = if (deployAdditionalSpokes) {  
+  parent: spoke10vnet
+  name: 'spoke-10-to-hub'
+  properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
+}
+
+resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployFirewall) {  
   name: firewallIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource firewall 'Microsoft.Network/azureFirewalls@2019-09-01' = {  
+resource firewall 'Microsoft.Network/azureFirewalls@2019-09-01' = if (deployFirewall) {  
   name: firewallName
   location: location
   dependsOn: [ hubvnet ]
@@ -81,14 +227,14 @@ resource firewall 'Microsoft.Network/azureFirewalls@2019-09-01' = {
   }
 }
 
-resource bastionIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource bastionIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployBastion) {  
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = {  
+resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (deployBastion) {  
   name: bastionName
   location: location
   dependsOn: [ hubvnet ]
@@ -173,14 +319,14 @@ resource shutdownVm04 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {  
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Basic'}
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {  
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' =  if (deployGateway) {  
   name: vnetGatewayName
   location: location
   dependsOn: [ hubvnet, spoke04vnet ]

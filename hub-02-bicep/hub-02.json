@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "13344723309457595246"
+      "version": "0.23.1.45101",
+      "templateHash": "14276395479420580874"
     }
   },
   "parameters": {
@@ -16,6 +16,22 @@
     "username": {
       "type": "string",
       "defaultValue": "nicola"
+    },
+    "deployBastion": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deployGateway": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deployFirewall": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deployAdditionalSpokes": {
+      "type": "bool",
+      "defaultValue": false
     },
     "password": {
       "type": "securestring",
@@ -28,7 +44,8 @@
   },
   "variables": {
     "hublabName": "hub-lab-02-net",
-    "spoke04Name": "spoke-04",
+    "spoke__Name": "spoke-",
+    "spoke04Name": "[format('{0}04', variables('spoke__Name'))]",
     "firewallName": "lab-firewall-02",
     "firewallIPName": "lab-firewall-02-ip",
     "bastionName": "lab-bastion-02",
@@ -108,9 +125,177 @@
       }
     },
     {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}05', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.5.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.5.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.5.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}06', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.6.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.6.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.6.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}07', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.7.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.7.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.7.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}08', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.8.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.8.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.8.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}09', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.9.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.9.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.9.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}10', variables('spoke__Name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.15.10.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.15.10.0/26"
+            }
+          },
+          {
+            "name": "services",
+            "properties": {
+              "addressPrefix": "10.15.10.64/26"
+            }
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2019-09-01",
-      "name": "[format('{0}/hub-to-spoke-04', variables('hublabName'))]",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-04')]",
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
@@ -128,7 +313,7 @@
     {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2019-09-01",
-      "name": "[format('{0}/spoke-04-to-hub', variables('spoke04Name'))]",
+      "name": "[format('{0}/{1}', variables('spoke04Name'), 'spoke-04-to-hub')]",
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
@@ -144,6 +329,235 @@
       ]
     },
     {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-05')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}05', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}05', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}05', variables('spoke__Name')), 'spoke-05-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}05', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-06')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}06', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}06', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}06', variables('spoke__Name')), 'spoke-06-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}06', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-07')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}07', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}07', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}07', variables('spoke__Name')), 'spoke-07-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}07', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-08')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}08', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}08', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}08', variables('spoke__Name')), 'spoke-08-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}08', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-09')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}09', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}09', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}09', variables('spoke__Name')), 'spoke-09-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}09', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', variables('hublabName'), 'hub-to-spoke-10')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', format('{0}10', variables('spoke__Name')))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}10', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployAdditionalSpokes')]",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2019-09-01",
+      "name": "[format('{0}/{1}', format('{0}10', variables('spoke__Name')), 'spoke-10-to-hub')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('hublabName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', format('{0}10', variables('spoke__Name')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deployFirewall')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('firewallIPName')]",
@@ -156,6 +570,7 @@
       }
     },
     {
+      "condition": "[parameters('deployFirewall')]",
       "type": "Microsoft.Network/azureFirewalls",
       "apiVersion": "2019-09-01",
       "name": "[variables('firewallName')]",
@@ -185,6 +600,7 @@
       ]
     },
     {
+      "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('bastionIPName')]",
@@ -197,6 +613,7 @@
       }
     },
     {
+      "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/bastionHosts",
       "apiVersion": "2019-09-01",
       "name": "[variables('bastionName')]",
@@ -325,6 +742,7 @@
       ]
     },
     {
+      "condition": "[parameters('deployGateway')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('vnetGatewayIPName')]",
@@ -337,6 +755,7 @@
       }
     },
     {
+      "condition": "[parameters('deployGateway')]",
       "type": "Microsoft.Network/virtualNetworkGateways",
       "apiVersion": "2019-09-01",
       "name": "[variables('vnetGatewayName')]",
