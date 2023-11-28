@@ -4,6 +4,8 @@ In this solution I show how to publish through Azure Firewall an SFTP endpoint d
 
 The service is exposed by the Azure Firewall public IP.
 
+> Exposing an SFTP server through a firewall, rather than directly exposing it to the public, adds an additional layer of security. An Azure firewall can be configured to only allow certain types of traffic to pass through to the SFTP server, reducing the attack surface and making it more difficult for attackers to exploit vulnerabilities. Additionally, a firewall can monitor and log traffic, providing valuable information for detecting and responding to security incidents. It is generally considered a best practice to use a firewall to protect any publicly accessible server.
+
 The scenario is deployed into a Hub and Spoke network topology context. Specifically, the virtual network that hosts the Azure Storage is different from the virtual network that hosts the Azure Firewall.
 
 In this configuration, inbound SFTP traffic goes through both Azure Firewall, the peering, the spoke and finally the Azure Storage thanks to the private endpoint.
