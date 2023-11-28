@@ -94,13 +94,14 @@ The ARM template [any-to-any](any-to-any-bicep/any-to-any.json) deploys:
   * allows all remaining HTTP(S) outbound traffic
 
 the ARM template [hub-02](hub-02-bicep/hub-02.json) deploys:
-* 2 Azure Virtual Networks:
+* 8 Azure Virtual Networks:
     * `hub-lab-02-net` with 4 subnets:
         * default subnet: this subnet is empty
         * AzureFirewallSubet: this subnet is used by Azure Firewall
         * AzureBastionSubnet: this subnet is used bu Azure Bastion
         * GatewaySubnet: this subnet is used by Azure Gateway
     * `spoke-04` with 2 subnet used to connect spoke-04-vm machine
+    * `spoke-05` ... `10` additional spokes, with 2 subnets each
 * An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
 * An Azure Firewall **standard** resource that provide a con-premiseic inspection.
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
