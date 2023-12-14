@@ -33,7 +33,7 @@ The "playground" is composed by:
   * two simulated on-premise architectures, deployed in 2 different regions, composed by network, client machine(s) and a gateway
 
 ## Deploy to Azure
-You can use the following button to deploy the demo to your Azure subscription:
+You can use the following buttons to deploy the demo environment to your Azure subscription:
 
 | | Available playgrounds| &nbsp; |
 |---|---|---|
@@ -45,12 +45,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 |5| the HUB 02 playground<br/><sub>deploys `hub-lab-02-net` and spoke `04` `05` `06` `07` `08` `09` `10`</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
 
 ## Architecture
-This diagram shows a detailed version with also all subnets, virtual machines, NVAs, IPs and Firewalls.
-<br/>![Architecture](images/architecture.png)
-
-_Download a [Visio file](images/hub-and-spoke-arc-drawing(s).vsdx) of this architecture._
-
-the ARM template [hub-01-bicep](hub-01-bicep/hub-01.json) deploys:
+ARM template [hub-01-bicep](hub-01-bicep/hub-01.json) "_the HUB playground_" deploys:
 * 4 Azure Virtual Networks:
     * `hub-lab-net` located in `west europe` with 4 subnets:
         * default subnet: this subnet is used to connect the hub-vm-01 machine
@@ -68,7 +63,11 @@ the ARM template [hub-01-bicep](hub-01-bicep/hub-01.json) deploys:
 * `spoke-02-vm`: a Windows Server virtual machine that simulates a server located in the `spoke-02` vnet 
 * `spoke-03-vm`: a Linux virtual machine that simulates a server located in the `spoke-03` vnet
 
-The ARM template [on-prem](on-prem-bicep/on-prem.json) deploys:
+![hub-01](images/architecture-hub-01.png)
+
+_Download a [draw.io file](images/architecture.drawio) of this schema._
+
+ARM template [on-prem](on-prem-bicep/on-prem.json) "_ON PREMISES_" deploys:
 * `on-prem-net`: an Azure Virtual Network located in `west France` with 3 subnets
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
@@ -77,7 +76,11 @@ The ARM template [on-prem](on-prem-bicep/on-prem.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `w10-onprem-vm`: A Windows 10 VM with the objective to simulate a desktop client in an on-premise location
 
-The ARM template [on-prem-2](on-prem-2-bicep/on-prem-2.json) deploys:
+![on-premises](images/architecture-on-premises.png)
+
+_Download a [draw.io file](images/architecture.drawio) of this schema._
+
+ARM template [on-prem-2](on-prem-2-bicep/on-prem-2.json) "ON PREMISES 2" deploys:
 * `on-prem-2-net`: an Azure Virtual Network located in `west central Germany` with 3 subnets
     * default subnet: this subnet is used to connect the w10-onprem-vm machine
     * AzureBastionSubnet: this subnet is used bu Azure Bastion
@@ -86,14 +89,11 @@ The ARM template [on-prem-2](on-prem-2-bicep/on-prem-2.json) deploys:
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `lin-onprem-vm`: A linux VM with the objective to simulate a linux client in an on-premise location
 
-The ARM template [any-to-any](any-to-any-bicep/any-to-any.json) deploys:
-* 2 routing tables that forward all spokes traffic to the firewall
-* 1 IP Group and one Azure Firewall policy that:
-  * allows spoke-to-spoke communication
-  * block certain sites using web categories: nudity, Child Inappropriate, pornography
-  * allows all remaining HTTP(S) outbound traffic
+![on-premises-2](images/architecture-on-premises-2.png)
 
-the ARM template [hub-02](hub-02-bicep/hub-02.json) deploys:
+_Download a [draw.io file](images/architecture.drawio) of this schema._
+
+ARM template [hub-02](hub-02-bicep/hub-02.json) "the HUB 02 playground" deploys:
 * 8 Azure Virtual Networks:
     * `hub-lab-02-net` located in `north europe` with 4 subnets:
         * default subnet: this subnet is empty
@@ -106,6 +106,18 @@ the ARM template [hub-02](hub-02-bicep/hub-02.json) deploys:
 * An Azure Firewall **standard** resource that provide a con-premiseic inspection.
 * An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
 * `spoke-04-vm`: a Windows Server virtual machine that simulates a server located in the `spoke-04` landing zone
+
+
+![hub-02](images/architecture-hub-02.png)
+
+_Download a [draw.io file](images/architecture.drawio) of this schema._
+
+The ARM template [any-to-any](any-to-any-bicep/any-to-any.json) deploys:
+* 2 routing tables that forward all spokes traffic to the firewall
+* 1 IP Group and one Azure Firewall policy that:
+  * allows spoke-to-spoke communication
+  * block certain sites using web categories: nudity, Child Inappropriate, pornography
+  * allows all remaining HTTP(S) outbound traffic
 
 The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.**est solution**
 All machines have the same account parameters (as following):
