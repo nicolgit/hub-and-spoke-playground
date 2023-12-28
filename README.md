@@ -136,7 +136,7 @@ For each scenario you have:
 
 | | scenario description | step-by-step solution |
 |---|---|---|
-| 1 | Configure the environment to allow VM in any spoke to communicate with any VM in any other spoke | solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)<br/> solution using [azure virtual gateway](scenarios/ping-any-to-any-gateway.md) 
+| 1 | Configure the environment to allow VM in any spoke to communicate with any VM in any other spoke | solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)<br/> solution using [azure virtual gateway](scenarios/ping-any-to-any-gateway.md)<br/> solution using [azure virtual network manager](scenarios/ping-any-to-any-avnm.md) 
 | 2| Expose on a public IP, through the Firewall, `spoke-01-vm` and `spoke-02-vm `RDP port (3389) | solution using [azure firewall dnat](scenarios/dnat-01-02.md)
 | 3 | Connect `on-prem-net` with `hub-lab-net` using a vNet-to-vNet Azure Gateway's Connection | solution [on-premise vnet-to-vnet](scenarios/vnet-to-vnet.md)<br/>solution [on-premise2 vnet-to-vnet-2](scenarios/vnet-to-vnet.md)
 | 4 | Connect `on-prem-net` with `hub-lab-net` using a Site-to-Site (IPSec) Connection | solution with [gateway-ipsec](scenarios/ipsec.md)<br/> solution with [gateway-ipsec active-active](scenarios/ipsec-active-active.md)<br/> solution with [gateway-ipsec in dual redundancy](scenarios/ipsec-dual-redundancy.md)<br/> solution with [multiple VPN devices](scenarios/ipsec-multiple-vpn-device.md) [ * DRAFT * ]

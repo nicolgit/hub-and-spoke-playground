@@ -67,3 +67,8 @@ Create the following route table in `north europe`: `spokes-ne-to-hub-routes`
 
 ## Test Solution
 Test connections using remote desktop client and ssh from one machine to another.
+
+## More information
+
+* Azure [Virtual Network Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways)
+* Configure VPN [Gateway Transit](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit) for networks in peering

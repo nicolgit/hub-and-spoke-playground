@@ -7,7 +7,7 @@ In the Hub and Spoke model, the **routing between different Spokes is a signific
 
 There are 3 main approaches to allow this traffic:
 
-* Direct spokes peering
+* Direct spokes peering (implemented by-hand or automated with a Virtual Networks Manager)
 * Virtual Network Gateway in the Hub
 * Firewall in the Hub
 
