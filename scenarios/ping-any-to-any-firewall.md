@@ -1,4 +1,4 @@
-# SOLUTION: Allows machines in ANY spoke to communicate with ANY machine in ANY other spoke
+# SOLUTION: Allows machines in ANY spoke to communicate with ANY machine in ANY other spoke (Azure Firewall)
 
 In the dynamic realm of cloud computing, efficiently managing and scaling your networks are of paramount importance.
 An integral part of this network management is setting up a 'Hub and Spoke' topology and enabling connectivity between spokes.
