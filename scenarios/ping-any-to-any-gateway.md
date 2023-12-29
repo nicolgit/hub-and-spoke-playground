@@ -41,9 +41,9 @@ Create the following route table in `west europe`: `spokes-we-to-hub-routes`
 
 | Name | Address Prefix | Next hop type | Next hop IP addr |
 |---|---|---|---|
-| to-spoke-01 | 10.13.1.0/24 | Virtual Appliance | 10.12.3.4 |
-| to-spoke-02 | 10.13.2.0/24 | Virtual Appliance | 10.12.3.4 |
-| to-spoke-03 | 10.13.3.0/24 | Virtual Appliance | 10.12.3.4 |
+| to-spoke-01 | 10.13.1.0/24 | Virtual network gateway | - |
+| to-spoke-02 | 10.13.2.0/24 | Virtual network gateway | - |
+| to-spoke-03 | 10.13.3.0/24 | Virtual network gateway | - |
 
 
 | subnet Name | Virtual Network |
@@ -57,8 +57,8 @@ Create the following route table in `north europe`: `spokes-ne-to-hub-routes`
 
 | Name | Address Prefix | Next hop type | Next hop IP addr |
 |---|---|---|---|
-| to-spoke-01 | 10.13.1.0/24 | Virtual Appliance | 10.12.3.4 |
-| to-spoke-02 | 10.13.2.0/24 | Virtual Appliance | 10.12.3.4 |
+| to-spoke-01 | 10.13.1.0/24 | Virtual network gateway | - |
+| to-spoke-02 | 10.13.2.0/24 | Virtual network gateway | - |
 
 | subnet Name | Virtual Network |
 |---|---|
