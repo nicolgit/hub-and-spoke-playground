@@ -18,7 +18,7 @@ The resulting overall architecture is shown in the following schema.
 _download drawio version of this image [here](../images/app-gateway-01.drawio)._
 
 ## Pre-requisites
-In order to apply this solution you have to deploy the `hub-01` and the `any-to-any` routing, so that you have a fully configured hub-and-spoke network with firewall and routing configured.
+In order to apply this solution you have to deploy the `hub-01` and the `any-to-any` routing, so that you have a fully configured hub-and-spoke network with firewall and routing between spokes.
 
 ## Solution
 
