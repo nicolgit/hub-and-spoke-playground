@@ -153,5 +153,8 @@ For each scenario you have:
 | 15 | Routing cross hubs without BGP | Solution with [Azure Firewall](scenarios/routing-without-bgp-fw.md) | 
 | 16 | Publish internal web app via Azure Application Gateway on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md) |
 | 17 | Publish internal SFTP endpoint via Azure Firewall | Solution with [Azure Firewall](scenarios/sftp.md) |
+| 18 | deploy an Azure OpenAI service in an hub-and-spoke network topology and publish it internally via a private Azure API Management | Solution with [APIM and AOAI](scenarios/aoai.md) 
+
+
 
 Whould you like to see a scenario not listed? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues])!
