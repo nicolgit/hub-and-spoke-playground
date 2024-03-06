@@ -1,6 +1,6 @@
-# SOLUTION: deploy an Azure OpenAI service in an hub-and-spoke network topology and publish it internally via a private Azure API Management
+# SOLUTION: deploy an Azure OpenAI service in a hub-and-spoke network topology and publish it internally via a private Azure API Management
 
-Azure OpenAI offers a suite of AI models and tools that help in developing applications that can understand and interpret human language. It's recommended to have a single OpenAI instance within an enterprise to streamline operations, reduce redundancy, and ensure consistent AI performance across multiple applications.
+Azure OpenAI offers a suite of AI models and tools that help in developing applications that can understand and interpret human language. It's recommended to have a single OpenAI instance within an enterprise to streamline operations, reduce redundancy, costs and ensure consistent AI performance across multiple applications.
 
 A common API Manager plays a pivotal role in the enterprise ecosystem. It provides a unified interface for designing, building, managing, and scaling APIs, thereby enhancing the interconnectivity between different applications. The benefits include improved efficiency, better control over data flow, and enhanced security through standardized protocols.
 
@@ -12,26 +12,26 @@ Specifically:
 * All traffic through the spokes is made possible by an appropriately configured Azure Firewall.
 * Azure OpenAI Service is exclusively exposed within a network thanks to an Azure Private Endpoint.
 * APIM is configured in virtual network integration `internal mode`, this means that API Management deployment is set up inside a Virtual Network having an **Intranet Facing Endpoint only**.
-* Open AI, APIM, and the client are configured on 3 different spokes, and all traffic is orchestrated through an Azure Firewall in the HUB.
+* Open AI, APIM, and the client are configured on 3 different spokes and all traffic is orchestrated through an Azure Firewall in the HUB.
 
 
 In this configuration, APIM is a pivotal element of the entire cloud infrastructure, therefore potentially accessible both from on-premise (via VPN/Express route) and from additional spokes in the same network. 
 
-> Similarly, a configuration of this type allows exposing any API present in one of the other spokes or even present on-premise, if the routing allows it.
+> Similarly, a configuration of this type allows exposing any API available in one of the other spokes or even available on-premise, if the routing allows it.
 
 OpenAI configuration through internal exposure requires the following steps:
 
-* expose the service via an Azure Private endpoint
+* expose the OpenAI service via an Azure Private endpoint
 * close public access
 * configure the internal DNS to resolve the public name of the API towards the IP of the service's private endpoint
 * link the private DNS zone to all networks that need to access this API, in our case `spoke-01`, `spoke-02` (APIM), and `hub-net`.
 
-The configuration of APIM, on the other hand, is more complex. APIM is a service that is composed of, and interacts with numerous other Azure infrastructure components, so the private deployment exposes us to challenges that we need to solve:
+APIM configuration, on the other hand, is more complex. APIM is a service that is composed of, and interacts with numerous other Azure infrastructure components, so the private deployment exposes us to challenges that we need to solve:
 
-* A network security group attached to the APIM subnet is required to explicitly allow inbound connectivity, because the load balancer used internally by API Management is secure by default and rejects all inbound traffic.
-* enable service endpoints in the subnet to dependent services such as  Key Vault, Azure Storag, Event Hubs and Azure SQL.
-* A Standard SKU public IPv4 address. The public IP address in this configuration is used only for management operations
-* a Private DNS zone is also required to resolve internal APIM endpoints
+* A **network security group** attached to the APIM subnet is required to explicitly allow inbound connectivity, because the load balancer used internally by API Management is secure by default and rejects all inbound traffic.
+* **service endpoints** in the subnet to dependent services such as  Key Vault, Azure Storag, Event Hubs and Azure SQL is also required.
+* A Standard SKU **public IPv4** address. The public IP address in this configuration is used only for management operations
+* a **Private DNS zone** is also required to resolve internal APIM endpoints
 
 the final architecture is shown in the image below.
 
@@ -72,11 +72,11 @@ Network
   * Integrate with private dns zone: No
 * click [create]
 
+Take note ok the `KEY1` found in Resource Management > Keys and Endpoint > KEY1.
+
 Go to Azure Portal > private DNS zone > create
 * name: `aoai-01.openai.azure.com`
 * Click [Create] 
-
-Take note ok the `KEY1` found in Resource Management > Keys and Endpoint > KEY1.
 
 Go to Azure Portal > Private DNS zones > `aoai-01.openai.azure.com` > + Record set
 
@@ -98,7 +98,7 @@ Go to Virtual Network links > Add
 ### Deploy a model
 Go to Portal > Azure AI | Azure OpenAI > `aoai-01` > Azure Open AI Studio > Deplyments > Create
 
-* Model: `gpt-35-turbo-instruct`
+* Model: `gpt-35-turbo`
 * Name `mygpt`
 * click [Create]
 
@@ -121,22 +121,19 @@ Go top Azure Portal > Network security groups > create
 
 add the following inbound rules
 
-| priority | name | port | protocol | source | destination | action |
+| priority | name | port | protocol | source/service tag | destination/service tag | action |
 |----|----|----|----|----|----|----|
 | 1000 |apimanagement-inbound | 3443| TCP | ApiManagement | Virtual Network| Allow
 | 1100 |loadbalancer-inbound | 6390| TCP | AzureLoadBalancer | Virtual Network| Allow
 
 add the following outbound rules
 
-| priority | name | port | protocol | source | destination | action |
+| priority | name | port | protocol | source/service tag| destination/service tag | action |
 |----|----|----|----|----|----|----|
 | 1000 |to-storage | 443| TCP | Virtual Network | Storage| Allow
 | 1100 |to-sqlserver | 1443| TCP | Virtual Network | Sql| Allow
 | 1200 |to-keyvault | 443| TCP | Virtual Network | KeyVault| Allow
 | 1300 |to-azuremonitor | 1886,443| TCP | Virtual Network | Azure Monitor| Allow
-
-
-
 
 Go to Azure Portal > Network security groups > `apiman-nsg` > subnets > associate:
 * virtual network: `spoke-02`
@@ -151,10 +148,10 @@ Go to Azure Portal > Route Table > Create
 
 Go to Azure Portal > Route Table > `apim-02-to-firewall` > Routes > Add
 
-| Name          | Addr prefix   | next hope type    | next hope ip addr |
-|----|----|----|----|
-| apim2internet | ApiManagement | internet          |                   |
-| 2firewall     | 0.0.0.0/0     | virtual appliance | 10.12.3.4         |
+| Name          | Type           | Addr prefix   | next hope type    | next hope ip addr |
+|----|----|---|----|----|
+| apim2internet | Service Tag    | ApiManagement | internet          |                   |
+| 2firewall     | Ip Addresses  |0.0.0.0/0     | virtual appliance | 10.12.3.4         |
 
 Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > `services`
 
@@ -180,7 +177,7 @@ Basics
 * Name: `apiman-02`
 * Organization: `contoso`
 * Organization email: `admin@contoso.com`
-* Tier: Developer
+* Tier: `Developer`
 * click [create]
 
 Go to Azure Portal > private DNS zone > create
@@ -199,13 +196,13 @@ Go to Azure Portal > Private DNS zones > `azure-api.net` > + Record set
 
 
 Go to Virtual Network links > Add
-* name: `spoke-01-link`
+* name: `spoke-03-link`
 * subnet `spoke-03`
 * click [OK]
 
 Go to Virtual Network links > Add
 * name: `spoke-02-link`
-* subnet `spoke-03`
+* subnet `spoke-02`
 * click [OK]
 
 Go to Virtual Network links > Add
@@ -213,17 +210,17 @@ Go to Virtual Network links > Add
 * subnet `hub-lab-net`
 * click [OK]
 
-
 Go to Azure Portal > API Management Service > `apiman-02` > Network > Virtual Network:
 
 * Virtual Network: `internal`
 * Location: `West Europe`
 * Virtual Network: `spoke-02`
+* Management public IP address: `apiman-ip-02`
 * subnet : `services`
 * click [save]
 
-
 ### Import OpenAI Rest interface in APIM using its swagger specification
+
 Azure OpenAI provides you with REST API references, that can easily be imported into Azure API Management. In this scenario we will expose via APIM the **completition endpoint**.
 
 * download the swagger specification (`swagger.json`) for the API version you want to expose from [the official AOAI endpoint swagger specifications](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions) i.e. `2022-12-01`
