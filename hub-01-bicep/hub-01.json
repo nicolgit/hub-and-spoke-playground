@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "6458223786527796863"
+      "version": "0.28.1.47646",
+      "templateHash": "9202230821682259030"
     }
   },
   "parameters": {
@@ -454,10 +454,10 @@
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "Basic"
+        "name": "Standard"
       },
       "properties": {
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {

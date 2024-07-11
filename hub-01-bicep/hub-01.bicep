@@ -253,12 +253,13 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
     ]
   }
 }
+
 //VPN GATEWAY
 resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {
   name: vnetGatewayIPName
   location: location
-  sku: { name: 'Basic' }
-  properties: { publicIPAllocationMethod: 'Dynamic' }
+  sku: { name: 'Standard' }
+  properties: { publicIPAllocationMethod: 'Static' }
 }
 
 resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (deployGateway) {
