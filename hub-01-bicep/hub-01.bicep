@@ -257,7 +257,7 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
 resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {
   name: vnetGatewayIPName
   location: location
-  sku: { name: 'Basic' }
+  sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Dynamic' }
 }
 
