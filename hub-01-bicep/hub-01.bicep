@@ -279,7 +279,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
     vpnType: 'RouteBased'
     enableBgp: false
     bgpSettings: null
-    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
+    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
   }
 }
 //END VPN GATEWAY
