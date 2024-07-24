@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9202230821682259030"
+      "version": "0.29.47.4906",
+      "templateHash": "456739962101365071"
     }
   },
   "parameters": {
@@ -485,8 +485,8 @@
         "enableBgp": false,
         "bgpSettings": null,
         "sku": {
-          "name": "VpnGw1",
-          "tier": "VpnGw1"
+          "name": "VpnGw1AZ",
+          "tier": "VpnGw1AZ"
         }
       },
       "dependsOn": [
