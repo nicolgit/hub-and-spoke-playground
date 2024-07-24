@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "16649466657219497723"
+      "version": "0.29.47.4906",
+      "templateHash": "9194815087275431510"
     }
   },
   "parameters": {
@@ -24,6 +24,22 @@
     "virtualMachineSKU": {
       "type": "string",
       "defaultValue": "Standard_D2s_v3"
+    },
+    "deployBastion": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "vnetGatewayDnsLabel": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "enableBgp": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "localGatewayFqdn": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -35,7 +51,9 @@
     "vmOnPremName": "W11-onprem",
     "autoshutdownName": "[format('shutdown-computevm-{0}', variables('vmOnPremName'))]",
     "vnetGatewayIPName": "onprem-gateway-virtualip",
-    "vnetGatewayName": "on-prem-gateway"
+    "vnetGatewayName": "on-prem-gateway",
+    "localGatewayName": "lab-local-gateway",
+    "subnets": "[concat(createArray(createObject('name', 'GatewaySubnet', 'properties', createObject('addressPrefix', '192.168.3.0/24')), createObject('name', 'DefaultSubnet', 'properties', createObject('addressPrefix', '192.168.1.0/24'))), if(parameters('deployBastion'), createArray(createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '192.168.2.0/24'))), createArray()))]"
   },
   "resources": [
     {
@@ -49,29 +67,11 @@
             "192.168.0.0/16"
           ]
         },
-        "subnets": [
-          {
-            "name": "GatewaySubnet",
-            "properties": {
-              "addressPrefix": "192.168.3.0/24"
-            }
-          },
-          {
-            "name": "AzureBastionSubnet",
-            "properties": {
-              "addressPrefix": "192.168.2.0/24"
-            }
-          },
-          {
-            "name": "DefaultSubnet",
-            "properties": {
-              "addressPrefix": "192.168.1.0/24"
-            }
-          }
-        ]
+        "subnets": "[variables('subnets')]"
       }
     },
     {
+      "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2019-09-01",
       "name": "[variables('bastionIPName')]",
@@ -84,6 +84,7 @@
       }
     },
     {
+      "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/bastionHosts",
       "apiVersion": "2019-09-01",
       "name": "[variables('bastionName')]",
@@ -217,15 +218,15 @@
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "Basic"
+        "name": "Standard"
       },
       "properties": {
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2022-09-01",
       "name": "[variables('vnetGatewayName')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -244,16 +245,39 @@
         ],
         "gatewayType": "Vpn",
         "vpnType": "RouteBased",
-        "enableBgp": false,
+        "enableBgp": "[parameters('enableBgp')]",
+        "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', 65510), null())]",
         "sku": {
-          "name": "VpnGw1",
-          "tier": "VpnGw1"
+          "name": "VpnGw1AZ",
+          "tier": "VpnGw1AZ"
         }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('onPremNetworkName'))]",
         "[resourceId('Microsoft.Network/publicIPAddresses', variables('vnetGatewayIPName'))]"
       ]
+    },
+    {
+      "condition": "[parameters('enableBgp')]",
+      "type": "Microsoft.Network/localNetworkGateways",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('localGatewayName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "bgpSettings": {
+          "asn": 65511,
+          "bgpPeeringAddress": "192.168.3.254"
+        },
+        "localNetworkAddressSpace": {
+          "addressPrefixes": [
+            "10.12.0.0/16",
+            "10.13.1.0/24",
+            "10.13.2.0/24",
+            "10.13.3.0/24"
+          ]
+        },
+        "fqdn": "[parameters('localGatewayFqdn')]"
+      }
     }
   ]
 }

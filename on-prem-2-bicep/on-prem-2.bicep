@@ -132,8 +132,8 @@ resource shutdownVm01 'microsoft.devtestlab/schedules@2018-09-15' = {
 resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
   name: vnetGatewayIPName
   location: location
-  sku: { name: 'Basic'}
-  properties: { publicIPAllocationMethod: 'Dynamic' }
+  sku: { name: 'Standard'}
+  properties: { publicIPAllocationMethod: 'Static' }
 }
 
 resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {  
@@ -152,7 +152,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
     enableBgp: false
-    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
+    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
   }
 }
 

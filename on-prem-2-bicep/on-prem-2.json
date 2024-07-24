@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "10765890670364639131"
+      "version": "0.29.47.4906",
+      "templateHash": "10756339369523102018"
     }
   },
   "parameters": {
@@ -222,10 +222,10 @@
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "Basic"
+        "name": "Standard"
       },
       "properties": {
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
@@ -251,8 +251,8 @@
         "vpnType": "RouteBased",
         "enableBgp": false,
         "sku": {
-          "name": "VpnGw1",
-          "tier": "VpnGw1"
+          "name": "VpnGw1AZ",
+          "tier": "VpnGw1AZ"
         }
       },
       "dependsOn": [

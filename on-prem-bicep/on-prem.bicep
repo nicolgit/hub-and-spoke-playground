@@ -137,16 +137,11 @@ resource shutdownVm04 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2022-09-01' = {
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
   name: vnetGatewayIPName
   location: location
-  sku: { name: 'Basic' }
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-    dnsSettings: {
-      domainNameLabel: vnetGatewayDnsLabel == '' ? null : vnetGatewayDnsLabel
-    }
-  }
+  sku: { name: 'Standard' }
+  properties: { publicIPAllocationMethod: 'Static'}
 }
 
 resource vnetGateway1 'Microsoft.Network/virtualNetworkGateways@2022-09-01' = {
@@ -168,7 +163,7 @@ resource vnetGateway1 'Microsoft.Network/virtualNetworkGateways@2022-09-01' = {
     bgpSettings: enableBgp ? {
       asn: 65510
     } : null
-    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
+    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
   }
 }
 
