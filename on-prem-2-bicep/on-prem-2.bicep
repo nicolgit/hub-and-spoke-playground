@@ -34,7 +34,7 @@ resource onpremvnet2 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   }
 }
 
-resource bastionIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource bastionIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = {  
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
@@ -129,7 +129,7 @@ resource shutdownVm01 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {  
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = {  
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Standard'}
@@ -152,7 +152,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = {
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
     enableBgp: false
-    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
+    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
 

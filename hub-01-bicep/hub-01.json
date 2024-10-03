@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "456739962101365071"
+      "version": "0.30.3.12046",
+      "templateHash": "1441154967098512691"
     }
   },
   "parameters": {
@@ -309,7 +309,7 @@
     {
       "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('bastionIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -358,7 +358,7 @@
     },
     {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('firewallIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -371,7 +371,7 @@
     {
       "condition": "[equals(parameters('firewallTier'), 'Basic')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('firewallManagementIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -450,7 +450,7 @@
     {
       "condition": "[parameters('deployGateway')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -485,8 +485,8 @@
         "enableBgp": false,
         "bgpSettings": null,
         "sku": {
-          "name": "VpnGw1AZ",
-          "tier": "VpnGw1AZ"
+          "name": "VpnGw1",
+          "tier": "VpnGw1"
         }
       },
       "dependsOn": [
