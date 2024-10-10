@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10756339369523102018"
+      "version": "0.30.23.60470",
+      "templateHash": "13167103641576727218"
     }
   },
   "parameters": {
@@ -23,7 +23,7 @@
     },
     "virtualMachineSKU": {
       "type": "string",
-      "defaultValue": "Standard_D2s_v3"
+      "defaultValue": "Standard_D2_v5"
     }
   },
   "variables": {

@@ -56,7 +56,7 @@ param username string = 'nicola'
 @secure()
 param password string = 'password.123'
 
-param virtualMachineSKU string = 'Standard_D2s_v3'
+param virtualMachineSKU string = 'Standard_D2_v5'
 
 
 var subnets = concat(

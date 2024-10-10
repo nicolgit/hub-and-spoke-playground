@@ -8,7 +8,7 @@ param deployAdditionalSpokes bool = false
 
 @secure()
 param password string = 'password.123'
-param virtualMachineSKU string = 'Standard_D2s_v3'
+param virtualMachineSKU string = 'Standard_D2_v5'
 
 var hublabName = 'hub-lab-02-net'
 var spoke__Name = 'spoke-'
