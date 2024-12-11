@@ -155,7 +155,7 @@ resource peeringSpoke03Hub 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubLabVnet.id } }
 }
 
-resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployBastion) {
+resource bastionHubIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployBastion) {
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
@@ -188,14 +188,14 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   }
 }
 
-resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = {
+resource firewallIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = {
   name: firewallIPName
   location: location
   sku: { name: 'Standard' }
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource firewallManagementIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (firewallTier == 'Basic') {
+resource firewallManagementIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (firewallTier == 'Basic') {
   name: firewallManagementIPName
   location: location
   sku: { name: 'Standard' }
@@ -255,7 +255,7 @@ resource firewallDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
 }
 
 //VPN GATEWAY
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployGateway) {
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Standard' }
@@ -279,7 +279,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
     vpnType: 'RouteBased'
     enableBgp: false
     bgpSettings: null
-    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
+    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }
 //END VPN GATEWAY

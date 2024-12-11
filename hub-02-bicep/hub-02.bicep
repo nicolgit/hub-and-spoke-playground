@@ -203,7 +203,7 @@ resource peeringSpokeHub10 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: { allowVirtualNetworkAccess: true, allowForwardedTraffic: true, allowGatewayTransit: false, useRemoteGateways: false, remoteVirtualNetwork: { id: hubvnet.id } }
 }
 
-resource firewallIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployFirewall) {  
+resource firewallIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployFirewall) {  
   name: firewallIPName
   location: location
   sku: { name: 'Standard' }
@@ -227,7 +227,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2019-09-01' = if (deployFire
   }
 }
 
-resource bastionIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployBastion) {  
+resource bastionIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployBastion) {  
   name: bastionIPName
   location: location
   sku: { name: 'Standard' }
@@ -319,7 +319,7 @@ resource shutdownVm04 'microsoft.devtestlab/schedules@2018-09-15' = {
   }
 }
 
-resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2019-09-01' = if (deployGateway) {  
+resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployGateway) {  
   name: vnetGatewayIPName
   location: location
   sku: { name: 'Standard'} 
@@ -342,6 +342,6 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' =  if
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
     enableBgp: false
-    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
+    sku: { name: 'VpnGw1', tier: 'VpnGw1' }
   }
 }

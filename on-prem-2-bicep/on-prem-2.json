@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "13167103641576727218"
+      "version": "0.30.3.12046",
+      "templateHash": "6960610076627198658"
     }
   },
   "parameters": {
@@ -77,7 +77,7 @@
     },
     {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('bastionIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -218,7 +218,7 @@
     },
     {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -251,8 +251,8 @@
         "vpnType": "RouteBased",
         "enableBgp": false,
         "sku": {
-          "name": "VpnGw1AZ",
-          "tier": "VpnGw1AZ"
+          "name": "VpnGw1",
+          "tier": "VpnGw1"
         }
       },
       "dependsOn": [

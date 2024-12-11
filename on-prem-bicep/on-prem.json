@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "8219932110962841027"
+      "version": "0.30.3.12046",
+      "templateHash": "11024973700785941829"
     }
   },
   "parameters": {
@@ -73,7 +73,7 @@
     {
       "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('bastionIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -214,7 +214,7 @@
     },
     {
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-08-01",
       "name": "[variables('vnetGatewayIPName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -248,8 +248,8 @@
         "enableBgp": "[parameters('enableBgp')]",
         "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', 65510), null())]",
         "sku": {
-          "name": "VpnGw1AZ",
-          "tier": "VpnGw1AZ"
+          "name": "VpnGw1",
+          "tier": "VpnGw1"
         }
       },
       "dependsOn": [
