@@ -15,12 +15,12 @@ create the following gateways
 
 | Name | IP Address | Address Space | Region |
 |---|---|---|---|
-|cloud-net | (hub-gateway-virtualip) | 10.0.0.0/8| West Europe |
-|onprem-net| (onprem-gateway-virtualip) | 192.168.0.0/16 | France Central |
+|`cloud-net` | `lab-gateway-ip` (hub gateway public ip) | 10.0.0.0/8| West Europe |
+|`onprem-net`| `onprem-gateway-virtualip` (onprem gateway public ip) | 192.168.0.0/16 | France Central |
 
 # connection onprem-to-cloud
 Open `on-prem-gateway`, go to Connections and add the following object
-* Connection Name: onprem-to-cloud
+* Connection Name: `onprem-to-cloud`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `on-prem-gateway`
 * Local Network Gateway: `cloud-net`
@@ -30,14 +30,14 @@ Open `on-prem-gateway`, go to Connections and add the following object
 
 # connection cloud-to-onprem
 Open `lab-gateway`, go to Connections and add the following object
-* Connection Name: cloud-to-onprem
+* Connection Name: `cloud-to-onprem`
 * Type: Site-to-Site (IPsec)
 * virtual Network Gateway:  `lab-gateway`
 * Local Network Gateway: `onprem-net`
 * Shared Key: `password.123`
 * IKE: IKEv2
 
-after few minutes, you will see, on  `on-prem-gateway` connections:
+after **few minutes**, you will see, on  `on-prem-gateway` connections:
 
 | Name | Status | Connection Type | Peer |
 |---|---|---|---|
@@ -50,6 +50,6 @@ and on `lab-gateway` connections:
 |cloud-to-onprem | connected  |Site-to-Site (IPsec)| onprem-net |
 
 ## Test solution
-Via bastion go to W10onprem (`192.168.1.4`) and open a RDP connection to hub-vm-01 (`10.12.1.4`).
+Via bastion go to `W11-onprem` (`192.168.1.4`) and open a RDP connection to hub-vm-01 (`10.12.1.4`).
 
 Do the same test also in the opposite direction.
