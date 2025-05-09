@@ -21,7 +21,88 @@ _Download a [draw.io file](../images/outbound-traffic-internet-firewall.drawio) 
 
 ## Pre-requisites
 
+In order to apply this solution, deploy the **hub** playground first.
 
 ## Solution
 
+### Create routing table in westeurope and associate it to spokes
+
+Go to Azure portal > route tables > click on Create
+* Region: `westeurope`
+* Name: `spokes-we-to-hub-routes`
+* Click CREATE
+
+Go to Azure Portal > route tables > `spokes-we-to-hub-routes` > routes > ADD
+* Name: `to-firewall`
+* Destination type: IP Address
+* IP Address: `0.0.0.0/0`
+* Next hop type: virtual appliance
+* next hop address: `10.12.3.4`
+* click CREATE
+
+Go to Azure Portal > route tables > `spokes-we-to-hub-routes` > subnets > associate
+|subnet name | virtual network |
+|------------|-----------------|
+| default    | spoke-01 |
+| default    | spoke-02 |
+| services   | spoke-01 |
+| services   | spoke-02 |
+
+### Create routing table in northeurope and associate it to spoke
+
+Go to Azure portal > route tables > click on Create
+* Region: `northeurope`
+* Name: `spokes-ne-to-hub-routes`
+* Click CREATE
+
+Go to Azure Portal > route tables > `spokes-ne-to-hub-routes` > routes > ADD
+* Name: `to-firewall`
+* Destination type: IP Address
+* IP Address: `0.0.0.0/0`
+* Next hop type: virtual appliance
+* next hop address: `10.12.3.4`
+* click CREATE
+
+Go to Azure Portal > route tables > `spokes-ne-to-hub-routes` > subnets > associate
+|subnet name | virtual network |
+|------------|-----------------|
+| default    | spoke-03 |
+| services   | spoke-03 |
+
+### Configure azure firewall policy
+
+Go to Azure Portal > Firewall Policies > Create
+* Name: `my-firewall-policy`
+* policy tier: premium
+* parent policy: none
+* Rules > Add a Rule Collection
+  * Name: `my-rule-collection`
+  * rule collection type: Network
+  * priority: `10000`
+  * rule collection action: allow
+  * rule name: `to-internet-rule`
+  * source type: ip address
+  * source: `10.13.1.0/24,10.13.2.0/24,10.13.3.0/24`
+  * protocol: TCP + UDP
+  * destination ports: `*`
+  * destination type: ip address
+  * destination: `*`
+  * add
+* create
+
+Go to Azure Portal > Firewall manager > Azure Firewall policies
+* select `my-firewall-policy`
+* manage association > associate vnets
+  * select `hub-lab-net`
+  * cick add
+
 ## Test solution
+
+Go to Azure portal > virtual machines > `spoke-01-vm` > connect via bastion
+
+Install and run Noisy as described in <https://nicolgit.github.io/install-and-run-noisy-on-azure-vm/> to generate traffic.
+
+Wait a couple of minutes then go to Azure Portal > firewall > `lab-firewall` > logs > query hub > network rule log data > run
+
+you will see the outbound traffic data to internet from `10.13.1.4` (`spoke-01-vm`)
+

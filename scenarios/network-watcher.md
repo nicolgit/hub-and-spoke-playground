@@ -15,7 +15,7 @@ Common NSG flow logs troubleshooting use cases include:
 
 ## Pre-requisites
 
-In order to apply this solution, deploy **hub** playground first.
+In order to apply this solution, deploy the **hub** playground first.
 
 ## Solution
 ### 01 - Create a Storage Account
