@@ -76,7 +76,20 @@ Go to Azure Portal > Firewall Policies > Create
 * policy tier: premium
 * parent policy: none
 * Rules > Add a Rule Collection
-  * Name: `my-rule-collection`
+  * Name: `rfc1918-collection`
+  * rule collection type: Network
+  * priority: `1000`
+  * rule collection action: deny
+  * rule name: `block-intranet-traffic`
+  * source type: ip address
+  * source: `10.13.1.0/24,10.13.2.0/24,10.13.3.0/24`
+  * protocol: TCP + UDP
+  * destination ports: `*`
+  * destination type: ip address
+  * destination: `10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`
+  * add
+* Rules > Add a Rule Collection
+  * Name: `internet-collection`
   * rule collection type: Network
   * priority: `10000`
   * rule collection action: allow
