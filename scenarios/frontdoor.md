@@ -1,17 +1,49 @@
-# SOLUTION: expose via Azure front door an internal web server located on vm on a spoke
+# SOLUTION: Expose via Azure Front Door an internal web server located on a VM on a spoke
 
-TO BE COMPLETED with the following information
+This scenario demonstrates how to securely expose an internal web server using Azure Front Door without directly exposing the VM it to the internet.
 
+Azure Front Door is a modern cloud Content Delivery Network (CDN) service that provides fast, reliable, and secure access to your global applications. 
+It operates at the edge of Microsoft's global network, directing web traffic to the fastest and most available application backend. 
+Front Door provides your users with a global, scalable, and secure entry point to your web applications.
 
-what is azure fornt door?
+Keeping the origin server (backend) private offers several security benefits:
 
-Why is important do not expose on internet the origin of an azure frontdoor endpoint
+1. **Reduced attack surface**: Prevents direct attacks on your origin infrastructure
+2. **DDoS protection**: Front Door helps mitigate DDoS attacks by absorbing traffic at the edge
+3. **Enhanced security posture**: Implements defense-in-depth by hiding your backend resources
+4. **Enforced traffic routing**: All traffic must pass through Front Door's security controls
+5. **Centralized WAF protection**: Web Application Firewall can filter malicious traffic at the edge
 
-Why to use Azure Frontdoor instead of Application Gateway
+Azure Frontdoor, Azure Application gateway and Azure Load balancers all allow to expose an internal resource on internet. When choose azure frontdoor vs Application gatewa or Azure load balancers?
 
-Why use Azure Frontdoor instead of a public load balancer
+Azure Frontdoor and Azure Application gateway, While both services provide WAF and routing capabilities, they have different strengths:
 
-the final architecture involvese the following resources
+- **Global vs Regional**: Front Door is a global service, while Application Gateway is regional
+- **Edge security**: Front Door filters traffic at Microsoft's edge locations worldwide
+- **Scalability**: Front Door auto-scales globally without manual intervention
+- **Protocol optimization**: Front Door optimizes HTTP/S protocols over Microsoft's global network
+- **Multi-region architecture**: Better suited for applications with global reach and multi-region backends
+
+Azure Front Door provides also several advantages over a simple public load balancer:
+
+- **Content delivery network**: Caches content closer to users for faster delivery
+- **SSL offloading**: Handles SSL/TLS termination at the edge
+- **Intelligent routing**: Directs users to closest/healthiest backend
+- **Security features**: Built-in WAF capabilities to protect against web vulnerabilities
+- **Global health probes**: Continuous monitoring of backend health across regions
+
+The final architecture involves the following resources:
+
+- Azure Front Door Premium with WAF
+- Private Link Service
+- Internal Load Balancer
+- Virtual Machine in a spoke network running a web server
+
+as shown below:
+
+![frontdoor architecture](../images/frontdoor.png)
+
+_Download a [draw.io file](../images/frontdoor.drawio) of this schema._
 
 ## Pre-requisites
 
@@ -24,7 +56,7 @@ For this sample I have installed all hub's resources in `northeurope`.
 
 Go to Azure Portal > virtual machines > spoke-01-vm > connect via bastion
 
-once logged open powershell and type the following:
+Once logged in, open PowerShell and type the following:
 
 ``` powershell
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
@@ -32,111 +64,111 @@ Remove-Item -Path 'C:\inetpub\wwwroot\iisstart.htm'
 Add-Content -Path 'C:\inetpub\wwwroot\iisstart.htm' -Value $($env:computername)
 ```
 
-### create an internal load balancer
+### Create an internal load balancer
 
 Go to Azure Portal > Load balancers > Create > standard load balancer
 
 #### Basic
-* name: `nlb-01`
-* region: `northeurope`
+* Name: `nlb-01`
+* Region: `northeurope`
 
 #### Frontend IP configuration
 
 Add frontend IP Configuration:
-* name: `nlb-frontend-01`
-* IP version: ipv4
-* virtual network: `spoke-01`
-* subnet: `default`
-* assignment: dynamic
-* availability zone: zone redundant
+* Name: `nlb-frontend-01`
+* IP version: IPv4
+* Virtual network: `spoke-01`
+* Subnet: `default`
+* Assignment: Dynamic
+* Availability zone: Zone redundant
 
 
 #### Backend pools
 
 Add a backend pool: 
-* name: `nlb-backend-01`
-* backend pool configuration: NIC
-  * resource name: `spoke-01-vm`
-* click **SAVE**
+* Name: `nlb-backend-01`
+* Backend pool configuration: NIC
+  * Resource name: `spoke-01-vm`
+* Click **SAVE**
 
-#### inbound rules
+#### Inbound rules
 
 Add a load balancing rule:
 
-* name: `lb-rule-01`
-* ip version: v4
-* frontend ip address: `nlb-frontend-01`
-* backend pool: `nlb-backend-01`
-* protocol: TCP
-* inbound port: `80`
-* backend port: `80`
-* create a new health probe:
-  * name: `probe-01`
-  * protocol: http
-  * port: `80`
-  * path: `/`
-  * interval: `5` sec
-  * click **SAVE**
-* click **SAVE**
+* Name: `lb-rule-01`
+* IP version: IPv4
+* Frontend IP address: `nlb-frontend-01`
+* Backend pool: `nlb-backend-01`
+* Protocol: TCP
+* Inbound port: `80`
+* Backend port: `80`
+* Create a new health probe:
+  * Name: `probe-01`
+  * Protocol: HTTP
+  * Port: `80`
+  * Path: `/`
+  * Interval: `5` sec
+  * Click **SAVE**
+* Click **SAVE**
 
-#### outbound rule
+#### Outbound rule
 
-none.
+None.
 
 #### Review and create
 
-click **CREATE**
+Click **CREATE**
 
-### create a private link service
+### Create a Private Link Service
 
-Go to Azure Portal > private link services > create
+Go to Azure Portal > Private Link Services > Create
 
 #### Basics
 * Name: `pls-nlb-01`
 * Region: `northeurope`
 
-#### outbound settings
+#### Outbound settings
 * Load Balancer: `nlb-01`
-* Load balancer frontend ip address: `10.13.1.5`
-* source nat subnet: `default`
+* Load balancer frontend IP address: `10.13.1.5`
+* Source NAT subnet: `default`
 
-#### review and create
-click **CREATE**.
+#### Review and create
+Click **CREATE**.
 
-### create an Azure Front Door
+### Create an Azure Front Door
 
 Go to Azure Portal > Front Doors > Create > Azure Front Door/quick create
 
-###
+#### Configuration
 * Name: `afd-01`
-* Tier: premium
+* Tier: Premium
 * Endpoint name: `afd-01`
-* sku: standard
-* origin type: custom
-* origin host name: `10.13.1.5` (internal load balancer, front end ip)
-* private link service: ENABLE
-* select private link: in my directory
-* resource: `pls-nlb-01`
+* SKU: Standard
+* Origin type: Custom
+* Origin host name: `10.13.1.5` (internal load balancer, front end IP)
+* Private link service: ENABLE
+* Select private link: In my directory
+* Resource: `pls-nlb-01`
 * Request message: `please approve me`
-* WAF policy: create new:
+* WAF policy: Create new:
   * Name: `afdwaf01`
-  * bot protection: ON
-  * click **CREATE**
-* click **CREATE**
+  * Bot protection: ON
+  * Click **CREATE**
+* Click **CREATE**
 
-Go to Azure Portal > Private link services > **pls-nlb-01** > private endpoint connections. 
-You will find 1 private endpoint connections, select both, then click to **APPROVE**
+Go to Azure Portal > Private Link Services > **pls-nlb-01** > Private endpoint connections. 
+You will find 1 private endpoint connection, select it, then click to **APPROVE**
 
 The connection state should change to Approved. It might take a couple of minutes for the connection to fully establish. 
 You can now access your internal load balancer from Azure Front Door.
 
-Go to Azure Portal > **afd-01** > Frontdoor manager > **default-route** > update and change forwarding protocol to **HTTP only** (because your backend VM exoposes an HTTP only web server).
+Go to Azure Portal > **afd-01** > Front Door Manager > **default-route** > Update and change forwarding protocol to **HTTP only** (because your backend VM exposes an HTTP-only web server).
 
 ## Test solution
-Because Azure Frontdoor is a globally distribuited service, each update can require up to 10/20 miuntes to propagate everywhere. After this time,  open `afd-01` endpoint hostname public url, you found on overview page (something like `https://afd-01-abcefgh.b01.azurefd.net`). You will see `spoke-01-vm`.
+Because Azure Front Door is a globally distributed service, each update can require up to 10-20 minutes to propagate everywhere. After this time, open the `afd-01` endpoint hostname public URL found on the overview page (something like `https://afd-01-abcefgh.b01.azurefd.net`). You will see `spoke-01-vm` displayed in your browser.
 
-# More information
+## More information
 
-* <https://learn.microsoft.com/en-us/azure/frontdoor/private-link>
-* <https://learn.microsoft.com/en-us/azure/private-link/create-private-link-service-portal?tabs=dynamic-ip>
-* <https://learn.microsoft.com/en-us/azure/frontdoor/standard-premium/how-to-enable-private-link-internal-load-balancer>
+* [Azure Front Door with Private Link](https://learn.microsoft.com/en-us/azure/frontdoor/private-link)
+* [Creating a Private Link Service](https://learn.microsoft.com/en-us/azure/private-link/create-private-link-service-portal?tabs=dynamic-ip)
+* [Enabling Private Link with internal load balancers](https://learn.microsoft.com/en-us/azure/frontdoor/standard-premium/how-to-enable-private-link-internal-load-balancer)

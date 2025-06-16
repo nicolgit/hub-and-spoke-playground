@@ -151,10 +151,11 @@ For each scenario you have:
 | 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-always-on.md)
 | 14 | Routing cross hubs with BGP | Solution using [Azure Virtual Network Gateway](scenarios/routing-with-bgp.md)
 | 15 | Routing cross hubs without BGP | Solution with [Azure Firewall](scenarios/routing-without-bgp-fw.md) | 
-| 16 | Publish internal web app via Azure Application Gateway on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md) |
+| 16 | Publish internal web app on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md)<br/>Solution using [Azure Frontdoor](scenarios/frontdoor.md) |
 | 17 | Publish internal SFTP endpoint via Azure Firewall | Solution with [Azure Firewall](scenarios/sftp.md) |
 | 18 | deploy an Azure OpenAI service in an hub-and-spoke network topology and publish it internally via a private Azure API Management | Solution with [APIM and AOAI](scenarios/aoai.md) 
 | 19 | create an Azure Elastic SAN and connect it to your Windows Server virtual machine | Solution using [Azure Elastic SAN](scenarios/elastic-san.md)
 | 20 | Manage outbound traffic to intenent | Solution using [Azure Firewall as gateway](scenarios/outbound-traffic-to-internet-firewall.md) |
+
 
 Whould you like to see a scenario not listed? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues]).
