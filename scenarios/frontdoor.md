@@ -1,8 +1,8 @@
 # SOLUTION: Expose via Azure Front Door an internal web server located on a VM on a spoke
 
-This scenario demonstrates how to securely expose an internal web server using Azure Front Door without directly exposing the VM it to the internet.
+This scenario demonstrates how to securely expose an internal web server using Azure Front Door without directly exposing the VM to the internet.
 
-Azure Front Door is a modern cloud Content Delivery Network (CDN) service that provides fast, reliable, and secure access to your global applications. 
+> Azure Front Door is a modern cloud Content Delivery Network (CDN) service that provides fast, reliable, and secure access to your global applications. 
 It operates at the edge of Microsoft's global network, directing web traffic to the fastest and most available application backend. 
 Front Door provides your users with a global, scalable, and secure entry point to your web applications.
 
@@ -16,7 +16,7 @@ Keeping the origin server (backend) private offers several security benefits:
 
 Azure Frontdoor, Azure Application gateway and Azure Load balancers all allow to expose an internal resource on internet. When choose azure frontdoor vs Application gatewa or Azure load balancers?
 
-Azure Frontdoor and Azure Application gateway, While both services provide WAF and routing capabilities, they have different strengths:
+Azure Frontdoor and Azure Application gateway, while both services provide WAF and routing capabilities, they have different strengths:
 
 - **Global vs Regional**: Front Door is a global service, while Application Gateway is regional
 - **Edge security**: Front Door filters traffic at Microsoft's edge locations worldwide
