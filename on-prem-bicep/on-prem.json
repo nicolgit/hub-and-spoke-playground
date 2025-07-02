@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "11024973700785941829"
+      "version": "0.36.1.42791",
+      "templateHash": "17700284137540841742"
     }
   },
   "parameters": {
@@ -156,7 +156,7 @@
           "imageReference": {
             "publisher": "MicrosoftWindowsDesktop",
             "offer": "windows-11",
-            "sku": "win11-22h2-pro",
+            "sku": "win11-24h2-ent",
             "version": "latest"
           },
           "dataDisks": [

@@ -100,7 +100,7 @@ resource vmonprem 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
     storageProfile: {
-      imageReference: { publisher: 'MicrosoftWindowsDesktop', offer: 'windows-11', sku: 'win11-22h2-pro', version: 'latest' }
+      imageReference: { publisher: 'MicrosoftWindowsDesktop', offer: 'windows-11', sku: 'win11-24h2-ent', version: 'latest' }
       dataDisks: [ {
           lun: 0
           name: vmOnPremDiskName
