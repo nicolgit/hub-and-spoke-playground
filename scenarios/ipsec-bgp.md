@@ -2,8 +2,6 @@
 
 In this solution I show how to configure an IPSec tunnel between an on-premises (simulated on Azure) site and a hub and spoke, using BGP protocol.
 
-## Benefits of using BGP
-
 Using BGP (Border Gateway Protocol) in this IPSec connection provides several advantages like:
 
 - **Dynamic Routing**: BGP automatically exchanges routing information between on-premises and Azure, eliminating the need to manually configure static routes
