@@ -5,13 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17700284137540841742"
+      "templateHash": "5865605153906493223"
     }
   },
   "parameters": {
     "location": {
       "type": "string",
       "defaultValue": "francecentral"
+    },
+    "deployVM": {
+      "type": "bool",
+      "defaultValue": true
     },
     "username": {
       "type": "string",
@@ -21,17 +25,13 @@
       "type": "securestring",
       "defaultValue": "password.123"
     },
-    "virtualMachineSKU": {
+    "virtualMachineSize": {
       "type": "string",
       "defaultValue": "Standard_D2_v5"
     },
     "deployBastion": {
       "type": "bool",
       "defaultValue": true
-    },
-    "vnetGatewayDnsLabel": {
-      "type": "string",
-      "defaultValue": ""
     },
     "enableBgp": {
       "type": "bool",
@@ -110,6 +110,7 @@
       ]
     },
     {
+      "condition": "[parameters('deployVM')]",
       "type": "Microsoft.Compute/disks",
       "apiVersion": "2019-07-01",
       "name": "[variables('vmOnPremDiskName')]",
@@ -122,6 +123,7 @@
       }
     },
     {
+      "condition": "[parameters('deployVM')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-09-01",
       "name": "[variables('vmOnPremNicName')]",
@@ -144,13 +146,14 @@
       ]
     },
     {
+      "condition": "[parameters('deployVM')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-07-01",
       "name": "[variables('vmOnPremName')]",
       "location": "[parameters('location')]",
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('virtualMachineSKU')]"
+          "vmSize": "[parameters('virtualMachineSize')]"
         },
         "storageProfile": {
           "imageReference": {
@@ -192,6 +195,7 @@
       ]
     },
     {
+      "condition": "[parameters('deployVM')]",
       "type": "Microsoft.DevTestLab/schedules",
       "apiVersion": "2018-09-15",
       "name": "[variables('autoshutdownName')]",

@@ -1,10 +1,10 @@
 param location string = 'francecentral'
+param deployVM bool = true 
 param username string = 'nicola'
 @secure()
 param password string = 'password.123'
-param virtualMachineSKU string = 'Standard_D2_v5'
+param virtualMachineSize string = 'Standard_D2_v5'
 param deployBastion bool = true
-param vnetGatewayDnsLabel string = ''
 param enableBgp bool = false
 param localGatewayFqdn string = ''
 
@@ -68,7 +68,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2019-09-01' = if (deployBastion
   }
 }
 
-resource onpremdisk 'Microsoft.Compute/disks@2019-07-01' = {
+resource onpremdisk 'Microsoft.Compute/disks@2019-07-01' = if (deployVM) {
   name: vmOnPremDiskName
   location: location
   properties: {
@@ -77,7 +77,7 @@ resource onpremdisk 'Microsoft.Compute/disks@2019-07-01' = {
   }
 }
 
-resource vmonpremnic 'Microsoft.Network/networkInterfaces@2019-09-01' = {
+resource vmonpremnic 'Microsoft.Network/networkInterfaces@2019-09-01' = if (deployVM) {
   name: vmOnPremNicName
   location: location
   dependsOn: [ onpremvnet ]
@@ -93,12 +93,12 @@ resource vmonpremnic 'Microsoft.Network/networkInterfaces@2019-09-01' = {
   }
 }
 
-resource vmonprem 'Microsoft.Compute/virtualMachines@2019-07-01' = {
+resource vmonprem 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVM) {
   name: vmOnPremName
   location: location
   dependsOn: []
   properties: {
-    hardwareProfile: { vmSize: virtualMachineSKU }
+    hardwareProfile: { vmSize: virtualMachineSize }
     storageProfile: {
       imageReference: { publisher: 'MicrosoftWindowsDesktop', offer: 'windows-11', sku: 'win11-24h2-ent', version: 'latest' }
       dataDisks: [ {
@@ -124,7 +124,7 @@ resource vmonprem 'Microsoft.Compute/virtualMachines@2019-07-01' = {
   }
 }
 
-resource shutdownVm04 'microsoft.devtestlab/schedules@2018-09-15' = {
+resource shutdownVm04 'microsoft.devtestlab/schedules@2018-09-15' = if (deployVM) {
   name: autoshutdownName
   location: location
   properties: {
