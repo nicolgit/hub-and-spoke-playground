@@ -108,6 +108,7 @@ resource subnetS01default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
     routeTable: {
       id: routeTableWE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 
@@ -121,6 +122,7 @@ resource subnetS01services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01
     routeTable: {
       id: routeTableWE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 
@@ -131,6 +133,7 @@ resource subnetS02default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
     routeTable: {
       id: routeTableWE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 
@@ -144,6 +147,7 @@ resource subnetS02services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01
     routeTable: {
       id: routeTableWE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 
@@ -154,6 +158,7 @@ resource subnetS03default 'Microsoft.Network/virtualNetworks/subnets@2020-05-01'
     routeTable: {
       id: routeTableNE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 
@@ -167,6 +172,7 @@ resource subnetS03services 'Microsoft.Network/virtualNetworks/subnets@2020-05-01
     routeTable: {
       id: routeTableNE.id
     }
+    privateEndpointNetworkPolicies: 'Enabled'
   }
 }
 

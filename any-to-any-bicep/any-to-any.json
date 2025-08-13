@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "10101459254122748217"
+      "version": "0.37.4.10188",
+      "templateHash": "4316125518104346404"
     }
   },
   "parameters": {
@@ -134,7 +134,8 @@
         "addressPrefix": "10.13.1.0/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
@@ -148,7 +149,8 @@
         "addressPrefix": "10.13.1.64/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]",
@@ -163,7 +165,8 @@
         "addressPrefix": "10.13.2.0/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
@@ -177,7 +180,8 @@
         "addressPrefix": "10.13.2.64/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_we_name'))]",
@@ -192,7 +196,8 @@
         "addressPrefix": "10.13.3.0/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]"
@@ -206,7 +211,8 @@
         "addressPrefix": "10.13.3.64/26",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]"
-        }
+        },
+        "privateEndpointNetworkPolicies": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/routeTables', variables('routeTables_all_to_firewall_ne_name'))]",
@@ -297,8 +303,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "5397074882225188186"
+              "version": "0.37.4.10188",
+              "templateHash": "5849671673864803614"
             }
           },
           "parameters": {
