@@ -160,7 +160,7 @@ Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > Edit Subnet > `se
 
 ### API Management subnet Service Endpoints
 
-Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > `services` > Endpoints > add
+Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > `services` > Edit subnet > Endpoints > add
 
 * Microsoft.EventHub
 * Microsoft.KeyVault
