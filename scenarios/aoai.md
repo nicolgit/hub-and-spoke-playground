@@ -109,7 +109,7 @@ Basic
 * Region: West Europe
 * Name: `apiman-ip-02`
 * IP version: `v4`
-* SKU: `standard`
+* SKU: `Standard`
 * DNS name label: `apiman-02-ip`
 * click [create]
 
@@ -177,7 +177,7 @@ Basics
 * Name: `apiman-02`
 * Organization: `contoso`
 * Organization email: `admin@contoso.com`
-* Tier: `Standard` (stv2)
+* Tier: `Premium` (classic)
 * click [create]
 
 Go to Azure Portal > private DNS zone > create
