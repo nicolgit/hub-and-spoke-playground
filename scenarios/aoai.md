@@ -153,7 +153,7 @@ Go to Azure Portal > Route Table > `apim-02-to-firewall` > Routes > Add
 | apim2internet | Service Tag    | ApiManagement | internet          |                   |
 | 2firewall     | Ip Addresses  |0.0.0.0/0     | virtual appliance | 10.12.3.4         |
 
-Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > `services`
+Go to Azure Portal > Virtual Networks > `Spoke-02` > subnets > Edit Subnet > `services`
 
 * Route Table: `apim-02-to-firewall`
 * click [save]
