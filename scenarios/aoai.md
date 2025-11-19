@@ -133,7 +133,7 @@ add the following outbound rules
 | 1000 |to-storage | */443| TCP | Virtual Network | Storage| Allow
 | 1100 |to-sqlserver | */1443| TCP | Virtual Network | Sql| Allow
 | 1200 |to-keyvault | */443| TCP | Virtual Network | KeyVault| Allow
-| 1300 |to-azuremonitor | */1886,443| TCP | Virtual Network | Azure Monitor| Allow
+| 1300 |to-azuremonitor | */1886,443| TCP | Virtual Network | AzureMonitor| Allow
 
 Go to Azure Portal > Network security groups > `apiman-nsg` > subnets > associate:
 * virtual network: `spoke-02`
