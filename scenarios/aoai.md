@@ -96,9 +96,9 @@ Go to Virtual Network links > Add
 * click [OK]
 
 ### Deploy a model
-Go to Portal > Azure AI | Azure OpenAI > `aoai-01` > Azure Open AI Studio > Deplyments > Create
+Go to Portal > Azure AI | Azure OpenAI > `aoai-01` > Azure Open AI Foundry portal > Deplyments > Deploy model > deploy base model
 
-* Model: `gpt-35-turbo`
+* Model: `gpt-4.1`
 * Name `mygpt`
 * click [Create]
 
