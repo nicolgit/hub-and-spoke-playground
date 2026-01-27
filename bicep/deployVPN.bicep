@@ -19,6 +19,9 @@ param gatewaySku string = 'VpnGw1'
 @description('Whether to enable BGP')
 param enableBgp bool = false
 
+@description('BGP ASN number (optional - used when BGP is enabled)')
+param bgpAsn int = 65515
+
 var gatewayIPName = '${gatewayName}-ip'
 
 resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (deployGateway) {
@@ -43,7 +46,9 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
     enableBgp: enableBgp
-    bgpSettings: enableBgp ? {} : null
+    bgpSettings: enableBgp ? {
+      asn: bgpAsn
+    } : null
     sku: { name: gatewaySku, tier: gatewaySku }
   }
 }

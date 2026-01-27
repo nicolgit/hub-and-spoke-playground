@@ -166,7 +166,7 @@ module vmHubDeployment './deployVM.bicep' = {
     subnetName: 'DefaultSubnet'
     username: username
     password: password
-    osType: 'Windows'
+    imageType: 'WindowsServer'
     deployVM: deployVmHub
   }
 }
@@ -183,7 +183,7 @@ module vm01Deployment './deployVM.bicep' = {
     subnetName: 'default'
     username: username
     password: password
-    osType: 'Windows'
+    imageType: 'WindowsServer'
     deployVM: deployVm01
   }
 }
@@ -200,7 +200,7 @@ module vm02Deployment './deployVM.bicep' = {
     subnetName: 'default'
     username: username
     password: password
-    osType: 'Windows'
+    imageType: 'WindowsServer'
     deployVM: deployVm02
   }
 }
@@ -217,7 +217,7 @@ module vm03Deployment './deployVM.bicep' = {
     subnetName: 'default'
     username: username
     password: password
-    osType: 'Linux'
+    imageType: 'Linux'
     deployVM: deployVm03
   }
 }

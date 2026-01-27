@@ -21,8 +21,8 @@ param username string
 param password string
 
 @description('The operating system type')
-@allowed(['Windows', 'Linux'])
-param osType string
+@allowed(['WindowsServer', 'Linux', 'Windows11'])
+param imageType string
 
 @description('Whether to deploy the VM')
 param deployVM bool
@@ -34,7 +34,7 @@ var diskName = '${vmName}-disk'
 var nicName = '${vmName}-nic'
 var autoshutdownName = 'shutdown-computevm-${vmName}'
 
-var windowsImageReference = {
+var windowsServerImageReference = {
   publisher: 'MicrosoftWindowsServer'
   offer: 'WindowsServer'
   sku: '2019-Datacenter'
@@ -43,10 +43,19 @@ var windowsImageReference = {
 
 var linuxImageReference = {
   publisher: 'Canonical'
-  offer: 'UbuntuServer'
-  sku: '18.04-LTS'
+  offer: '0001-com-ubuntu-server-jammy'
+  sku: '22_04-lts-gen2'
   version: 'latest'
 }
+
+var windows11ImageReference = {
+  publisher: 'MicrosoftWindowsDesktop'
+  offer: 'windows-11'
+  sku: 'win11-24h2-ent'
+  version: 'latest'
+}
+
+var imageReference = imageType == 'WindowsServer' ? windowsServerImageReference : (imageType == 'Linux' ? linuxImageReference : windows11ImageReference)
 
 var windowsOSProfile = {
   computerName: vmName
@@ -98,7 +107,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVM) {
   properties: {
     hardwareProfile: { vmSize: virtualMachineSKU }
     storageProfile: {
-      imageReference: osType == 'Windows' ? windowsImageReference : linuxImageReference
+      imageReference: imageReference
       dataDisks: [ {
           lun: 0
           name: diskName
@@ -107,7 +116,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2019-07-01' = if (deployVM) {
         }
       ]
     }
-    osProfile: osType == 'Windows' ? windowsOSProfile : linuxOSProfile
+    osProfile: imageType == 'Linux' ? linuxOSProfile : windowsOSProfile
     networkProfile: {
       networkInterfaces: [ {
           id: vmNIC.id
