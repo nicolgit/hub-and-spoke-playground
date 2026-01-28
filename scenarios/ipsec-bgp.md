@@ -9,7 +9,7 @@ Using BGP (Border Gateway Protocol) in this IPSec connection provides several ad
 
 ## Pre-requisites
 
-In order to apply this solution you have to deploy `hub` and `on-premises` playgrounds.
+In order to apply this solution you have to deploy `HUB 01` and `ON-PREMISES` playgrounds.
 
 ## Solution
 
