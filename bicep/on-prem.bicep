@@ -37,7 +37,7 @@ resource onpremvnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
 }
 
 // Deploy Bastion using module
-module bastionDeployment 'deployBASTION.bicep' = if (deployBastion) {
+module bastionDeployment './module/deployBASTION.bicep' = if (deployBastion) {
   name: 'bastion-deployment'
   params: {
     bastionName: bastionName
@@ -51,7 +51,7 @@ module bastionDeployment 'deployBASTION.bicep' = if (deployBastion) {
 }
 
 // Deploy VM using enhanced module (now supports Windows 11 Desktop)
-module vmDeployment 'deployVM.bicep' = if (deployVM) {
+module vmDeployment './module/deployVM.bicep' = if (deployVM) {
   name: 'vm-deployment'
   params: {
     vmName: vmOnPremName
@@ -71,7 +71,7 @@ module vmDeployment 'deployVM.bicep' = if (deployVM) {
 }
 
 // Deploy VPN Gateway using enhanced module (now supports BGP ASN configuration)
-module vpnGatewayDeployment 'deployVPN.bicep' = {
+module vpnGatewayDeployment './module/deployVPN.bicep' = {
   name: 'vpn-gateway-deployment'
   params: {
     gatewayName: vnetGatewayName

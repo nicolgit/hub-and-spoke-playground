@@ -64,7 +64,7 @@ resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   }
 }
 
-module spoke01Deployment './deploySPOKE.bicep' = {
+module spoke01Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke01Deployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -78,7 +78,7 @@ module spoke01Deployment './deploySPOKE.bicep' = {
   }
 }
 
-module spoke02Deployment './deploySPOKE.bicep' = {
+module spoke02Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke02Deployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -92,7 +92,7 @@ module spoke02Deployment './deploySPOKE.bicep' = {
   }
 }
 
-module spoke03Deployment './deploySPOKE.bicep' = {
+module spoke03Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke03Deployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -106,7 +106,7 @@ module spoke03Deployment './deploySPOKE.bicep' = {
   }
 }
 
-module bastionDeployment './deployBASTION.bicep' = {
+module bastionDeployment './module/deployBASTION.bicep' = {
   name: 'bastionDeployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -127,7 +127,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   }
 }
 
-module firewallDeployment './deployFIREWALL.bicep' = {
+module firewallDeployment './module/deployFIREWALL.bicep' = {
   name: 'firewallDeployment'
   dependsOn: [ hubLabVnet, vpnGatewayDeployment, workspace ] // can run into some weird conflict error with the gateway
   params: {
@@ -141,7 +141,7 @@ module firewallDeployment './deployFIREWALL.bicep' = {
 }
 
 //VPN GATEWAY
-module vpnGatewayDeployment './deployVPN.bicep' = {
+module vpnGatewayDeployment './module/deployVPN.bicep' = {
   name: 'vpnGatewayDeployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -155,7 +155,7 @@ module vpnGatewayDeployment './deployVPN.bicep' = {
 }
 //END VPN GATEWAY
 //VM HUB
-module vmHubDeployment './deployVM.bicep' = {
+module vmHubDeployment './module/deployVM.bicep' = {
   name: 'vmHubDeployment'
   dependsOn: [ hubLabVnet ]
   params: {
@@ -172,7 +172,7 @@ module vmHubDeployment './deployVM.bicep' = {
 }
 //END VM HUB
 //VM 01
-module vm01Deployment './deployVM.bicep' = {
+module vm01Deployment './module/deployVM.bicep' = {
   name: 'vm01Deployment'
   dependsOn: [ spoke01Deployment ]
   params: {
@@ -189,7 +189,7 @@ module vm01Deployment './deployVM.bicep' = {
 }
 //END VM 01
 //VM 02
-module vm02Deployment './deployVM.bicep' = {
+module vm02Deployment './module/deployVM.bicep' = {
   name: 'vm02Deployment'
   dependsOn: [ spoke02Deployment ]
   params: {
@@ -206,7 +206,7 @@ module vm02Deployment './deployVM.bicep' = {
 }
 //END VM 02
 //VM 03
-module vm03Deployment './deployVM.bicep' = {
+module vm03Deployment './module/deployVM.bicep' = {
   name: 'vm03Deployment'
   dependsOn: [ spoke03Deployment ]
   params: {
