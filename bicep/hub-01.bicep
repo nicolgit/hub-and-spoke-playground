@@ -1,9 +1,10 @@
 param location string = 'westeurope'
 param locationSpoke03 string = 'northeurope'
 
-@description('Basic, Standard or Premium tier')
-@allowed([ 'Basic', 'Standard', 'Premium' ])
+@description('Basic, Standard or Premium tier. None to skip firewall deployment.')
+@allowed(['None', 'Basic', 'Standard', 'Premium'])
 param firewallTier string = 'Premium'
+var actualFirewallTier = firewallTier == 'Basic' ? 'Basic' : firewallTier == 'Premium' ? 'Premium' : 'Standard'
 var firewallName = 'lab-firewall'
 
 param deployBastion bool = true
@@ -26,7 +27,6 @@ var vm02Name = '${spoke02Name}-vm'
 param deployVm03 bool = true
 var vm03Name = '${spoke03Name}-vm'
 
-
 @description('username administrator for all VMs')
 param username string = 'nicola'
 
@@ -36,7 +36,6 @@ param password string = 'password.123'
 
 param virtualMachineSKU string = 'Standard_D2_v5'
 
-
 var subnets = concat(
   [
     { name: 'GatewaySubnet', properties: { addressPrefix: '10.12.4.0/24' } }
@@ -44,29 +43,29 @@ var subnets = concat(
     { name: 'AzureBastionSubnet', properties: { addressPrefix: '10.12.2.0/24' } }
     { name: 'DefaultSubnet', properties: { addressPrefix: '10.12.1.0/24' } }
   ],
-  firewallTier == 'Basic' ? [
-    {
-      name: 'AzureFirewallManagementSubnet'
-      properties: {
-        addressPrefix: '10.12.5.0/24'
-        privateEndpointNetworkPolicies: 'Enabled'
-        privateLinkServiceNetworkPolicies: 'Enabled'
-      }
-    }
-  ] : []
+  firewallTier == 'Basic'
+    ? [
+        {
+          name: 'AzureFirewallManagementSubnet'
+          properties: {
+            addressPrefix: '10.12.5.0/24'
+            privateEndpointNetworkPolicies: 'Enabled'
+            privateLinkServiceNetworkPolicies: 'Enabled'
+          }
+        }
+      ]
+    : []
 )
 
 resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: hublabName
   location: location
-  properties: { addressSpace: { addressPrefixes: [ '10.12.0.0/16' ] }
-    subnets: subnets
-  }
+  properties: { addressSpace: { addressPrefixes: ['10.12.0.0/16'] }, subnets: subnets }
 }
 
 module spoke01Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke01Deployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     spokeName: spoke01Name
     spokeLocation: location
@@ -80,7 +79,7 @@ module spoke01Deployment './module/deploySPOKE.bicep' = {
 
 module spoke02Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke02Deployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     spokeName: spoke02Name
     spokeLocation: location
@@ -94,7 +93,7 @@ module spoke02Deployment './module/deploySPOKE.bicep' = {
 
 module spoke03Deployment './module/deploySPOKE.bicep' = {
   name: 'spoke03Deployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     spokeName: spoke03Name
     spokeLocation: locationSpoke03
@@ -108,7 +107,7 @@ module spoke03Deployment './module/deploySPOKE.bicep' = {
 
 module bastionDeployment './module/deployBASTION.bicep' = {
   name: 'bastionDeployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     bastionName: bastionName
     location: location
@@ -127,14 +126,14 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   }
 }
 
-module firewallDeployment './module/deployFIREWALL.bicep' = {
+module firewallDeployment './module/deployFIREWALL.bicep' = if (firewallTier != 'None') {
   name: 'firewallDeployment'
-  dependsOn: [ hubLabVnet, vpnGatewayDeployment, workspace ] // can run into some weird conflict error with the gateway
+  dependsOn: [hubLabVnet, vpnGatewayDeployment, workspace] // can run into some weird conflict error with the gateway
   params: {
     firewallName: firewallName
     location: location
     vnetName: hublabName
-    firewallTier: firewallTier
+    firewallTier: actualFirewallTier
     workspaceId: workspace.id
     workspaceName: workspace.name
   }
@@ -143,7 +142,7 @@ module firewallDeployment './module/deployFIREWALL.bicep' = {
 //VPN GATEWAY
 module vpnGatewayDeployment './module/deployVPN.bicep' = {
   name: 'vpnGatewayDeployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     gatewayName: vnetGatewayName
     location: location
@@ -157,7 +156,7 @@ module vpnGatewayDeployment './module/deployVPN.bicep' = {
 //VM HUB
 module vmHubDeployment './module/deployVM.bicep' = {
   name: 'vmHubDeployment'
-  dependsOn: [ hubLabVnet ]
+  dependsOn: [hubLabVnet]
   params: {
     vmName: vmHubName
     location: location
@@ -174,7 +173,7 @@ module vmHubDeployment './module/deployVM.bicep' = {
 //VM 01
 module vm01Deployment './module/deployVM.bicep' = {
   name: 'vm01Deployment'
-  dependsOn: [ spoke01Deployment ]
+  dependsOn: [spoke01Deployment]
   params: {
     vmName: vm01Name
     location: location
@@ -191,7 +190,7 @@ module vm01Deployment './module/deployVM.bicep' = {
 //VM 02
 module vm02Deployment './module/deployVM.bicep' = {
   name: 'vm02Deployment'
-  dependsOn: [ spoke02Deployment ]
+  dependsOn: [spoke02Deployment]
   params: {
     vmName: vm02Name
     location: location
@@ -208,7 +207,7 @@ module vm02Deployment './module/deployVM.bicep' = {
 //VM 03
 module vm03Deployment './module/deployVM.bicep' = {
   name: 'vm03Deployment'
-  dependsOn: [ spoke03Deployment ]
+  dependsOn: [spoke03Deployment]
   params: {
     vmName: vm03Name
     location: locationSpoke03
