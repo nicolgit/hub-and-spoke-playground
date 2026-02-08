@@ -13,6 +13,9 @@ var bastionName = 'lab-bastion'
 param deployGateway bool = true
 var vnetGatewayName = 'lab-gateway'
 
+@description('Enable any-to-any routing through the firewall')
+param anyToAnyRouting bool = false
+
 var hublabName = 'hub-lab-net'
 var spoke01Name = 'spoke-01'
 var spoke02Name = 'spoke-02'
@@ -136,6 +139,16 @@ module firewallDeployment './module/deployFIREWALL.bicep' = if (firewallTier != 
     firewallTier: actualFirewallTier
     workspaceId: workspace.id
     workspaceName: workspace.name
+  }
+}
+
+module anyToAnyDeployment './module/deployROUTING.bicep' = if (anyToAnyRouting && firewallTier != 'None') {
+  name: 'anyToAnyDeployment'
+  dependsOn: [firewallDeployment, spoke01Deployment, spoke02Deployment, spoke03Deployment]
+  params: {
+    firewallTier: actualFirewallTier
+    locationWE: location
+    locationNE: locationSpoke03
   }
 }
 
