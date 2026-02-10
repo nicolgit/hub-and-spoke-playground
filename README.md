@@ -1,161 +1,322 @@
-<h1 align="center">The Azure🌍 hub-and-spoke-playground </h1>
+<h1 align="center">
+  <br>
+  <img src="images/hl-architecture.png" alt="Hub and Spoke Playground" width="400">
+  <br>
+  The Azure🌍 hub-and-spoke-playground
+  <br>
+</h1>
 
-<div align="center">
-  A well-documented, easy-to-deploy network topology for testing, studying, inventing network configurations
-</div>
-
-<br/>
-
-<div align="center">
-  <sub>Built with ❤︎ by
-  <a href="https://github.com/nicolgit">nicolgit</a> and
-  <a href="https://github.com/nicolgit/hub-and-spoke-playground/contributors">
-    contributors
-  </a>
-</div>
-
-<br/>
-
+<h4 align="center">A ready to deploy, well-documented network topology for testing, inventing, learning, and experimenting with Azure networking.</h4>
 <p align="center">
-  <img src="images/hl-architecture.png" width="60%" />
+  <a href="https://github.com/nicolgit/hub-and-spoke-playground/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/nicolgit/hub-and-spoke-playground?style=flat-square" alt="License">
+  </a>
+  <a href="https://github.com/nicolgit/hub-and-spoke-playground/stargazers">
+    <img src="https://img.shields.io/github/stars/nicolgit/hub-and-spoke-playground?style=flat-square" alt="Stars">
+  </a>
+  <a href="https://github.com/nicolgit/hub-and-spoke-playground/issues">
+    <img src="https://img.shields.io/github/issues/nicolgit/hub-and-spoke-playground?style=flat-square" alt="Issues">
+  </a>
+  <a href="https://github.com/nicolgit/hub-and-spoke-playground/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/nicolgit/hub-and-spoke-playground?style=flat-square" alt="Contributors">
+  </a>
 </p>
 
-_Download a [draw.io file](images/architecture.drawio) of this schema._
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#scenarios">Scenarios</a> •
+  <a href="#faq">FAQ</a> •
+  <a href="#contributing">Contributing</a>
+</p>
 
-This repo contains a preconfigured Azure hub-and-spoke network topology, aligned to the Azure enterprise-scale landing zone reference architecture, deployable with a click on your subscription, useful for testing and studying network configurations in a controlled, repeatable environment.
+---
 
-As bonus many scenarios with step-by-step solutions for studying and learning are also available.
+This repository provides a **preconfigured Azure hub-and-spoke network topology** aligned with the [Azure Enterprise-Scale Landing Zone](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture) reference architecture. Deploy it with a single click and use it as a sandbox for testing, studying, and experimenting with network configurations.
 
-> _Read also this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more info on this project._
+> 📖 Read this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more insights about this project.
 
-The "playground" is composed by:
-  * two hub and spoke network topologies aligned with with <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture" target="_blank">Microsoft Enterprise scale landing zone</a> reference architecture
-  * two simulated on-premise architectures, deployed in 2 different regions, composed by network, client machine(s) and a gateway
+## Features
 
-## Deploy to Azure
-You can use the following buttons to deploy the demo environment to your Azure subscription:
+- 🏗️ **Enterprise-like topology** — Aligned with Microsoft's Cloud Adoption Framework
+- 🚀 **One-click deployment** — Deploy entire environments with a single button
+- 🔒 **Security built-in** — Azure Firewall and Azure Bastion automatically deployed
+- 🌐 **Multi-region support** — you can deploy the playground in the region you prefer (default west/north europe)
+- 📚 **20+ guided scenarios** — Step-by-step tutorials for real-world configurations
+- 🔄 **Modular design** — Deploy only what you need (gateway, firewall, bastion, VMs)
+- 🎨 **Open-source diagrams** — All architecture diagrams include draw.io source files, ready to customize for your own projects
 
-| | Available playgrounds| &nbsp; |
-|---|---|---|
-|1| the **HUB 01** playground<br/><sub>deploys `hub-lab-net` and spokes `01`-`02`-`03` | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-01-bicep%2Fhub-01.json) |  
-|2| deploys the **ON PREMISES** (France central) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-bicep%2Fon-prem.json) |
-|3| deploys the **ON PREMISES-2** (west central Germany) playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-2-bicep%2Fon-prem-2.json) |
-|4| deploys **ANY-TO-ANY** routing and firewall rules<br/><sub>requires the HUB playground deployed</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-bicep%2Fany-to-any.json) |
-|5| deploys a S2S VPN between on-prem and HUB<br/><sub>requires the HUB and one of the ON-PREMISES playgrounds deployed</sub>| [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fs2s-vpn-bicep%2Fconnect-on-prem.json)  |
-|5| the HUB 02 playground<br/><sub>deploys `hub-lab-02-net` and spoke `04` `05` `06` `07` `08` `09` `10`</sub> | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)  |
+## Quick Start
+
+### Prerequisites
+
+- An active Azure subscription
+- Permissions to create resources in your subscription
+
+### Deploy using the Deploy to Azure Button
+
+|   #   | Playground                                                   |                                                                                                              Deploy                                                                                                              |
+| :---: | ------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   1   | **HUB 01** — Hub network + spokes 01, 02, 03                 |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-01.json)   |
+|   2   | **ON PREMISES** — Simulated on-prem (France Central)         |  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem.json)   |
+|   3   | **ON PREMISES 2** — Simulated on-prem (Germany West Central) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem-2.json)  |
+|   4   | **ANY-TO-ANY** — Routing + firewall rules *(requires HUB)*   | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fany-to-any.json) |
+|   5   | **HUB 02** — Second hub + spokes 04-10                       |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-02.json)   |
+
+### Deploy via Bicep (Azure Cloud Shell)
+
+1. Open [Azure Cloud Shell](https://shell.azure.com) (Bash)
+
+2. Clone the repository:
+   ```bash
+   git clone https://github.com/nicolgit/hub-and-spoke-playground.git
+   cd hub-and-spoke-playground
+   ```
+
+3. Set variables for region and resource group name, create the target resource group:
+   ```bash
+   LOCATION="westeurope"
+   RESOURCE_GROUP="hub-and-spoke-playground"
+
+   az group create --name $RESOURCE_GROUP --location $LOCATION
+   ```
+
+4. Deploy the playground you need:
+
+   ```bash
+   # HUB 01 — Hub network + spokes 01, 02, 03
+   az deployment group create --resource-group $RESOURCE_GROUP \
+     --template-file hub-01-bicep/hub-01.bicep
+
+   # ON PREMISES — Simulated on-prem (France Central)
+   az deployment group create --resource-group $RESOURCE_GROUP \
+     --template-file on-prem-bicep/on-prem.bicep
+
+   # ON PREMISES 2 — Simulated on-prem (Germany West Central)
+   az deployment group create --resource-group $RESOURCE_GROUP \
+     --template-file on-prem-2-bicep/on-prem-2.bicep
+
+   # ANY-TO-ANY — deploys hub-0- + Routing + firewall rules 
+   az deployment group create --resource-group $RESOURCE_GROUP \
+     --template-file any-to-any-bicep/any-to-any.bicep
+
+   # HUB 02 — Second hub + spokes 04-10
+   az deployment group create --resource-group $RESOURCE_GROUP \
+     --template-file hub-02-bicep/hub-02.bicep
+   ```
+
+> 💡 **Tip**: You can override default parameters using `--parameters paramName=value`
+
+### Cleanup
+
+To destroy all resources and stop incurring costs, simply delete the resource group:
+
+```bash
+az group delete --name $RESOURCE_GROUP --yes --no-wait \
+  --force-deletion-types Microsoft.Compute/virtualMachines
+```
+
+### Default Credentials
+
+All VMs are deployed with:
+- **Username:** `nicola`
+- **Password:** `password.123`
+
+> ⚠️ **Security Note:** Because this playground is intended to be active for only a few hours without public IPs, I also deploy a default username/password for all VMs. If you prefer, you can change these values to better fit your security standards.
 
 ## Architecture
-ARM template [hub-01-bicep](hub-01-bicep/hub-01.json) "_the HUB playground_" deploys:
-* 4 Azure Virtual Networks:
-    * `hub-lab-net` located in `west europe` with 4 subnets:
-        * default subnet: this subnet is used to connect the hub-vm-01 machine
-        * AzureFirewallSubet: this subnet is used by Azure Firewall
-        * AzureBastionSubnet: this subnet is used bu Azure Bastion
-        * GatewaySubnet: this subnet is used by Azure Gateway
-    * `spoke-01` with 2 subnets located in `west europe` used to connect `spoke-01-vm` machine
-    * `spoke-02` with 2 subnets located in `west europe` used to connect `spoke-02-vm` machine
-    * `spoke-03`, with 2 subnets and located in `North Europe`, used to connect `spoke-03-vm` machine
-* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure Firewall **premium** resource that provide a con-premiseic inspection.
-* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
-* `hub-vm-01`: a Windows Server virtual machine that simulates a server located in the hub location
-* `spoke-01-vm`: a Windows Server virtual machine that simulates a server located in the `spoke-01` vnet
-* `spoke-02-vm`: a Windows Server virtual machine that simulates a server located in the `spoke-02` vnet 
-* `spoke-03-vm`: a Linux virtual machine that simulates a server located in the `spoke-03` vnet
+
+The playground consists of **two hub-and-spoke topologies** and **two simulated on-premises environments** deployed across multiple Azure regions.
+
+<p align="center">
+  <img src="images/hl-architecture.png" width="70%" alt="High-level Architecture">
+  <br/><em>Download the <a href="images/architecture.drawio">draw.io source file</a></em>
+</p>
+
+<details>
+<summary><b>📦 HUB 01 Components</b> (click to expand)</summary>
+
+Deployed via [`bicep/hub-01.json`](hub-01-bicep/hub-01.json):
+
+| Resource               | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `hub-lab-net`          | Hub VNet (West Europe) with 4 subnets        |
+| `hub-vm-01`            | VM deployed in `hub-lab-net/default` subnet  |
+| `spoke-01`             | Spoke VNet (West Europe) with `spoke-01-vm`  |
+| `spoke-02`             | Spoke VNet (West Europe) with `spoke-02-vm`  |
+| `spoke-03`             | Spoke VNet (North Europe) with `spoke-03-vm` |
+| Azure Bastion          | Secure RDP/SSH access without public IPs     |
+| Azure Firewall Premium | Traffic inspection and filtering             |
+| VPN Gateway            | Hybrid connectivity to on-premises           |
 
 ![hub-01](images/architecture-hub-01.png)
 
-_Download a [draw.io file](images/architecture.drawio) of this schema._
+_Download the [draw.io source file](images/architecture.drawio)_
 
-ARM template [on-prem](on-prem-bicep/on-prem.json) "_ON PREMISES_" deploys:
-* `on-prem-net`: an Azure Virtual Network located in `west France` with 3 subnets
-    * default subnet: this subnet is used to connect the w10-onprem-vm machine
-    * AzureBastionSubnet: this subnet is used bu Azure Bastion
-    * GatewaySubnet: this subnet is used by Azure Gateway
-* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
-* `w10-onprem-vm`: A Windows 10 VM with the objective to simulate a desktop client in an on-premise location
+</details>
+
+<details>
+<summary><b>📦 ON PREMISES Components</b> (click to expand)</summary>
+
+Deployed via [`bicep/on-prem.json`](on-prem-bicep/on-prem.json):
+
+| Resource        | Description                                  |
+| --------------- | -------------------------------------------- |
+| `on-prem-net`   | VNet (France Central) simulating on-premises |
+| `w10-onprem-vm` | Windows 11 client VM                         |
+| Azure Bastion   | Secure access                                |
+| VPN Gateway     | S2S connectivity to hub                      |
 
 ![on-premises](images/architecture-on-premises.png)
 
-_Download a [draw.io file](images/architecture.drawio) of this schema._
+_Download the [draw.io source file](images/architecture.drawio)_
 
-ARM template [on-prem-2](on-prem-2-bicep/on-prem-2.json) "ON PREMISES 2" deploys:
-* `on-prem-2-net`: an Azure Virtual Network located in `west central Germany` with 3 subnets
-    * default subnet: this subnet is used to connect the w10-onprem-vm machine
-    * AzureBastionSubnet: this subnet is used bu Azure Bastion
-    * GatewaySubnet: this subnet is used by Azure Gateway
-* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
-* `lin-onprem-vm`: A linux VM with the objective to simulate a linux client in an on-premise location
+</details>
+
+<details>
+<summary><b>📦 ON PREMISES 2 Components</b> (click to expand)</summary>
+
+Deployed via [`bicep/on-prem-2.json`](on-prem-2-bicep/on-prem-2.json):
+
+| Resource        | Description                                               |
+| --------------- | --------------------------------------------------------- |
+| `on-prem-2-net` | VNet (Germany West Central) simulating second on-premises |
+| `lin-onprem`    | 1st Linux client VM                                       |
+| `lin-onprem-2`  | 2nd Linux client VM                                       |
+| Azure Bastion   | Secure access                                             |
+| VPN Gateway     | S2S connectivity to hub                                   |
 
 ![on-premises-2](images/architecture-on-premises-2.png)
 
-_Download a [draw.io file](images/architecture.drawio) of this schema._
+_Download the [draw.io source file](images/architecture.drawio)_
 
-ARM template [hub-02](hub-02-bicep/hub-02.json) "the HUB 02 playground" deploys:
-* 8 Azure Virtual Networks:
-    * `hub-lab-02-net` located in `north europe` with 4 subnets:
-        * default subnet: this subnet is empty
-        * AzureFirewallSubet: this subnet is used by Azure Firewall
-        * AzureBastionSubnet: this subnet is used bu Azure Bastion
-        * GatewaySubnet: this subnet is used by Azure Gateway
-    * `spoke-04` located in `north europe`with 2 subnet used to connect `spoke-04-vm` machine
-    * `spoke-05` ... `10` additional spokes, located in `north europe`, with 2 subnets each
-* An Azure Bastion resource that provides secure and seamless SSH connectivity to the jumpbox virtual machine directly in the Azure portal over SSL
-* An Azure Firewall **standard** resource that provide a con-premiseic inspection.
-* An Azure VPN Gateway resource that is used to send encrypted traffic between the hub virtual network to the on-premises simulated location.
-* `spoke-04-vm`: a Windows Server virtual machine that simulates a server located in the `spoke-04` landing zone
+</details>
 
+<details>
+<summary><b>📦 HUB 02 Components</b> (click to expand)</summary>
+
+Deployed via [`hub-02-bicep/hub-02.json`](bicep/hub-02.json):
+
+| Resource                 | Description                    |
+| ------------------------ | ------------------------------ |
+| `hub-lab-02-net`         | Second hub VNet (North Europe) |
+| `spoke-04` to `spoke-10` | Seven additional spoke VNets   |
+| Azure Firewall Standard  | Traffic filtering              |
+| Azure Bastion            | Secure access                  |
+| VPN Gateway              | Hybrid connectivity            |
 
 ![hub-02](images/architecture-hub-02.png)
 
-_Download a [draw.io file](images/architecture.drawio) of this schema._
+_Download the [draw.io source file](images/architecture.drawio)_
 
-The ARM template [any-to-any](any-to-any-bicep/any-to-any.json) deploys:
-* 2 routing tables that forward all spokes traffic to the firewall
-* 1 IP Group and one Azure Firewall policy that:
-  * allows spoke-to-spoke communication
-  * block certain sites using web categories: nudity, Child Inappropriate, pornography
-  * allows all remaining HTTP(S) outbound traffic
+</details>
 
-The site to site VPN connection shown in the architecture is not automatically deployed and configure: its configuration is covered by one of the playground scenarios.**est solution**
-All machines have the same account parameters (as following):
-* username: `nicola`
-* password: `password.123`
+<details>
+<summary><b>📦 ANY-TO-ANY Routing</b> (click to expand)</summary>
 
-## Playground's scenarios
-Here there is a list of tested scenarios usable on this playground.
+Deployed via [`bicep/any-to-any.json`](any-to-any-bicep/any-to-any.json):
 
-For each scenario you have:
+- Route tables forwarding spoke traffic through the firewall
+- IP Groups and Azure Firewall policies enabling:
+  - ✅ Spoke-to-spoke communication
+  - 🚫 Blocked web categories (nudity, child inappropriate, pornography)
+  - ✅ Allowed HTTP(S) outbound traffic
 
-* **prerequisites**: component to deploy required to implement the solution (only the hub, also one on-prem playground or both)
-* **solution**: a step-by-step sequence to implement the solution
-* **test solution**: a procedure to follow, to verify if the scenario is working as expected
+</details>
 
+## Scenarios
 
-| | scenario description | step-by-step solution |
-|---|---|---|
-| 1 | Configure the environment to allow VM in any spoke to communicate with any VM in any other spoke | solution using [azure firewall](scenarios/ping-any-to-any-firewall.md)<br/> solution using [azure virtual gateway](scenarios/ping-any-to-any-gateway.md)<br/> solution using [azure virtual network manager](scenarios/ping-any-to-any-avnm.md) 
-| 2| Expose on a public IP, through the Firewall, `spoke-01-vm` and `spoke-02-vm `RDP port (3389) | solution using [azure firewall dnat](scenarios/dnat-01-02.md)
-| 3 | Connect `on-prem-net` with `hub-lab-net` using a vNet-to-vNet Azure Gateway's Connection | solution [on-premise vnet-to-vnet](scenarios/vnet-to-vnet.md)<br/>solution [on-premise2 vnet-to-vnet-2](scenarios/vnet-to-vnet.md)
-| 4 | Connect `on-prem-net` with `hub-lab-net` using a Site-to-Site (IPSec) Connection | solution with [gateway-ipsec](scenarios/ipsec.md)<br/> solution with [gateway-ipsec-BGP](scenarios/ipsec-bgp.md)<br/> solution with [gateway-ipsec active-active](scenarios/ipsec-active-active.md)<br/> solution with [gateway-ipsec in dual redundancy](scenarios/ipsec-dual-redundancy.md)<br/> solution with [multiple VPN devices](scenarios/ipsec-multiple-vpn-device.md) [ * DRAFT * ]
-| 5 | Configure a DNS on the cloud, so that all machines are reachable via FQDN |  solution with [azure-dns](scenarios/dns.md)
-| 6 | Configure and use Azure Firewall logs for troubleshooting | configure  [log-analytics-on-firewall](scenarios/logs.md)
-| 7 | Install a test web server on `spoke-03-vm` | install [web-server](scenarios/web.md) |
-| 8 | Connect `on-prem-net` and `on-prem2-net` to `hub-lab-net` via S2S IPSEC and allow cross-on-premises communication | solution [cross-on-premise-routing](scenarios/cross-on-premise-routing.md) |
-| 9 | Use Azure Firewall for traffic inspection between `on-prem-net` and `spoke-01` networks  (North/South Traffic Inspection) | solution [north-south-inspection](scenarios/solution-north-south-inspection.md)
-| 10 | Use Network Watcher for logging and network troubleshooting | solution [network watcher](scenarios/network-watcher.md)
-| 11 | **DNS resolution** <br/>Configure a DNS on the cloud, and be sure that all machines are reachable via FQDN also from on-premise  | solution with&nbsp;[Azure&nbsp;Firewall](/scenarios/name-resolution-with-azure-firewall.md) <br/>solution&nbsp;with&nbsp;[Private&nbsp;DNS&nbsp;resolver](/scenarios/name-resolution-with-dns-private-resolver.md) |
-| 12 | Secure a WEB workload with both Azure Firewall Premium and Azure Web Application Firewall | Solution with [Azure Firewall and  WAF](scenarios/publish-waf-fw.md)
-| 13 | Configure a P2S VPN | Solution with [Certificate Authentication](scenarios/p2s-vpn-certificate.md)<br/>Solution with [CA and always-on](scenarios/p2s-vpn-certificate-always-on.md)
-| 14 | Routing cross hubs with BGP | Solution using [Azure Virtual Network Gateway](scenarios/routing-with-bgp.md)
-| 15 | Routing cross hubs without BGP | Solution with [Azure Firewall](scenarios/routing-without-bgp-fw.md) | 
-| 16 | Publish internal web app on private and public IPs in HTTPS | Solution with [Azure Application Gateway](scenarios/app-gateway-01.md)<br/>Solution using [Azure Frontdoor](scenarios/frontdoor.md) |
-| 17 | Publish internal SFTP endpoint via Azure Firewall | Solution with [Azure Firewall](scenarios/sftp.md) |
-| 18 | deploy an Azure OpenAI service in an hub-and-spoke network topology and publish it internally via a private Azure API Management | Solution with [APIM and AOAI](scenarios/aoai.md) 
-| 19 | create an Azure Elastic SAN and connect it to your Windows Server virtual machine | Solution using [Azure Elastic SAN](scenarios/elastic-san.md)
-| 20 | Manage outbound traffic to intenent | Solution using [Azure Firewall as gateway](scenarios/outbound-traffic-to-internet-firewall.md) |
+Each scenario includes **prerequisites**, **step-by-step solution**, and **validation tests**.
 
+### Connectivity & Routing
 
-Whould you like to see a scenario not listed? Open [an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues]).
+|   #   | Scenario                             | Solutions                                                                                                                                                                                                                                                                                                             |
+| :---: | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   1   | Any-to-any spoke communication       | implemented using [Azure Firewall](scenarios/ping-any-to-any-firewall.md) • implemented using [VNet Gateway](scenarios/ping-any-to-any-gateway.md) • implemented using [AVNM](scenarios/ping-any-to-any-avnm.md)                                                                                                      |
+|   3   | Connect on-premises via VNet-to-VNet | implemented using VNet-to-VNet connection [to on-premise](scenarios/vnet-to-vnet.md) • implemented using VNet-to-VNet connectio [to on-premises-2](scenarios/vnet-to-vnet-2.md)                                                                                                                                       |
+|   4   | Site-to-Site IPSec VPN               | one connection [without BGP](scenarios/ipsec.md) • one connection [With BGP](scenarios/ipsec-bgp.md) • dual connection [Active-Active with bgp](scenarios/ipsec-active-active.md) • [Dual Redundancy](scenarios/ipsec-dual-redundancy.md) • [Multiple Devices TO BE REVIEWED](scenarios/ipsec-multiple-vpn-device.md) |
+|   8   | Cross on-premises communication      | implemented with [Vnet-to-Vnet connection via Hub and BGP](scenarios/cross-on-premise-routing.md)                                                                                                                                                                                                                     |
+|  14   | Routing cross hubs with BGP          | via [VNet Gateway](scenarios/routing-with-bgp.md)                                                                                                                                                                                                                                                                     |
+|  15   | Routing cross hubs without BGP       | via [Azure Firewall](scenarios/routing-without-bgp-fw.md)                                                                                                                                                                                                                                                             |
+
+### Security & Traffic Inspection
+
+|   #   | Scenario                         | Solutions                                                                     |
+| :---: | -------------------------------- | ----------------------------------------------------------------------------- |
+|   2   | Expose VMs via Firewall DNAT     | [DNAT Rules](scenarios/dnat-01-02.md)                                         |
+|   9   | North/South traffic inspection   | using [Azure Firewall](scenarios/solution-north-south-inspection.md)          |
+|  12   | Secure web workloads             | using [Azure Firewall + Application Gateway WAF](scenarios/publish-waf-fw.md) |
+|  20   | Manage outbound internet traffic | using [Azure Firewall](scenarios/outbound-traffic-to-internet-firewall.md)    |
+
+### DNS & Name Resolution
+
+|   #   | Scenario                        | Solutions                                                                                                                                           |
+| :---: | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   5   | Cloud DNS for FQDN resolution   | [Azure DNS](scenarios/dns.md)                                                                                                                       |
+|  11   | DNS resolution from on-premises | [Azure Firewall](scenarios/name-resolution-with-azure-firewall.md) • [Private DNS Resolver](scenarios/name-resolution-with-dns-private-resolver.md) |
+
+### Publishing & Services
+
+|   #   | Scenario                       | Solutions                                                                                                                  |
+| :---: | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+|   7   | Deploy test web server         | [Web Server](scenarios/web.md)                                                                                             |
+|  13   | Point-to-Site VPN              | using [Certificate Auth](scenarios/p2s-vpn-certificate.md) • using [Always-On](scenarios/p2s-vpn-certificate-always-on.md) |
+|  16   | Publish internal web apps      | using [Application Gateway](scenarios/app-gateway-01.md) • using [Azure Front Door](scenarios/frontdoor.md)                |
+|  17   | Publish SFTP endpoint          | using [Azure Firewall](scenarios/sftp.md)                                                                                  |
+|  18   | Azure OpenAI with private APIM | using [APIM + AOAI](scenarios/aoai.md)                                                                                     |
+|  19   | Azure Elastic SAN              | usingn [Azure Elastic SAN](scenarios/elastic-san.md)                                                                       |
+
+### Monitoring & Troubleshooting
+
+|   #   | Scenario                | Solutions                                       |
+| :---: | ----------------------- | ----------------------------------------------- |
+|   6   | Azure Firewall logs     | [Log Analytics](scenarios/logs.md)              |
+|  10   | Network troubleshooting | [Network Watcher](scenarios/network-watcher.md) |
+
+> 💡 **Missing a scenario?** [Open an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues) and let us know!
+
+## FAQ
+
+<details>
+<summary><b>How much does it cost to run this playground?</b></summary>
+
+The cost depends on the components you deploy and how long you keep them running. The main cost drivers are:
+- **Azure Firewall Premium**: ~$1.75/hour
+- **VPN Gateway (VpnGw1)**: ~$0.19/hour
+- **Virtual Machines**: varies by SKU (Standard_D2_v5 ~$0.10/hour)
+- **Azure Bastion**: ~$0.19/hour
+
+💡 **Tip**: Delete the resource group when not in use to avoid unexpected charges and redeploy it when you need it, this is the real value of this project!
+
+</details>
+
+<details>
+<summary><b>Can I use this in production?</b></summary>
+
+This playground is designed for learning and testing purposes. While it follows enterprise-scale landing zone patterns, you should review and adapt security settings, naming conventions, and SKUs before using it in a production environment.
+
+</details>
+
+<details>
+<summary><b>Where can I find the source files for the network diagrams? What software do you use for the diagrams?</b></summary>
+
+All diagrams are created with [draw.io](https://draw.io) and the source files are available in the [`images/`](images/) folder with `.drawio` extension. You can download them and use them as a starting point for your own architecture diagrams — same style, same icons!
+
+</details>
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a PR.
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Made with ❤️ in Italy 🇮🇹 by <a href="https://github.com/nicolgit">nicolgit</a><br/>
+  Powered by <a href="https://github.com/nicolgit/hub-and-spoke-playground/contributors">contributors</a> from around the world
+</p>
+
