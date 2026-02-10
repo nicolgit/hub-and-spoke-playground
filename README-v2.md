@@ -2,7 +2,7 @@
   <br>
   <img src="images/hl-architecture.png" alt="Hub and Spoke Playground" width="400">
   <br>
-  Azure Hub-and-Spoke Playground
+  The Azure🌍 hub-and-spoke-playground
   <br>
 </h1>
 
@@ -35,14 +35,14 @@
 
 This repository provides a **preconfigured Azure hub-and-spoke network topology** aligned with the [Azure Enterprise-Scale Landing Zone](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture) reference architecture. Deploy it with a single click and use it as a sandbox for testing, studying, and experimenting with network configurations.
 
-> 📖 **Learn more**: Read the [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for detailed insights about this project.
+> 📖 Read this [blog post](https://nicolgit.github.io/azure-hub-and-spoke-playground/) for more insights about this project.
 
 ## Features
 
-- 🏗️ **Enterprise-ready topology** — Aligned with Microsoft's Cloud Adoption Framework
+- 🏗️ **Enterprise-like topology** — Aligned with Microsoft's Cloud Adoption Framework
 - 🚀 **One-click deployment** — Deploy entire environments with a single button
-- 🔒 **Security built-in** — Azure Firewall Premium with threat inspection
-- 🌐 **Multi-region support** — Hub and spokes across West Europe and North Europe
+- 🔒 **Security built-in** — Azure Firewall and Azure Bastion automatically deployed
+- 🌐 **Multi-region support** — you can deploy the playground in the region you prefer (default west/north europe)
 - 📚 **20+ guided scenarios** — Step-by-step tutorials for real-world configurations
 - 🔄 **Modular design** — Deploy only what you need (gateway, firewall, bastion, VMs)
 - 🎨 **Open-source diagrams** — All architecture diagrams include draw.io source files, ready to customize for your own projects
@@ -56,14 +56,13 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
 
 ### Deploy using the Deploy to Azure Button
 
-|   #   | Playground                                                    |                                                                                                                    Deploy                                                                                                                     |
-| :---: | ------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|   1   | **HUB 01** — Hub network + spokes 01, 02, 03                  |      [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-01-bicep%2Fhub-01.json)      |
-|   2   | **ON PREMISES** — Simulated on-prem (France Central)          |     [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-bicep%2Fon-prem.json)     |
-|   3   | **ON PREMISES 2** — Simulated on-prem (Germany West Central)  |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fon-prem-2-bicep%2Fon-prem-2.json)   |
-|   4   | **ANY-TO-ANY** — Routing + firewall rules *(requires HUB)*    |  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fany-to-any-bicep%2Fany-to-any.json)  |
-|   5   | **S2S VPN** — Site-to-site VPN *(requires HUB + ON PREMISES)* | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fs2s-vpn-bicep%2Fconnect-on-prem.json) |
-|   6   | **HUB 02** — Second hub + spokes 04-10                        |      [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fhub-02-bicep%2Fhub-02.json)      |
+|   #   | Playground                                                   |                                                                                                              Deploy                                                                                                              |
+| :---: | ------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   1   | **HUB 01** — Hub network + spokes 01, 02, 03                 |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-01.json)   |
+|   2   | **ON PREMISES** — Simulated on-prem (France Central)         |  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem.json)   |
+|   3   | **ON PREMISES 2** — Simulated on-prem (Germany West Central) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem-2.json)  |
+|   4   | **ANY-TO-ANY** — Routing + firewall rules *(requires HUB)*   | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fany-to-any.json) |
+|   5   | **HUB 02** — Second hub + spokes 04-10                       |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-02.json)   |
 
 ### Deploy via Bicep (Azure Cloud Shell)
 
