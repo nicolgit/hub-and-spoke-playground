@@ -61,8 +61,7 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
 |   1   | **HUB 01** — Hub network + spokes 01, 02, 03                 |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-01.json)   |
 |   2   | **ON PREMISES** — Simulated on-prem (France Central)         |  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem.json)   |
 |   3   | **ON PREMISES 2** — Simulated on-prem (Germany West Central) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fon-prem-2.json)  |
-|   4   | **ANY-TO-ANY** — Routing + firewall rules *(requires HUB)*   | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fany-to-any.json) |
-|   5   | **HUB 02** — Second hub + spokes 04-10                       |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-02.json)   |
+|   4   | **HUB 02** — Second hub + spokes 04-10                       |   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fhub-and-spoke-playground%2Fmain%2Fbicep%2Fhub-02.json)   |
 
 ### Deploy via Bicep (Azure Cloud Shell)
 
@@ -87,19 +86,19 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
    ```bash
    # HUB 01 — Hub network + spokes 01, 02, 03
    az deployment group create --resource-group $RESOURCE_GROUP \
-     --template-file hub-01-bicep/hub-01.bicep
+     --template-file bicep/hub-01.bicep
 
    # ON PREMISES — Simulated on-prem (France Central)
    az deployment group create --resource-group $RESOURCE_GROUP \
-     --template-file on-prem-bicep/on-prem.bicep
+     --template-file bicep/on-prem.bicep
 
    # ON PREMISES 2 — Simulated on-prem (Germany West Central)
    az deployment group create --resource-group $RESOURCE_GROUP \
-     --template-file on-prem-2-bicep/on-prem-2.bicep
+     --template-file bicep/on-prem-2.bicep
 
    # ANY-TO-ANY — deploys hub-0- + Routing + firewall rules 
    az deployment group create --resource-group $RESOURCE_GROUP \
-     --template-file any-to-any-bicep/any-to-any.bicep
+     --template-file bicep/hub-01.bicep --parameters anyToAnyRouting=true
 
    # HUB 02 — Second hub + spokes 04-10
    az deployment group create --resource-group $RESOURCE_GROUP \

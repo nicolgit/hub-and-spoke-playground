@@ -47,7 +47,7 @@ _download drawio version of this image [here](../images/aoai-deployment.drawio).
 
 ## Pre-requisites
 
-In order to apply this solution you have to deploy the `hub-01` and the `any-to-any` routing, so that you have a fully configured hub-and-spoke network with firewall and routing between spokes.
+In order to apply this solution you have to deploy the `hub-01` with param `anyToAnyRouting=true`, so that you have a fully configured hub-and-spoke network with firewall and routing between spokes.
 
 ## Solution
 We will do the following:
