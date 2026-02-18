@@ -96,13 +96,13 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
    az deployment group create --resource-group $RESOURCE_GROUP \
      --template-file bicep/on-prem-2.bicep
 
-   # ANY-TO-ANY — deploys hub-0- + Routing + firewall rules 
+   # ANY-TO-ANY — deploys hub-01 + Routing + firewall rules 
    az deployment group create --resource-group $RESOURCE_GROUP \
      --template-file bicep/hub-01.bicep --parameters anyToAnyRouting=true
 
    # HUB 02 — Second hub + spokes 04-10
    az deployment group create --resource-group $RESOURCE_GROUP \
-     --template-file hub-02-bicep/hub-02.bicep
+     --template-file bicep/hub-02.bicep
    ```
 
 > 💡 **Tip**: You can override default parameters using `--parameters paramName=value`
