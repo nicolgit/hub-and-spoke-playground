@@ -78,6 +78,8 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
    LOCATION="westeurope"
    RESOURCE_GROUP="hub-and-spoke-playground"
 
+   cd hub-and-spoke-playground/bicep/
+
    az group create --name $RESOURCE_GROUP --location $LOCATION
    ```
 
