@@ -23,6 +23,7 @@
 </p>
 
 <p align="center">
+  <a href="#whats-new">What's New</a> •
   <a href="#features">Features</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#architecture">Architecture</a> •
@@ -32,6 +33,12 @@
 </p>
 
 ---
+
+## What's New
+
+| Date | Update |
+|---|---|
+| Feb 2026 | New scenario: [Deploy an Azure Container Apps Environment fully internal](scenarios/container-apps.md) — deploy ACA in internal mode within a hub-and-spoke topology, with network injection and private endpoint integration. |
 
 This repository provides a **preconfigured Azure hub-and-spoke network topology** aligned with the [Azure Enterprise-Scale Landing Zone](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture) reference architecture. Deploy it with a single click and use it as a sandbox for testing, studying, and experimenting with network configurations.
 
@@ -138,7 +145,7 @@ The playground consists of **two hub-and-spoke topologies** and **two simulated 
 <details>
 <summary><b>📦 HUB 01 Components</b> (click to expand)</summary>
 
-Deployed via [`bicep/hub-01.json`](hub-01-bicep/hub-01.json):
+Deployed via [`bicep/hub-01.json`](bicep/hub-01.json):
 
 | Resource               | Description                                  |
 | ---------------------- | -------------------------------------------- |
@@ -160,7 +167,7 @@ _Download the [draw.io source file](images/architecture.drawio)_
 <details>
 <summary><b>📦 ON PREMISES Components</b> (click to expand)</summary>
 
-Deployed via [`bicep/on-prem.json`](on-prem-bicep/on-prem.json):
+Deployed via [`bicep/on-prem.json`](bicep/on-prem.json):
 
 | Resource        | Description                                  |
 | --------------- | -------------------------------------------- |
@@ -178,7 +185,7 @@ _Download the [draw.io source file](images/architecture.drawio)_
 <details>
 <summary><b>📦 ON PREMISES 2 Components</b> (click to expand)</summary>
 
-Deployed via [`bicep/on-prem-2.json`](on-prem-2-bicep/on-prem-2.json):
+Deployed via [`bicep/on-prem-2.json`](bicep/on-prem-2.json):
 
 | Resource        | Description                                               |
 | --------------- | --------------------------------------------------------- |
@@ -191,13 +198,12 @@ Deployed via [`bicep/on-prem-2.json`](on-prem-2-bicep/on-prem-2.json):
 ![on-premises-2](images/architecture-on-premises-2.png)
 
 _Download the [draw.io source file](images/architecture.drawio)_
-
 </details>
 
 <details>
 <summary><b>📦 HUB 02 Components</b> (click to expand)</summary>
 
-Deployed via [`hub-02-bicep/hub-02.json`](bicep/hub-02.json):
+Deployed via [`bicep/hub-02.json`](bicep/hub-02.json):
 
 | Resource                 | Description                    |
 | ------------------------ | ------------------------------ |
@@ -216,7 +222,7 @@ _Download the [draw.io source file](images/architecture.drawio)_
 <details>
 <summary><b>📦 ANY-TO-ANY Routing</b> (click to expand)</summary>
 
-Deployed via [`bicep/any-to-any.json`](any-to-any-bicep/any-to-any.json):
+Deployed via [`bicep/hub-01.json`](bicep/hub-01.json) with parameter `anyToAnyRouting=true`:
 
 - Route tables forwarding spoke traffic through the firewall
 - IP Groups and Azure Firewall policies enabling:
