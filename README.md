@@ -230,48 +230,49 @@ Each scenario includes **prerequisites**, **step-by-step solution**, and **valid
 
 ### Connectivity & Routing
 
-|   #   | Scenario                             | Solutions                                                                                                                                                                                                                                                                                                             |
-| :---: | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   1   | Any-to-any spoke communication       | implemented using [Azure Firewall](scenarios/ping-any-to-any-firewall.md) • implemented using [VNet Gateway](scenarios/ping-any-to-any-gateway.md) • implemented using [AVNM](scenarios/ping-any-to-any-avnm.md)                                                                                                      |
-|   3   | Connect on-premises via VNet-to-VNet | implemented using VNet-to-VNet connection [to on-premise](scenarios/vnet-to-vnet.md) • implemented using VNet-to-VNet connectio [to on-premises-2](scenarios/vnet-to-vnet-2.md)                                                                                                                                       |
-|   4   | Site-to-Site IPSec VPN               | one connection [without BGP](scenarios/ipsec.md) • one connection [With BGP](scenarios/ipsec-bgp.md) • dual connection [Active-Active with bgp](scenarios/ipsec-active-active.md) • [Dual Redundancy](scenarios/ipsec-dual-redundancy.md) • [Multiple Devices TO BE REVIEWED](scenarios/ipsec-multiple-vpn-device.md) |
-|   8   | Cross on-premises communication      | implemented with [Vnet-to-Vnet connection via Hub and BGP](scenarios/cross-on-premise-routing.md)                                                                                                                                                                                                                     |
-|  14   | Routing cross hubs with BGP          | via [VNet Gateway](scenarios/routing-with-bgp.md)                                                                                                                                                                                                                                                                     |
-|  15   | Routing cross hubs without BGP       | via [Azure Firewall](scenarios/routing-without-bgp-fw.md)                                                                                                                                                                                                                                                             |
+|   #   | Scenario           | Solutions         |
+| :---: | ---------- | ------------------------------- |
+|   1.1   | Any-to-any spoke communication       | implemented using [Azure Firewall](scenarios/ping-any-to-any-firewall.md) • implemented using [VNet Gateway](scenarios/ping-any-to-any-gateway.md) • implemented using [AVNM](scenarios/ping-any-to-any-avnm.md)       |
+|   1.2   | Connect on-premises via VNet-to-VNet | implemented using VNet-to-VNet connection [to on-premise](scenarios/vnet-to-vnet.md) • implemented using VNet-to-VNet connectio [to on-premises-2](scenarios/vnet-to-vnet-2.md)                                                                                                                                       |
+|   1.3  | Site-to-Site IPSec VPN               | one connection [without BGP](scenarios/ipsec.md) • one connection [With BGP](scenarios/ipsec-bgp.md) • dual connection [Active-Active with bgp](scenarios/ipsec-active-active.md) • [Dual Redundancy](scenarios/ipsec-dual-redundancy.md) • [Multiple Devices TO BE REVIEWED](scenarios/ipsec-multiple-vpn-device.md) |
+|   1.4  | Cross on-premises communication      | implemented with [Vnet-to-Vnet connection via Hub and BGP](scenarios/cross-on-premise-routing.md)              |
+|  1.5 | Routing cross hubs with BGP          | via [VNet Gateway](scenarios/routing-with-bgp.md)     |
+|  1.6  | Routing cross hubs without BGP       | via [Azure Firewall](scenarios/routing-without-bgp-fw.md)                                                                                                                                                                                                                                                             |
 
 ### Security & Traffic Inspection
 
 |   #   | Scenario                         | Solutions                                                                     |
-| :---: | -------------------------------- | ----------------------------------------------------------------------------- |
-|   2   | Expose VMs via Firewall DNAT     | [DNAT Rules](scenarios/dnat-01-02.md)                                         |
-|   9   | North/South traffic inspection   | using [Azure Firewall](scenarios/solution-north-south-inspection.md)          |
-|  12   | Secure web workloads             | using [Azure Firewall + Application Gateway WAF](scenarios/publish-waf-fw.md) |
-|  20   | Manage outbound internet traffic | using [Azure Firewall](scenarios/outbound-traffic-to-internet-firewall.md)    |
+| :---: | ---------- | ------------ |
+|   2.1   | Expose VMs via Firewall DNAT     | [DNAT Rules](scenarios/dnat-01-02.md)                                         |
+|   2.2   | North/South traffic inspection   | using [Azure Firewall](scenarios/solution-north-south-inspection.md)          |
+|  2.3   | Secure web workloads             | using [Azure Firewall + Application Gateway WAF](scenarios/publish-waf-fw.md) |
+|  2.4   | Manage outbound internet traffic | using [Azure Firewall](scenarios/outbound-traffic-to-internet-firewall.md)    |
 
 ### DNS & Name Resolution
 
 |   #   | Scenario                        | Solutions                                                                                                                                           |
-| :---: | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   5   | Cloud DNS for FQDN resolution   | [Azure DNS](scenarios/dns.md)                                                                                                                       |
-|  11   | DNS resolution from on-premises | [Azure Firewall](scenarios/name-resolution-with-azure-firewall.md) • [Private DNS Resolver](scenarios/name-resolution-with-dns-private-resolver.md) |
+| :---: | -------- | ------------------ |
+|   3.1   | Cloud DNS for FQDN resolution   | [Azure DNS](scenarios/dns.md)                                                                                                                       |
+|  3.2   | DNS resolution from on-premises | [Azure Firewall](scenarios/name-resolution-with-azure-firewall.md) • [Private DNS Resolver](scenarios/name-resolution-with-dns-private-resolver.md) |
 
 ### Publishing & Services
 
 |   #   | Scenario                       | Solutions                                                                                                                  |
-| :---: | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-|   7   | Deploy test web server         | [Web Server](scenarios/web.md)                                                                                             |
-|  13   | Point-to-Site VPN              | using [Certificate Auth](scenarios/p2s-vpn-certificate.md) • using [Always-On](scenarios/p2s-vpn-certificate-always-on.md) |
-|  16   | Publish internal web apps      | using [Application Gateway](scenarios/app-gateway-01.md) • using [Azure Front Door](scenarios/frontdoor.md)                |
-|  17   | Publish SFTP endpoint          | using [Azure Firewall](scenarios/sftp.md)                                                                                  |
-|  18   | Azure OpenAI with private APIM | using [APIM + AOAI](scenarios/aoai.md)                                                                                     |
-|  19   | Azure Elastic SAN              | usingn [Azure Elastic SAN](scenarios/elastic-san.md)                                                                       |
+| :---: | ------ | -------------- |
+|  4.1   | Web server         | install a [Web Server](scenarios/web.md) on a LinuxVirtual machine |
+|  4.2   | Point-to-Site VPN              | using [Certificate Auth](scenarios/p2s-vpn-certificate.md) • using [Always-On](scenarios/p2s-vpn-certificate-always-on.md) |
+|  4.3  | Publish internal web apps      | using [Application Gateway](scenarios/app-gateway-01.md) • using [Azure Front Door](scenarios/frontdoor.md)                |
+|  4.3  | Publish SFTP endpoint          | using [Azure Firewall](scenarios/sftp.md)                                                                                  |
+|  4.4  | Azure OpenAI with private APIM | using [APIM + AOAI](scenarios/aoai.md)                                                                                     |
+|  4.5  | Azure Elastic SAN              | deploy and [connect to a Windows Server VM](scenarios/elastic-san.md)                                                                       |
+| 4.6 | Azure Container Apps | deploy a [fully internal environment](scenarios/container-apps.md) |
 
 ### Monitoring & Troubleshooting
 
-|   #   | Scenario                | Solutions                                       |
-| :---: | ----------------------- | ----------------------------------------------- |
-|   6   | Azure Firewall logs     | [Log Analytics](scenarios/logs.md)              |
-|  10   | Network troubleshooting | [Network Watcher](scenarios/network-watcher.md) |
+|   #   | Scenario          | Solutions         |
+| :---: | ------ | ---------- |
+| 5.1   | Azure Firewall logs     | [Log Analytics](scenarios/logs.md)              |
+| 5.2 | Network troubleshooting | [Network Watcher](scenarios/network-watcher.md) |
 
 > 💡 **Missing a scenario?** [Open an issue](https://github.com/nicolgit/hub-and-spoke-playground/issues) and let us know!
 

@@ -1,6 +1,6 @@
 # SOLUTION: 
 
-# Install a web server on spoke-03-vm
+# Install a web server on spoke-03-vm (Linux server)
 
 ```
 sudo apt-get update
