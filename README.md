@@ -38,7 +38,7 @@
 
 | Date | Update |
 |---|---|
-| Feb 2026 | New scenario: [Deploy an Azure Container Apps Environment fully internal](scenarios/container-apps.md) — deploy ACA in internal mode within a hub-and-spoke topology, with network injection and private endpoint integration. |
+| Apr 2026 | New scenario: [Azure Virtual Network Routing Appliance](scenarios/ping-any-to-any-rounting-appliance.md) — Allows machines in ANY spoke to communicate with ANY machine in ANY other spoke using an Azure Virtual Network Routing Appliance. |
 
 This repository provides a **preconfigured Azure hub-and-spoke network topology** aligned with the [Azure Enterprise-Scale Landing Zone](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture) reference architecture. Deploy it with a single click and use it as a sandbox for testing, studying, and experimenting with network configurations.
 
@@ -49,7 +49,7 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
 - 🏗️ **Enterprise-like topology** — Aligned with Microsoft's Cloud Adoption Framework
 - 🚀 **One-click deployment** — Deploy entire environments with a single button
 - 🔒 **Security built-in** — Azure Firewall and Azure Bastion automatically deployed
-- 🌐 **Multi-region support** — you can deploy the playground in the region you prefer (default west/north europe)
+- 🌐 **Multi-region support** — you can deploy the playground in your preferred region (default West/North Europe)
 - 📚 **20+ guided scenarios** — Step-by-step tutorials for real-world configurations
 - 🔄 **Modular design** — Deploy only what you need (gateway, firewall, bastion, VMs)
 - 🎨 **Open-source diagrams** — All architecture diagrams include draw.io source files, ready to customize for your own projects
@@ -105,7 +105,7 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
    az deployment group create --resource-group $RESOURCE_GROUP \
      --template-file bicep/on-prem-2.bicep
 
-   # ANY-TO-ANY — deploys hub-01 + Routing + firewall rules 
+   # ANY-TO-ANY — deploys hub-01 + routing + firewall rules
    az deployment group create --resource-group $RESOURCE_GROUP \
      --template-file bicep/hub-01.bicep --parameters anyToAnyRouting=true
 
@@ -131,7 +131,7 @@ All VMs are deployed with:
 - **Username:** `nicola`
 - **Password:** `password.123`
 
-> ⚠️ **Security Note:** Because this playground is intended to be active for only a few hours without public IPs, I also deploy a default username/password for all VMs. If you prefer, you can change these values to better fit your security standards.
+> ⚠️ **Security Note:** Because this playground is intended to be active for only a few hours without public IPs, default credentials are deployed for all VMs. If you prefer, you can change these values to better fit your security standards.
 
 ## Architecture
 
@@ -240,9 +240,9 @@ Each scenario includes **prerequisites**, **step-by-step solution**, and **valid
 
 |   #   | Scenario           | Solutions         |
 | :---: | ---------- | ------------------------------- |
-|   1.1   | Any-to-any spoke communication       | implemented using [Azure Firewall](scenarios/ping-any-to-any-firewall.md) • implemented using [VNet Gateway](scenarios/ping-any-to-any-gateway.md) • implemented using [AVNM](scenarios/ping-any-to-any-avnm.md)       |
-|   1.2   | Connect on-premises via VNet-to-VNet | implemented using VNet-to-VNet connection [to on-premise](scenarios/vnet-to-vnet.md) • implemented using VNet-to-VNet connectio [to on-premises-2](scenarios/vnet-to-vnet-2.md)                                                                                                                                       |
-|   1.3  | Site-to-Site IPSec VPN               | one connection [without BGP](scenarios/ipsec.md) • one connection [With BGP](scenarios/ipsec-bgp.md) • dual connection [Active-Active with bgp](scenarios/ipsec-active-active.md) • [Dual Redundancy](scenarios/ipsec-dual-redundancy.md) • [Multiple Devices TO BE REVIEWED](scenarios/ipsec-multiple-vpn-device.md) |
+|   1.1   | Any-to-any spoke communication       | implemented using [Azure Firewall](scenarios/ping-any-to-any-firewall.md) • implemented using [VNet Gateway](scenarios/ping-any-to-any-gateway.md) • implemented using [AVNM](scenarios/ping-any-to-any-avnm.md) • implemented using [Azure Virtual Network Routing Appliance](scenarios/ping-any-to-any-rounting-appliance.md)       |
+|   1.2   | Connect on-premises via VNet-to-VNet | implemented using VNet-to-VNet connection [to on-premises](scenarios/vnet-to-vnet.md) • implemented using VNet-to-VNet connection [to on-premises-2](scenarios/vnet-to-vnet-2.md)                                                                                                                                       |
+|   1.3  | Site-to-Site IPSec VPN               | one connection [without BGP](scenarios/ipsec.md) • one connection [with BGP](scenarios/ipsec-bgp.md) • dual connection [Active-Active with BGP](scenarios/ipsec-active-active.md) • [Dual Redundancy](scenarios/ipsec-dual-redundancy.md) • [Multiple Devices TO BE REVIEWED](scenarios/ipsec-multiple-vpn-device.md) |
 |   1.4  | Cross on-premises communication      | implemented with [Vnet-to-Vnet connection via Hub and BGP](scenarios/cross-on-premise-routing.md)              |
 |  1.5 | Routing cross hubs with BGP          | via [VNet Gateway](scenarios/routing-with-bgp.md)     |
 |  1.6  | Routing cross hubs without BGP       | via [Azure Firewall](scenarios/routing-without-bgp-fw.md)                                                                                                                                                                                                                                                             |
@@ -267,7 +267,7 @@ Each scenario includes **prerequisites**, **step-by-step solution**, and **valid
 
 |   #   | Scenario                       | Solutions                                                                                                                  |
 | :---: | ------ | -------------- |
-|  4.1   | Web server         | install a [Web Server](scenarios/web.md) on a LinuxVirtual machine |
+|  4.1   | Web server         | install a [Web Server](scenarios/web.md) on a Linux virtual machine |
 |  4.2   | Point-to-Site VPN              | using [Certificate Auth](scenarios/p2s-vpn-certificate.md) • using [Always-On](scenarios/p2s-vpn-certificate-always-on.md) |
 |  4.3  | Publish internal web apps      | using [Application Gateway](scenarios/app-gateway-01.md) • using [Azure Front Door](scenarios/frontdoor.md)                |
 |  4.3  | Publish SFTP endpoint          | using [Azure Firewall](scenarios/sftp.md)                                                                                  |
@@ -295,7 +295,7 @@ The cost depends on the components you deploy and how long you keep them running
 - **Virtual Machines**: varies by SKU (Standard_D2_v5 ~$0.10/hour)
 - **Azure Bastion**: ~$0.19/hour
 
-💡 **Tip**: Delete the resource group when not in use to avoid unexpected charges and redeploy it when you need it, this is the real value of this project!
+💡 **Tip**: Delete the resource group when not in use to avoid unexpected charges and redeploy it when you need it — this is the real value of this project!
 
 </details>
 
