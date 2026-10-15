@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "12357647604350657041"
+      "version": "0.48.1.52935",
+      "templateHash": "7508236618795089773"
     }
   },
   "parameters": {
@@ -159,8 +159,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14566125482519945303"
+              "version": "0.48.1.52935",
+              "templateHash": "16247211488917525792"
             }
           },
           "parameters": {
@@ -328,8 +328,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14566125482519945303"
+              "version": "0.48.1.52935",
+              "templateHash": "16247211488917525792"
             }
           },
           "parameters": {
@@ -497,8 +497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14566125482519945303"
+              "version": "0.48.1.52935",
+              "templateHash": "16247211488917525792"
             }
           },
           "parameters": {
@@ -657,8 +657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10038434001191810152"
+              "version": "0.48.1.52935",
+              "templateHash": "17177563027498144307"
             }
           },
           "parameters": {
@@ -793,8 +793,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "6039423024827642406"
+              "version": "0.48.1.52935",
+              "templateHash": "17156764615044504142"
             }
           },
           "parameters": {
@@ -1001,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "18149629119436058887"
+              "version": "0.48.1.52935",
+              "templateHash": "3386998533210879397"
             }
           },
           "parameters": {
@@ -1300,8 +1300,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.40.2.10011",
-                      "templateHash": "5428377832781887606"
+                      "version": "0.48.1.52935",
+                      "templateHash": "4938316476831264631"
                     }
                   },
                   "parameters": {
@@ -1495,9 +1495,6 @@
           "deployGateway": {
             "value": "[parameters('deployGateway')]"
           },
-          "gatewaySku": {
-            "value": "VpnGw1"
-          },
           "enableBgp": {
             "value": false
           }
@@ -1508,8 +1505,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14530832755519805573"
+              "version": "0.48.1.52935",
+              "templateHash": "2892475291567462102"
             }
           },
           "parameters": {
@@ -1542,13 +1539,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Whether to deploy the VPN Gateway"
-              }
-            },
-            "gatewaySku": {
-              "type": "string",
-              "defaultValue": "VpnGw1",
-              "metadata": {
-                "description": "The VPN Gateway SKU"
               }
             },
             "enableBgp": {
@@ -1608,8 +1598,8 @@
                 "enableBgp": "[parameters('enableBgp')]",
                 "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', parameters('bgpAsn')), null())]",
                 "sku": {
-                  "name": "[parameters('gatewaySku')]",
-                  "tier": "[parameters('gatewaySku')]"
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
                 }
               },
               "dependsOn": [
@@ -1681,8 +1671,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {
@@ -1953,8 +1943,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {
@@ -2225,8 +2215,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {
@@ -2497,8 +2487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {

@@ -30,9 +30,9 @@ Create the following Azure Virtual Network Gateways:
 
 | Name | Region  | Type  | VPN Type | SKU | Virtual Network | gw subnet range | IP | BGP | ANS
 |---|---|---|---|---|---|---|---|---|---|
-|spoke-01-gateway| west-europe  | VPN | route based   | VpnGw1   | spoke-01 | 10.13.1.128/26 | spoke-01-ip | Enabled | 65511 
-|spoke-02-gateway| west-europe  | VPN | route based   | VpnGw1   | spoke-02 | 10.13.2.128/26 | spoke-02-ip | Enabled | 65512 
-|spoke-03-gateway| north-europe | VPN | route based   | VpnGw1   | spoke-03 | 10.13.3.128/26 | spoke-03-ip | Enabled | 65513 
+|spoke-01-gateway| west-europe  | VPN | route based   | VpnGw1AZ   | spoke-01 | 10.13.1.128/26 | spoke-01-ip | Enabled | 65511
+|spoke-02-gateway| west-europe  | VPN | route based   | VpnGw1AZ   | spoke-02 | 10.13.2.128/26 | spoke-02-ip | Enabled | 65512
+|spoke-03-gateway| north-europe | VPN | route based   | VpnGw1AZ   | spoke-03 | 10.13.3.128/26 | spoke-03-ip | Enabled | 65513
 
 On `lab-gateway` also **enable BGP** and set ANS=`65514`
 

@@ -291,11 +291,20 @@ Each scenario includes **prerequisites**, **step-by-step solution**, and **valid
 
 The cost depends on the components you deploy and how long you keep them running. The main cost drivers are:
 - **Azure Firewall Premium**: ~$1.75/hour
-- **VPN Gateway (VpnGw1)**: ~$0.19/hour
+- **VPN Gateway (VpnGw1AZ)**: varies by region; see [VPN Gateway pricing](https://azure.microsoft.com/pricing/details/vpn-gateway/)
 - **Virtual Machines**: varies by SKU (Standard_D2_v5 ~$0.10/hour)
 - **Azure Bastion**: ~$0.19/hour
 
 💡 **Tip**: Delete the resource group when not in use to avoid unexpected charges and redeploy it when you need it — this is the real value of this project!
+
+</details>
+
+<details>
+<summary><b>Which VPN Gateway SKU do the templates use?</b></summary>
+
+New deployments use **VpnGw1AZ** with a **Standard, static public IP address**. Azure no longer allows new non-AZ VpnGw1-5 gateways as of November 1, 2025. See [VPN Gateway SKU consolidation](https://learn.microsoft.com/azure/vpn-gateway/gateway-sku-consolidation).
+
+For existing non-AZ gateways, follow the [gateway SKU upgrade procedure](https://learn.microsoft.com/azure/vpn-gateway/gateway-sku-upgrade) rather than relying on redeploying these templates to migrate them.
 
 </details>
 
@@ -327,4 +336,3 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
   Made with ❤️ in Italy 🇮🇹 by <a href="https://github.com/nicolgit">nicolgit</a><br/>
   Powered by <a href="https://github.com/nicolgit/hub-and-spoke-playground/contributors">contributors</a> from around the world
 </p>
-

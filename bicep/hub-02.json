@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "8493960272338388178"
+      "version": "0.48.1.52935",
+      "templateHash": "11557453062545494758"
     }
   },
   "parameters": {
@@ -235,8 +235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14566125482519945303"
+              "version": "0.48.1.52935",
+              "templateHash": "16247211488917525792"
             }
           },
           "parameters": {
@@ -395,8 +395,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10038434001191810152"
+              "version": "0.48.1.52935",
+              "templateHash": "17177563027498144307"
             }
           },
           "parameters": {
@@ -540,8 +540,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {
@@ -792,9 +792,6 @@
           },
           "enableBgp": {
             "value": false
-          },
-          "gatewaySku": {
-            "value": "VpnGw1"
           }
         },
         "template": {
@@ -803,8 +800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14530832755519805573"
+              "version": "0.48.1.52935",
+              "templateHash": "2892475291567462102"
             }
           },
           "parameters": {
@@ -837,13 +834,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Whether to deploy the VPN Gateway"
-              }
-            },
-            "gatewaySku": {
-              "type": "string",
-              "defaultValue": "VpnGw1",
-              "metadata": {
-                "description": "The VPN Gateway SKU"
               }
             },
             "enableBgp": {
@@ -903,8 +893,8 @@
                 "enableBgp": "[parameters('enableBgp')]",
                 "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', parameters('bgpAsn')), null())]",
                 "sku": {
-                  "name": "[parameters('gatewaySku')]",
-                  "tier": "[parameters('gatewaySku')]"
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
                 }
               },
               "dependsOn": [

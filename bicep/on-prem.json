@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "14329871106024713550"
+      "version": "0.48.1.52935",
+      "templateHash": "1379135091136499868"
     }
   },
   "parameters": {
@@ -117,8 +117,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10038434001191810152"
+              "version": "0.48.1.52935",
+              "templateHash": "17177563027498144307"
             }
           },
           "parameters": {
@@ -265,8 +265,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "9658667108639607485"
+              "version": "0.48.1.52935",
+              "templateHash": "626256809255175330"
             }
           },
           "parameters": {
@@ -515,9 +515,6 @@
           "deployGateway": {
             "value": true
           },
-          "gatewaySku": {
-            "value": "VpnGw1"
-          },
           "enableBgp": {
             "value": "[parameters('enableBgp')]"
           },
@@ -531,8 +528,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14530832755519805573"
+              "version": "0.48.1.52935",
+              "templateHash": "2892475291567462102"
             }
           },
           "parameters": {
@@ -565,13 +562,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Whether to deploy the VPN Gateway"
-              }
-            },
-            "gatewaySku": {
-              "type": "string",
-              "defaultValue": "VpnGw1",
-              "metadata": {
-                "description": "The VPN Gateway SKU"
               }
             },
             "enableBgp": {
@@ -631,8 +621,8 @@
                 "enableBgp": "[parameters('enableBgp')]",
                 "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', parameters('bgpAsn')), null())]",
                 "sku": {
-                  "name": "[parameters('gatewaySku')]",
-                  "tier": "[parameters('gatewaySku')]"
+                  "name": "VpnGw1AZ",
+                  "tier": "VpnGw1AZ"
                 }
               },
               "dependsOn": [

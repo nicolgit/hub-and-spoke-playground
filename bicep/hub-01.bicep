@@ -161,7 +161,6 @@ module vpnGatewayDeployment './module/deployVPN.bicep' = {
     location: location
     vnetName: hublabName
     deployGateway: deployGateway
-    gatewaySku: 'VpnGw1'
     enableBgp: false
   }
 }

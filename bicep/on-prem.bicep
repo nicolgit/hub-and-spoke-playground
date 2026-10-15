@@ -78,7 +78,6 @@ module vpnGatewayDeployment './module/deployVPN.bicep' = {
     location: location
     vnetName: onPremNetworkName
     deployGateway: true
-    gatewaySku: 'VpnGw1'
     enableBgp: enableBgp
     bgpAsn: 65510
   }

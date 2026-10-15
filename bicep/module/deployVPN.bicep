@@ -13,9 +13,6 @@ param gatewaySubnetName string = 'GatewaySubnet'
 @description('Whether to deploy the VPN Gateway')
 param deployGateway bool
 
-@description('The VPN Gateway SKU')
-param gatewaySku string = 'VpnGw1'
-
 @description('Whether to enable BGP')
 param enableBgp bool = false
 
@@ -49,7 +46,7 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
     bgpSettings: enableBgp ? {
       asn: bgpAsn
     } : null
-    sku: { name: gatewaySku, tier: gatewaySku }
+    sku: { name: 'VpnGw1AZ', tier: 'VpnGw1AZ' }
   }
 }
 
