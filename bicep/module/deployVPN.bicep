@@ -13,6 +13,9 @@ param gatewaySubnetName string = 'GatewaySubnet'
 @description('Whether to deploy the VPN Gateway')
 param deployGateway bool
 
+@description('Configure Point-to-site VPN for authenticated users in the subscription tenant when the VPN Gateway is deployed')
+param configureP2sVpn bool = false
+
 @description('Whether to enable BGP')
 param enableBgp bool = false
 
@@ -28,7 +31,7 @@ resource vnetGatewayIP 'Microsoft.Network/publicIPAddresses@2020-08-01' = if (de
   properties: { publicIPAllocationMethod: 'Static' }
 }
 
-resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if (deployGateway) {
+resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = if (deployGateway) {
   name: gatewayName
   location: location
   properties: {
@@ -42,6 +45,16 @@ resource vnetGateway 'Microsoft.Network/virtualNetworkGateways@2019-09-01' = if 
     ]
     gatewayType: 'Vpn'
     vpnType: 'RouteBased'
+    vpnClientConfiguration: configureP2sVpn ? {
+      vpnClientAddressPool: {
+        addressPrefixes: ['172.20.0.0/24']
+      }
+      vpnClientProtocols: ['OpenVPN']
+      vpnAuthenticationTypes: ['AAD']
+      aadTenant: '${environment().authentication.loginEndpoint}${tenant().tenantId}'
+      aadAudience: 'c632b3df-fb67-4d84-bdcf-b95ad541b5c8'
+      aadIssuer: 'https://sts.windows.net/${tenant().tenantId}/'
+    } : null
     enableBgp: enableBgp
     bgpSettings: enableBgp ? {
       asn: bgpAsn

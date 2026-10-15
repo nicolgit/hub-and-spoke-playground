@@ -116,6 +116,25 @@ This repository provides a **preconfigured Azure hub-and-spoke network topology*
 
 > 💡 **Tip**: You can override default parameters using `--parameters paramName=value`
 
+### Optional Point-to-site VPN (HUB 01)
+
+Set `configureP2sVpn=true` to configure Point-to-site VPN on the hub VPN Gateway:
+
+```bash
+az deployment group create --resource-group $RESOURCE_GROUP \
+  --template-file bicep/hub-01.bicep \
+  --parameters deployGateway=true configureP2sVpn=true
+```
+
+- **Default:** `configureP2sVpn=false`. If `deployGateway=false`, no gateway or P2S configuration is deployed, even when this flag is enabled.
+- **Tunnel type:** OpenVPN (SSL).
+- **Authentication type:** Microsoft Entra ID, using the subscription's tenant.
+- **Client address pool:** `172.20.0.0/24`.
+- **Access:** All users who can authenticate in that tenant can connect; the template adds no user/group restrictions. Existing Entra policies, including Conditional Access and application assignment requirements, still apply. This does not allow users from arbitrary tenants.
+- **Client:** Use the current Azure VPN Client and import the VPN client profile downloaded from the gateway's **Point-to-site configuration** page after deployment.
+
+The configuration uses the [Microsoft-registered Azure VPN Client audience](https://learn.microsoft.com/azure/vpn-gateway/point-to-site-entra-gateway) (`c632b3df-fb67-4d84-bdcf-b95ad541b5c8`), so no custom app registration or manual administrator consent is required. This option configures P2S on the gateway only; it does not change spoke routing or firewall rules.
+
 ### Cleanup
 
 To destroy all resources and stop incurring costs, simply delete the resource group:

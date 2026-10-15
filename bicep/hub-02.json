@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "11557453062545494758"
+      "templateHash": "11090981091356110797"
     }
   },
   "parameters": {
@@ -801,7 +801,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "2892475291567462102"
+              "templateHash": "6525569626197805276"
             }
           },
           "parameters": {
@@ -834,6 +834,13 @@
               "type": "bool",
               "metadata": {
                 "description": "Whether to deploy the VPN Gateway"
+              }
+            },
+            "configureP2sVpn": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Configure Point-to-site VPN for authenticated users in the subscription tenant when the VPN Gateway is deployed"
               }
             },
             "enableBgp": {
@@ -871,7 +878,7 @@
             {
               "condition": "[parameters('deployGateway')]",
               "type": "Microsoft.Network/virtualNetworkGateways",
-              "apiVersion": "2019-09-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('gatewayName')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -890,6 +897,7 @@
                 ],
                 "gatewayType": "Vpn",
                 "vpnType": "RouteBased",
+                "vpnClientConfiguration": "[if(parameters('configureP2sVpn'), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray('172.20.0.0/24')), 'vpnClientProtocols', createArray('OpenVPN'), 'vpnAuthenticationTypes', createArray('AAD'), 'aadTenant', format('{0}{1}', environment().authentication.loginEndpoint, tenant().tenantId), 'aadAudience', 'c632b3df-fb67-4d84-bdcf-b95ad541b5c8', 'aadIssuer', format('https://sts.windows.net/{0}/', tenant().tenantId)), null())]",
                 "enableBgp": "[parameters('enableBgp')]",
                 "bgpSettings": "[if(parameters('enableBgp'), createObject('asn', parameters('bgpAsn')), null())]",
                 "sku": {

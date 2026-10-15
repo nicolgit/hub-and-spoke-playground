@@ -13,6 +13,9 @@ var bastionName = 'lab-bastion'
 param deployGateway bool = true
 var vnetGatewayName = 'lab-gateway'
 
+@description('Configure Point-to-site VPN with OpenVPN and Microsoft Entra ID authentication when the VPN Gateway is deployed')
+param configureP2sVpn bool = false
+
 @description('Enable any-to-any routing through the firewall')
 param anyToAnyRouting bool = false
 
@@ -161,6 +164,7 @@ module vpnGatewayDeployment './module/deployVPN.bicep' = {
     location: location
     vnetName: hublabName
     deployGateway: deployGateway
+    configureP2sVpn: configureP2sVpn
     enableBgp: false
   }
 }
