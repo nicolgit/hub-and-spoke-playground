@@ -11,6 +11,9 @@ param vnetName string
 @allowed(['Basic', 'Standard', 'Premium'])
 param firewallTier string
 
+@description('Whether to enable the Azure Firewall DNS proxy')
+param enableDnsProxy bool = false
+
 @description('The firewall subnet name')
 param firewallSubnetName string = 'AzureFirewallSubnet'
 
@@ -44,6 +47,9 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-09-01' = {
   name: firewallName
   location: location
   properties: {
+    additionalProperties: {
+      'Network.DNS.EnableProxy': string(enableDnsProxy)
+    }
     managementIpConfiguration: firewallTier == 'Basic' ? {
       name: 'ipconfig-mgt'
       properties: {

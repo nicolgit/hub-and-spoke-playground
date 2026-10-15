@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6916031647026552322"
+      "templateHash": "10912168658403983609"
     }
   },
   "parameters": {
@@ -30,6 +30,13 @@
         "description": "Basic, Standard or Premium tier. None to skip firewall deployment."
       }
     },
+    "enableFirewallDnsProxy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable the Azure Firewall DNS proxy and configure the hub VNet to distribute the firewall private IP as DNS server"
+      }
+    },
     "deployBastion": {
       "type": "bool",
       "defaultValue": true
@@ -42,7 +49,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Configure Point-to-site VPN with OpenVPN and Microsoft Entra ID authentication when the VPN Gateway is deployed"
+        "description": "Configure Point-to-site VPN with OpenVPN and Microsoft Entra ID authentication when the VPN Gateway is deployed. Require Firewall Standard or Premium tier."
       }
     },
     "anyToAnyRouting": {
@@ -100,6 +107,7 @@
     "vm01Name": "[format('{0}-vm', variables('spoke01Name'))]",
     "vm02Name": "[format('{0}-vm', variables('spoke02Name'))]",
     "vm03Name": "[format('{0}-vm', variables('spoke03Name'))]",
+    "firewallPrivateIpAddress": "10.12.3.4",
     "subnets": "[concat(createArray(createObject('name', 'GatewaySubnet', 'properties', createObject('addressPrefix', '10.12.4.0/24')), createObject('name', 'AzureFirewallSubnet', 'properties', createObject('addressPrefix', '10.12.3.0/24')), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '10.12.2.0/24')), createObject('name', 'DefaultSubnet', 'properties', createObject('addressPrefix', '10.12.1.0/24'))), if(equals(parameters('firewallTier'), 'Basic'), createArray(createObject('name', 'AzureFirewallManagementSubnet', 'properties', createObject('addressPrefix', '10.12.5.0/24', 'privateEndpointNetworkPolicies', 'Enabled', 'privateLinkServiceNetworkPolicies', 'Enabled'))), createArray()))]"
   },
   "resources": [
@@ -114,6 +122,7 @@
             "10.12.0.0/16"
           ]
         },
+        "dhcpOptions": "[if(and(parameters('enableFirewallDnsProxy'), not(equals(parameters('firewallTier'), 'None'))), createObject('dnsServers', createArray(variables('firewallPrivateIpAddress'))), null())]",
         "subnets": "[variables('subnets')]"
       }
     },
@@ -787,6 +796,9 @@
           "firewallTier": {
             "value": "[variables('actualFirewallTier')]"
           },
+          "enableDnsProxy": {
+            "value": "[parameters('enableFirewallDnsProxy')]"
+          },
           "workspaceId": {
             "value": "[resourceId('Microsoft.OperationalInsights/workspaces', 'hub-playground-ws')]"
           },
@@ -801,7 +813,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "17156764615044504142"
+              "templateHash": "9849918498176537203"
             }
           },
           "parameters": {
@@ -832,6 +844,13 @@
               ],
               "metadata": {
                 "description": "The firewall tier"
+              }
+            },
+            "enableDnsProxy": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Whether to enable the Azure Firewall DNS proxy"
               }
             },
             "firewallSubnetName": {
@@ -897,6 +916,9 @@
               "name": "[parameters('firewallName')]",
               "location": "[parameters('location')]",
               "properties": {
+                "additionalProperties": {
+                  "Network.DNS.EnableProxy": "[string(parameters('enableDnsProxy'))]"
+                },
                 "managementIpConfiguration": "[if(equals(parameters('firewallTier'), 'Basic'), createObject('name', 'ipconfig-mgt', 'properties', createObject('subnet', createObject('id', resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('firewallManagementSubnetName'))), 'publicIPAddress', createObject('id', resourceId('Microsoft.Network/publicIPAddresses', variables('firewallManagementIPName'))))), null())]",
                 "ipConfigurations": [
                   {

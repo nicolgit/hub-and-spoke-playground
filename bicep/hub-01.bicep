@@ -7,13 +7,16 @@ param firewallTier string = 'Premium'
 var actualFirewallTier = firewallTier == 'Basic' ? 'Basic' : firewallTier == 'Premium' ? 'Premium' : 'Standard'
 var firewallName = 'lab-firewall'
 
+@description('Enable the Azure Firewall DNS proxy and configure the hub VNet to distribute the firewall private IP as DNS server')
+param enableFirewallDnsProxy bool = false
+
 param deployBastion bool = true
 var bastionName = 'lab-bastion'
 
 param deployGateway bool = true
 var vnetGatewayName = 'lab-gateway'
 
-@description('Configure Point-to-site VPN with OpenVPN and Microsoft Entra ID authentication when the VPN Gateway is deployed')
+@description('Configure Point-to-site VPN with OpenVPN and Microsoft Entra ID authentication when the VPN Gateway is deployed. Require Firewall Standard or Premium tier.')
 param configureP2sVpn bool = false
 
 @description('Enable any-to-any routing through the firewall')
@@ -32,6 +35,7 @@ param deployVm02 bool = true
 var vm02Name = '${spoke02Name}-vm'
 param deployVm03 bool = true
 var vm03Name = '${spoke03Name}-vm'
+var firewallPrivateIpAddress = '10.12.3.4'
 
 @description('username administrator for all VMs')
 param username string = 'nicola'
@@ -66,7 +70,13 @@ var subnets = concat(
 resource hubLabVnet 'Microsoft.Network/virtualNetworks@2019-09-01' = {
   name: hublabName
   location: location
-  properties: { addressSpace: { addressPrefixes: ['10.12.0.0/16'] }, subnets: subnets }
+  properties: {
+    addressSpace: { addressPrefixes: ['10.12.0.0/16'] }
+    dhcpOptions: enableFirewallDnsProxy && firewallTier != 'None' ? {
+      dnsServers: [firewallPrivateIpAddress]
+    } : null
+    subnets: subnets
+  }
 }
 
 module spoke01Deployment './module/deploySPOKE.bicep' = {
@@ -140,6 +150,7 @@ module firewallDeployment './module/deployFIREWALL.bicep' = if (firewallTier != 
     location: location
     vnetName: hublabName
     firewallTier: actualFirewallTier
+    enableDnsProxy: enableFirewallDnsProxy
     workspaceId: workspace.id
     workspaceName: workspace.name
   }
